@@ -1,0 +1,28 @@
+[{
+    "rankCode":'102001',
+    "rankName": '一星'
+},{
+    "rankCode" :'102002',
+    "rankName" :'二星'
+},{
+    "rankCode": '102003',
+    "rankName": '三星'
+},{
+    "rankCode": '102004',
+    "rankName": '四星'
+},{
+    "rankCode": '102005',
+    "rankName": '五星'
+},{
+    "rankCode": '102006',
+    "rankName": '六星'
+},{
+    "rankCode": '102007',
+    "rankName": '七星'
+},{
+    "rankCode": '102008',
+    "rankName": '八星'
+},{
+    "rankCode": '102009',
+    "rankName": '九星'
+}]

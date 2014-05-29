@@ -1,0 +1,28 @@
+/*新增编辑*/
+#fm{
+    margin:0;
+    padding:10px 30px;
+}
+.ftitle{
+    font-size:14px;
+    font-weight:bold;
+    padding:5px 0;
+    margin-bottom:10px;
+    border-bottom:1px solid #ccc;
+}
+.fitem{
+    margin-bottom:5px;
+}
+.fitem label{
+    display:inline-block;
+    width:90px;
+}
+
+/*查询*/
+#north_form{
+    margin-top: 20px;
+}
+#north_form .form_td{
+    padding-left: 20px;
+    padding-right: 5px;
+}
