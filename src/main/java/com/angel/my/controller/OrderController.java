@@ -75,6 +75,7 @@ public class OrderController extends BaseController {
         updateOrder.setSaleTime(new Date());
         updateOrder.setSumPrice(order.getSumPrice());
 
+        ITOrderListService.updateOrder(updateOrder);
         return ResponseData.SUCCESS_NO_DATA;
     }
     /**
@@ -82,10 +83,10 @@ public class OrderController extends BaseController {
      */
     @RequestMapping(value = "/destroyOrder", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseData destroyOrder(String[] orderCodes){
+    public ResponseData destroyOrder(String[] codes){
         try {
-            for (int i = 0; i < orderCodes.length; i++) {
-                ITOrderListService.destoryOrder(orderCodes[i]);
+            for (int i = 0; i < codes.length; i++) {
+                ITOrderListService.destoryOrder(codes[i]);
             }
         } catch (Exception e) {
             return new ResponseData(true,"删除失败!");
@@ -111,20 +112,32 @@ public class OrderController extends BaseController {
         StringBuilder sb = new StringBuilder();
         sb.append(" 	from TOrderList ord  where 1=1	");
 
+        //模糊查询
+
         if(!StringUtils.isEmpty(orderEntity.getOrderCode())){		/*订单编号*/
-            sb.append(" and ord.orderCode ='"+ orderEntity.getOrderCode()+"'");
+            sb.append(" and ord.orderCode like '%"+ orderEntity.getOrderCode()+"%'");
         }
         if(!StringUtils.isEmpty(orderEntity.getPurchaserCode())){ /*会员编号*/
-            sb.append(" and ord.purchaserCode ='"+ orderEntity.getPurchaserCode()+"'");
+            sb.append(" and ord.purchaserCode like '%"+ orderEntity.getPurchaserCode()+"%'");
         }
         if(!StringUtils.isEmpty(orderEntity.getProductCode())){   /*产品编号*/
-            sb.append(" and ord.productCode ='"+ orderEntity.getProductCode()+"'");
+            sb.append(" and ord.productCode like '%"+ orderEntity.getProductCode()+"%'");
         }
         if(!StringUtils.isEmpty(startTime)){			/*时间范围查询*/
             sb.append("	and ord.saleTime > '"+ startTime+"'");
         }
         if(!StringUtils.isEmpty(endTime)){
             sb.append("	and ord.saleTime < '"+ endTime+"'");
+        }
+
+        if(!StringUtils.isEmpty(orderEntity.getPurchaserName())){		/*会员姓名*/
+            sb.append(" and ord.purchaserName like '%"+ orderEntity.getPurchaserName()+"%'");
+        }
+        if(!StringUtils.isEmpty(orderEntity.getShopName())){		/*商店名称*/
+            sb.append(" and ord.shopName like '%"+ orderEntity.getShopName()+"%'");
+        }
+        if(!StringUtils.isEmpty(orderEntity.getProductName())){		/*产品名称*/
+            sb.append(" and ord.productName like '%"+ orderEntity.getProductName()+"%'");
         }
 
         if(sort!=null && order!=null){		/*排序*/

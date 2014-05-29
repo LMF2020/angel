@@ -4,14 +4,14 @@
 var centerJS = (function(){
     var url;
     return {
-        //添加产品
+        //添加订单
         newOrder : function(){
             $('#dlg').dialog('open').dialog('setTitle','新增订单');
             $('#fm').form('clear');
             //$('#fm input[name="productCode"]').attr('readonly',false);
             url = '../orderController/addOrder.json';
         },
-        //编辑产品
+        //编辑订单
         editOrder : function(){
             var rows = $('#dg').datagrid('getSelections');
             if (rows.length>1){
@@ -91,6 +91,7 @@ var centerJS = (function(){
                 }
             });
         },
+        //表单查询
         formQuery:function(){
             var formData = $('#north_form').serializeObject();
             $('#dg').datagrid('load',formData);
@@ -140,14 +141,20 @@ $(function(){
                 }}]],
         onBeforeLoad:function(param){
             //列表查询前将表单值作为参数传递到后台方法
-            //var formData = $('#north_form').serializeObject();
-            //$.extend(param,formData);
+            var formData = $('#north_form').serializeObject();
+            $.extend(param,formData);
         }
     });
 
     //合计
     $("#saleNumber").keyup(function(){
         centerJS.onChangeSum();
+    });
+
+    //查询
+    $('#querybtn').click(function(e){
+        e.preventDefault();
+        centerJS.formQuery();
     });
 
 });

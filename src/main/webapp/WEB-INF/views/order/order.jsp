@@ -49,7 +49,7 @@
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-5 col-sm-4">
-                        <button type="submit" class="btn btn-primary btn-small" style="margin-right: 20px;">查询</button>
+                        <button id="querybtn" class="btn btn-primary btn-small" style="margin-right: 20px;">查询</button>
                         <button type="reset" class="btn btn-warning btn-small">清空</button>
                     </div>
                 </div>
@@ -190,6 +190,8 @@
                         <input class="form-control" type="text" id="sumPrice"  name="sumPrice" readonly="readonly"/>
                     </div>
                 </div>
+                <!--订单编号-->
+                <input type="hidden" name="orderCode">
             </form>
         </div>
         <div id="dlg-buttons">
