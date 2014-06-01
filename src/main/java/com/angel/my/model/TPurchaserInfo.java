@@ -12,7 +12,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name="t_purchaser_info")
+@Table(name="t_purchaser")
 public class TPurchaserInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -64,7 +64,7 @@ public class TPurchaserInfo implements Serializable {
 	private String rankCode;
 	
 	//等级名称
-    @Formula("(select f.rank_name from t_config_rank f where f.rank_code = rank_code)")
+    @Formula("(select f.rank_name from t_rank f where f.rank_code = rank_code)")
 	@Column(name="rank_name")
 	private String rankName;
 	
@@ -76,7 +76,7 @@ public class TPurchaserInfo implements Serializable {
 	private String shopCode;
 
 	//所在店铺名称(变化)
-    @Formula("(select f.shop_name from t_shop_info f where f.shop_code = shop_code)")
+    @Formula("(select f.shop_name from t_shop f where f.shop_code = shop_code)")
 	@Column(name="shop_name")
 	private String shopName;
 	
@@ -85,7 +85,7 @@ public class TPurchaserInfo implements Serializable {
 	private String sponsorCode;
 	
 	//上级经销商名称
-    @Formula("(select f.purchaser_name from t_purchaser_info f where f.purchaser_code = sponsor_code)")
+    @Formula("(select f.purchaser_name from t_purchaser f where f.purchaser_code = sponsor_code)")
 	@Column(name="sponsor_name")
 	private String sponsorName;
 
