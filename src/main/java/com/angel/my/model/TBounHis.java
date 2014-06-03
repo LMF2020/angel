@@ -18,6 +18,8 @@ public class TBounHis implements Serializable {
 
     //主键
     @Id
+    //@GeneratedValue(generator="system-uuid")
+    //@GenericGenerator(name="system-uuid", strategy = "uuid.hex")
     @GeneratedValue(generator = "tableGenerator")
     @GenericGenerator(name = "tableGenerator", strategy="increment")
     private Integer id;

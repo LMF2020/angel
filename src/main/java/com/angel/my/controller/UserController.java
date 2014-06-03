@@ -95,6 +95,8 @@ public class UserController extends BaseController {
         user.setRankCode("102001");
         //层级
         user.setFloors(e.getFloors()+1);
+        //祖先 (最顶层为-1)
+        user.setUpperCodes(e.getUpperCodes()+","+e.getPurchaserCode());
         //创建时间
         user.setCreateTime(new Date());
         //更新时间

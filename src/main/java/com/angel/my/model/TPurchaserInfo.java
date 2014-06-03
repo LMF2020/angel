@@ -89,11 +89,24 @@ public class TPurchaserInfo implements Serializable {
 	@Column(name="sponsor_name")
 	private String sponsorName;
 
+    //上级编号列表
+    @Lob
+    @Column(name="upper_codes")
+    private String upperCodes;
+
 	public Integer getBankAcc() {
 		return bankAcc;
 	}
 
-	public void setBankAcc(Integer bankAcc) {
+    public String getUpperCodes() {
+        return upperCodes;
+    }
+
+    public void setUpperCodes(String upperCodes) {
+        this.upperCodes = upperCodes;
+    }
+
+    public void setBankAcc(Integer bankAcc) {
 		this.bankAcc = bankAcc;
 	}
 
