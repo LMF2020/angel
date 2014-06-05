@@ -5,6 +5,6 @@ import com.starit.common.dao.hibernate4.HibernateBaseDaoImpl;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class IBusiDao extends HibernateBaseDaoImpl<TAchieve,String> {
+public class IAchieveDao extends HibernateBaseDaoImpl<TAchieve,String> {
 
 }

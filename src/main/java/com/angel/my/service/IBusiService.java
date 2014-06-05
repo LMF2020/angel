@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,20 +18,21 @@ public class IBusiService {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
     /**
      * 计算PPV - 个人业绩
      * 定义: 一个业绩核算月内，以本人编号购买的PV之和
      * @param purchaserCode
      * @return
      */
-    public double getPPV(String purchaserCode,String lastMonDate , String today){
+    public double getPPV(String purchaserCode,String lastMonDate , String thisMonDate){
         //String lastMonDate =  DateUtil.getLastMonDate(28);
-        //String today = DateUtil.getToday();
+        //String thisMonDate = DateUtil.getToday();
         //String purchaserCode = "000047";
         String sql = "SELECT SUM(t.PV) " +
                             " FROM  t_order t " +
                             " WHERE t.purchaser_code = '"+purchaserCode+"' " +
-                            " AND   t.sale_time > '"+lastMonDate+"' AND t.sale_time < '"+today+"'";
+                            " AND   t.sale_time > '"+lastMonDate+"' AND t.sale_time < '"+thisMonDate+"'";
         String sqlnull = "SELECT IFNULL("+sql+",'0')  AS ppv";
         Map map = jdbcTemplate.queryForMap(sqlnull);
         return CommonUtil.getDoubleCeil(map.get("ppv").toString());
@@ -232,33 +234,135 @@ public class IBusiService {
      * 定义: 本人下线网络中除去同职级及以上职级网络以外的业绩(就是本人TNPV-同职级或比他级别高的下线的TNPV)
      * @param purchaserCode
      * @param TNPV - 本人整网业绩
-     * @param rank - 星级
+     * @param rankCode - 星级
      * @return
      */
-    public double getGPV(String purchaserCode,String rank,double TNPV){
-        String sql = " SELECT SUM(t1.TNPV) " +
+    public double getGPV(String purchaserCode,String rankCode,double TNPV){
+
+        //小组业绩第一种算法：有错误
+       /* String sql = " SELECT SUM(t1.TNPV) " +
                      " FROM t_achieve t1" +
                      " LEFT JOIN t_purchaser t2 ON t1.purchaser_code = t2.purchaser_code " +
-                     " WHERE  t2.upper_codes LIKE '%"+purchaserCode+"%' AND t2.rank_code >= '"+rank+"'";
+                     " WHERE  t2.upper_codes LIKE '%"+purchaserCode+"%' AND t2.rank_code >= '"+rankCode+"'";
         String sqlnull = "SELECT IFNULL("+sql+",'0')  AS gpv";
         Map map = jdbcTemplate.queryForMap(sqlnull);
         double d = CommonUtil.getDoubleCeil(map.get("gpv").toString());
 
         //本人TNPV - 下线的同职级或高职级的TNPV == 小组业绩
         double d2 = TNPV - d;
-        return d2;
+        return d2;*/
+        //小组业绩第二种算法：待验证
+       //获取同职级或同职级以上的所有下线会员(不包含在同一网络)
+        List srcList  = getDownLineHigherRankPurchaser(purchaserCode,rankCode);
+        //得到剔除后的scrList,计算小组业绩：把TNPV相加
+        double sum = 0;
+        for (int i = 0,len = srcList.size(); i <len; i++) {
+            double d = (Double)((Map)srcList.get(i)).get("TNPV");
+            sum += d;
+        }
+        //本人的整网业绩-下线整网业绩
+        double d2 = TNPV - sum;
+
+        return  d2;
     }
 
+
+//////////////////////////////////////////下面是奖金的计算：直接奖、间接奖、领导奖/////////////////////////////////////////////////////////////////
+
+    /**
+     * 计算直接奖(DBV)
+     * @param purchaserCode - 会员编号
+     * @param rankCode - 会员星级
+     * @return
+     */
+    public double getDBV(String purchaserCode,String rankCode,double PPV){
+        double d = PPV * CommonUtil.directRateConstant.get(rankCode);
+        return d;
+    }
+
+    /**
+     * 计算间接奖(IBV)
+     * @return
+     */
+    public double getIBV(String purchaserCode,String rankCode){
+        //剔除直接下线中职级比他高的会员
+        String sql = "SELECT t1.purchaser_code,t1.rank_code,t1.TNPV " +
+                " FROM t_achieve t1 " +
+                "    LEFT JOIN t_purchaser t2 " +
+                "    ON t1.purchaser_code = t2.purchaser_code " +
+                " WHERE t2.sponsor_code = '"+purchaserCode+"' " +
+                "    AND t1.rank_code < '"+rankCode+"' ";
+
+        List directDownList = jdbcTemplate.queryForList(sql);
+        //直接下线的个数
+        int size = directDownList.size();
+        //间接奖
+        double ibv = 0;
+        if (size>0){
+            for (int i = 0; i <size ; i++) {
+                Map mm = (Map)directDownList.get(i);
+                //获得直接下线的编号
+                String  downChildCode = (String)mm.get("purchaser_code");
+                //获得直接下线的等级
+                String  downChildRankCode = (String)mm.get("rank_code");
+                double downChildTNPV = (Double)mm.get("TNPV");
+                //获得直接下线的下线网络职级比他上线高的会员
+                List currentDownList = getDownLineHigherRankPurchaser(downChildCode,rankCode);
+                double sum = 0;
+                for (int j = 0,len = currentDownList.size(); j <len; i++) {
+                    double d = (Double)((Map)currentDownList.get(j)).get("TNPV");
+                    sum += d;
+                }
+                //其中一条间接网络的TNPV=直接下线的TNPV-直接下线那条网络符合条件的节点的TNPV
+                double directTNPV = downChildTNPV - sum;
+                double rate = CommonUtil.directRateConstant.get(rankCode)-CommonUtil.directRateConstant.get(downChildCode);
+                //其中一条直接网络的间接奖
+                double oneDownChildBouns = directTNPV * rate;
+                ibv += oneDownChildBouns;
+            }
+        }
+        return ibv;
+    }
+
+    /**
+     * 计算领导奖(LBV)
+     * @return
+     */
+    public double getLBV(String purchaserCode,String rankCode,double GPV){
+        double gpv = 0;
+        if (rankCode == "102005" && GPV>=600){//5星会员
+            String sql = "SELECT " +
+                    "  t2.GPV " +
+                    "FROM t_purchaser t1 " +
+                    "  LEFT JOIN t_achieve t2 " +
+                    "    ON t1.purchaser_code = t2.purchaser_code " +
+                    "WHERE t1.sponsor_code = '"+purchaserCode+"' " +
+                    "    AND t1.rank_code >= '"+rankCode+"'";
+            List gpvList = jdbcTemplate.queryForList(sql);
+            for (int i = 0,len = gpvList.size(); i <len ; i++) {
+                gpv +=(Double)gpvList.get(i)*0.01;
+            }
+            gpvList = null;
+            return gpv;
+        }
+        if (rankCode == "102006" && GPV>=1000){ //6星会员
+
+        }
+        return  0;
+    }
+
+    ////////////////////////////////////////以下是业务逻辑调用/////////////////////////
     /**
      * 根据上级会员获取下线会员等级及其个数的映射表【星级，个数】
      * @param purchaserCode - 上级会员编号
      * @return
      */
     public Map getRankTableByPurchaserCode(String purchaserCode){
-        Map map = new HashMap();
+
         String sql = " SELECT t.rank_code,COUNT(t.rank_code) AS count FROM t_purchaser t " +
-                     " WHERE t.upper_codes LIKE '%"+purchaserCode+"%' GROUP BY t.rank_code ORDER BY t.rank_code";
+                " WHERE t.upper_codes LIKE '%"+purchaserCode+"%' GROUP BY t.rank_code ORDER BY t.rank_code";
         List list = jdbcTemplate.queryForList(sql);
+        Map map = new HashMap();
         for (int i = 0; i < list.size(); i++) {
             Map t =  (Map)list.get(i);
             map.put(t.get("rank_code"), t.get("count"));
@@ -267,25 +371,77 @@ public class IBusiService {
         return map;
     }
 
-//////////////////////////////////////////下面是奖金的计算：直接奖、间接奖、领导奖/////////////////////////////////////////////////////////////////
-
     /**
-     * 计算直接奖(DBV)
+     * 获取同职级或同职级以上的所有下线会员(不包含在同一网络)
+     * @param purchaserCode 查询的祖先会员编号
+     * @param rankCode      祖先的等级
      * @return
      */
-    public double getDBV(){
+    public List getDownLineHigherRankPurchaser(String purchaserCode,String rankCode){
+        String sql = " SELECT t2.floors,t2.purchaser_code,t2.upper_codes,t1.TNPV " +
+                " FROM t_achieve t1" +
+                " LEFT JOIN t_purchaser t2 ON t1.purchaser_code = t2.purchaser_code " +
+                " WHERE  t2.upper_codes LIKE '%"+purchaserCode+"%' AND t2.rank_code >= '"+rankCode+"'";
+        //Map包含会员编号,星级，上线编号集合,整网业绩
+        List srcList = jdbcTemplate.queryForList(sql);
+        List compareList = new ArrayList(srcList.size());
 
-        return 0;
+        if(srcList.size()>0){
+            //复制list到compareList中
+            for (int i = 0,size = srcList.size(); i < size; i++) {
+                compareList.add(srcList.get(i));
+            }
+            //剔除srcList中重复的网络下线
+            for (int i = 0,size = compareList.size(); i < size; i++) {
+                //主比较对象
+                Map mm =  (Map)compareList.get(i);
+                String upper_codes = (String)mm.get("upper_codes");
+                int floors = ((Long)mm.get("floors")).intValue();
+                //被比较对象
+                for (int j = 0,len = srcList.size(); j <len ; j++) {
+                    //主比较对象的upper_codes比较被比较对象的purchaser_code,且星级不能相同,则移除元素
+                    Map mj = (Map)srcList.get(j);
+                    int tier = ((Long)mj.get("floors")).intValue();
+                    String purchaser_code = (String)mj.get("purchaser_code");
+                    if(tier != floors && upper_codes.contains(purchaser_code)){
+                        srcList.remove(j);
+                        j = j-1;
+                    }
+                }
+            }
+        }
+        return srcList;
     }
 
     /**
-     * 计算间接奖(IBV)
+     * 计算网络总共有几层
      * @return
      */
-    public double getIBV(){
-        return  0;
+    public int getMaxFloor(){
+        String sql = "SELECT MAX(t.floors) FROM t_purchaser t ";
+        int max = jdbcTemplate.queryForObject(sql,int.class);
+        return max;
     }
 
+    /**
+     * 获得第N层的所有会员编号
+     * @param floor
+     * @return
+     */
+    public List<String> getAllByFloor(int floor){
+        String sql = "SELECT t.purchaser_code FROM t_purchaser t WHERE t.floors = '"+floor+"'";
+        List list = jdbcTemplate.queryForObject(sql,List.class);
+        return  list;
+    }
 
+    /**
+     * 清除 - 业绩表和奖金表
+     */
+    public void clearTableData(){
+         String truncate_TAchieve_sql = "TRUNCATE TABLE t_achieve";
+         String truncate_TBoun_sql = "TRUNCATE TABLE t_bouns";
+         jdbcTemplate.batchUpdate(new String[]{truncate_TAchieve_sql,truncate_TBoun_sql});
+    }
 
 }
+

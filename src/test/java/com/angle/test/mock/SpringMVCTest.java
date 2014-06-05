@@ -46,6 +46,7 @@ public class SpringMVCTest {
     }
     /**
      * 根据上级会员获取下线会员等级及其个数的映射表【星级，个数】
+     * 比如下线会员 1*的3个,2*的6个,3*的1个等等以此类推一直到9*的3个..
      * @param purchaserCode - 上级会员编号
      * @return
      */
