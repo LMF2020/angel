@@ -30,10 +30,10 @@
                 <div id="header" class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
                     <ul class="nav navbar-nav">
                         <li class="active"><a href="../userController/userReg">会员登记</a></li>
-                        <li><a href="javascript:void(0);">商店管理</a></li>
+                        <%--<li><a href="javascript:void(0);">店铺管理</a></li>--%>
                         <li><a href="../productController/product">产品货架</a></li>
                         <li><a href="../orderController/order">订单处理</a></li>
-                        <li><a href="javascript:void(0);">报表打印</a></li>
+                        <li><a href="../busiController/net">网络图</a></li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </nav>

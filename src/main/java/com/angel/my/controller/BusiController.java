@@ -10,12 +10,16 @@ import com.angel.my.service.ITAchieveService;
 import com.angel.my.service.ITBounService;
 import com.angel.my.service.ITPurchaserInfoService;
 import com.angel.my.util.DateUtil;
+import com.starit.common.dao.support.MySqlPagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -38,7 +42,7 @@ public class BusiController extends BaseController {
     private ITPurchaserInfoService iPurchaserService;
 
     /**
-     * 计算服务
+     * 计算当月奖金与业绩
      */
     @RequestMapping(value = "/beginCalculate", method = RequestMethod.GET)
     @ResponseBody
@@ -96,10 +100,39 @@ public class BusiController extends BaseController {
         } catch (Exception e) {
             e.printStackTrace();
             //回滚：清空业绩表，清空奖金表，重置会员表
+            iBusiService.clearTableData();
+            return new ResponseData(true,"核算失败，请联系管理员确认系统故障!");
         }
 
         //计算完毕且无误后分别批量导入业绩历史表和奖金历史表
 
         return ResponseData.SUCCESS_NO_DATA;
     }
+
+    /**
+     * 网络图JSP|定位
+     */
+    @RequestMapping("/net")
+    public String net() throws IOException {
+        return "/net/net";
+    }
+
+    /**
+     * 网络表格查询
+     * @param purchaserCode 会员编号
+     * @return
+     */
+    @RequestMapping("/pageNetList")
+    @ResponseBody
+    public MySqlPagination pageOrderList(
+            @RequestParam("page") int startIndex,
+            @RequestParam("rows") int pageSize,
+            String purchaserCode){
+        if (!StringUtils.hasText(purchaserCode)){
+            purchaserCode = "000000"; //默认查询顶级会员网络
+        }
+        MySqlPagination page = iBusiService.queryPageNetWork(startIndex,pageSize,purchaserCode);
+        return page;
+    }
+
 }

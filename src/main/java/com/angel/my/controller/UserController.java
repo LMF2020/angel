@@ -93,6 +93,8 @@ public class UserController extends BaseController {
         }
         //等级 ,初始化等级均为一星
         user.setRankCode("102001");
+        //上级会员名称
+        user.setSponsorName(e.getPurchaserName());
         //层级
         user.setFloors(e.getFloors()+1);
         //祖先 (最顶层为-1)

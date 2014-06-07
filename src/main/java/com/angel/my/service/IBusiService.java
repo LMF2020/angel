@@ -1,6 +1,7 @@
 package com.angel.my.service;
 
 import com.angel.my.util.CommonUtil;
+import com.starit.common.dao.support.MySqlPagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -329,7 +330,7 @@ public class IBusiService {
      * @return
      */
     public double getLBV(String purchaserCode,String rankCode,double GPV){
-        double gpv = 0;
+        double LB = 0;
         if (rankCode == "102005" && GPV>=600){//5星会员
             String sql = "SELECT " +
                     "  t2.GPV " +
@@ -340,13 +341,193 @@ public class IBusiService {
                     "    AND t1.rank_code >= '"+rankCode+"'";
             List gpvList = jdbcTemplate.queryForList(sql);
             for (int i = 0,len = gpvList.size(); i <len ; i++) {
-                gpv +=(Double)gpvList.get(i)*0.01;
+                LB +=(Double)gpvList.get(i)*0.01;
             }
             gpvList = null;
-            return gpv;
+            return LB;
         }
-        if (rankCode == "102006" && GPV>=1000){ //6星会员
+        //六星会员
+        if (rankCode == "102006" && GPV>=1000){
+            //查询当前会员的直接下线
+            String childrenSql = "SELECT t.purchaser_code FROM t_purchaser t WHERE t.sponsor_code = '"+purchaserCode+"'";
+            List childList = jdbcTemplate.queryForList(childrenSql);
+            //查询当前会员有几条合格的N
+            int N = getN(childList);
+            //最多可以提取几代领导奖
+            int maxN = (N+1)>3?3:(N+1);
+            //遍历每一个直接下线网络,然后汇总//purchaserCode,floor,GPV
+            //找出同职级或以上职级中网络靠前的所有下线会员
+            List headChildList = getDownLineHigherRankPurchaser(purchaserCode,rankCode);
+            for (int i = 0,len=headChildList.size(); i <len ; i++) {
+                Map mm = (Map)headChildList.get(i);
+                String childCode = (String)mm.get("purchaser_code");
+                //当前有效会员的代数（以这个为计算条件）
+                Integer floor = (Integer)mm.get("floors");
+                String sql = "SELECT t2.GPV,t1.floors " +
+                        "FROM t_purchaser t1 " +
+                        "  LEFT JOIN t_achieve t2 " +
+                        "    ON t1.purchaser_code = t2.purchaser_code " +
+                        "WHERE t1.upper_codes LIKE '%"+childCode+"%' OR t1.purchaser_code='"+childCode+"' " +
+                        "    AND t1.floors < "+floor+maxN+" " +
+                        "    AND t1.rank_code >= '"+rankCode+"'";
+               //获取该同职级会员的N代内的下线
+               List resultList =  jdbcTemplate.queryForList(sql);
+               for (int j = 0,size=resultList.size(); j <size ; j++) {
+                   Map nn = (Map)resultList.get(j);
+                   int nnFloor = (Integer)nn.get("floors");
+                   double nnGPV = (Double)nn.get("GPV");  //???
+                   if (nnFloor == floor){ //第一代提取0.1
+                        LB+=nnGPV*0.01;
+                        continue;
+                   }else if (nnFloor == floor+1 || nnFloor == floor+2){ //第二代或者第三代提取0.05
+                        LB+=nnGPV*0.005;
+                   }
 
+               }
+            }
+            return LB;
+        }
+
+        //七星会员
+        if (rankCode == "102007" && GPV>=2000){
+            //查询当前会员的直接下线
+            String childrenSql = "SELECT t.purchaser_code FROM t_purchaser t WHERE t.sponsor_code = '"+purchaserCode+"'";
+            List childList = jdbcTemplate.queryForList(childrenSql);
+            //查询当前会员有几条合格的N
+            int N = getN(childList);
+            //最多可以提取几代领导奖
+            int maxN = (N+1)>5?5:(N+1);
+            //遍历每一个直接下线网络,然后汇总//purchaserCode,floor,GPV
+            //找出同职级或以上职级中网络靠前的所有下线会员
+            List headChildList = getDownLineHigherRankPurchaser(purchaserCode,rankCode);
+            for (int i = 0,len=headChildList.size(); i <len ; i++) {
+                Map mm = (Map)headChildList.get(i);
+                String childCode = (String)mm.get("purchaser_code");
+                //当前有效会员的代数（以这个为计算条件）
+                Integer floor = (Integer)mm.get("floors");
+                String sql = "SELECT t2.GPV,t1.floors " +
+                        "FROM t_purchaser t1 " +
+                        "  LEFT JOIN t_achieve t2 " +
+                        "    ON t1.purchaser_code = t2.purchaser_code " +
+                        "WHERE t1.upper_codes LIKE '%"+childCode+"%' OR t1.purchaser_code='"+childCode+"' " +
+                        "    AND t1.floors < "+floor+maxN+" " +
+                        "    AND t1.rank_code >= '"+rankCode+"'";
+                //获取该同职级会员的N代内的下线
+                List resultList =  jdbcTemplate.queryForList(sql);
+                for (int j = 0,size=resultList.size(); j <size ; j++) {
+                    Map nn = (Map)resultList.get(j);
+                    int nnFloor = (Integer)nn.get("floors");
+                    double nnGPV = (Double)nn.get("GPV");  //???
+                    if (nnFloor == floor){ //第一代提取0.1
+                        LB+=nnGPV*0.01;
+                        continue;
+                    }else if (nnFloor == floor+1 || nnFloor == floor+2 ||
+                               nnFloor == floor+3 || nnFloor == floor+4){ //第二代,三代,四代,五代提取0.05
+                        LB+=nnGPV*0.005;
+                    }
+
+                }
+            }
+            return LB;
+        }
+        //八星会员
+        if (rankCode == "102008" && GPV>=3000){
+            //查询当前会员的直接下线
+            String childrenSql = "SELECT t.purchaser_code FROM t_purchaser t WHERE t.sponsor_code = '"+purchaserCode+"'";
+            List childList = jdbcTemplate.queryForList(childrenSql);
+            //查询当前会员有几条合格的N
+            int N = getN(childList);
+            //最多可以提取几代领导奖
+            int maxN = (N+1)>8?8:(N+1);
+            //遍历每一个直接下线网络,然后汇总//purchaserCode,floor,GPV
+            //找出同职级或以上职级中网络靠前的所有下线会员
+            List headChildList = getDownLineHigherRankPurchaser(purchaserCode,rankCode);
+            for (int i = 0,len=headChildList.size(); i <len ; i++) {
+                Map mm = (Map)headChildList.get(i);
+                String childCode = (String)mm.get("purchaser_code");
+                //当前有效会员的代数（以这个为计算条件）
+                Integer floor = (Integer)mm.get("floors");
+                String sql = "SELECT t2.GPV,t1.floors " +
+                        "FROM t_purchaser t1 " +
+                        "  LEFT JOIN t_achieve t2 " +
+                        "    ON t1.purchaser_code = t2.purchaser_code " +
+                        "WHERE t1.upper_codes LIKE '%"+childCode+"%' OR t1.purchaser_code='"+childCode+"' " +
+                        "    AND t1.floors < "+floor+maxN+" " +
+                        "    AND t1.rank_code >= '"+rankCode+"'";
+                //获取该同职级会员的N代内的下线
+                List resultList =  jdbcTemplate.queryForList(sql);
+                for (int j = 0,size=resultList.size(); j <size ; j++) {
+                    Map nn = (Map)resultList.get(j);
+                    int nnFloor = (Integer)nn.get("floors");
+                    double nnGPV = (Double)nn.get("GPV");  //???
+                    if (nnFloor == floor){ //第一代提取0.1
+                        LB+=nnGPV*0.02;
+                        continue;
+                    }else  if (nnFloor == floor+1){ //第二代提取0.1
+                        LB+=nnGPV*0.01;
+                        continue;
+                    }else if (nnFloor == floor+2 || nnFloor == floor+3 ){ //第三代,四代提取0.05
+                        LB+=nnGPV*0.005;
+                        continue;
+                    }else if (nnFloor == floor+4 || nnFloor == floor+5 ){ //第五代,六代提取0.03
+                        LB+=nnGPV*0.003;
+                        continue;
+                    }else if (nnFloor == floor+6 || nnFloor == floor+7 ){ //第七代,八代提取0.02
+                        LB+=nnGPV*0.002;
+                    }
+
+                }
+            }
+            return LB;
+        }
+        //九星会员
+        if (rankCode == "102009" && GPV>=3000){
+            //查询当前会员的直接下线
+            String childrenSql = "SELECT t.purchaser_code FROM t_purchaser t WHERE t.sponsor_code = '"+purchaserCode+"'";
+            List childList = jdbcTemplate.queryForList(childrenSql);
+            //查询当前会员有几条合格的N
+            int N = getN(childList);
+            //最多可以提取几代领导奖
+            int maxN = (N+1)>8?8:(N+1);
+            //遍历每一个直接下线网络,然后汇总//purchaserCode,floor,GPV
+            //找出同职级或以上职级中网络靠前的所有下线会员
+            List headChildList = getDownLineHigherRankPurchaser(purchaserCode,rankCode);
+            for (int i = 0,len=headChildList.size(); i <len ; i++) {
+                Map mm = (Map)headChildList.get(i);
+                String childCode = (String)mm.get("purchaser_code");
+                //当前有效会员的代数（以这个为计算条件）
+                Integer floor = (Integer)mm.get("floors");
+                String sql = "SELECT t2.GPV,t1.floors " +
+                        "FROM t_purchaser t1 " +
+                        "  LEFT JOIN t_achieve t2 " +
+                        "    ON t1.purchaser_code = t2.purchaser_code " +
+                        "WHERE t1.upper_codes LIKE '%"+childCode+"%' OR t1.purchaser_code='"+childCode+"' " +
+                        "    AND t1.floors < "+floor+maxN+" " +
+                        "    AND t1.rank_code >= '"+rankCode+"'";
+                //获取该同职级会员的N代内的下线
+                List resultList =  jdbcTemplate.queryForList(sql);
+                for (int j = 0,size=resultList.size(); j <size ; j++) {
+                    Map nn = (Map)resultList.get(j);
+                    int nnFloor = (Integer)nn.get("floors");
+                    double nnGPV = (Double)nn.get("GPV");  //???
+                    if (nnFloor == floor){ //第一代提取0.1
+                        LB+=nnGPV*0.02;
+                        continue;
+                    }else  if (nnFloor == floor+1){ //第二代提取0.1
+                        LB+=nnGPV*0.01;
+                        continue;
+                    }else if (nnFloor == floor+2 || nnFloor == floor+3 ){ //第三代,四代提取0.05
+                        LB+=nnGPV*0.005;
+                        continue;
+                    }else if (nnFloor == floor+4 || nnFloor == floor+5 ){ //第五代,六代提取0.03
+                        LB+=nnGPV*0.003;
+                        continue;
+                    }else if (nnFloor == floor+6 || nnFloor == floor+7 ){ //第七代,八代提取0.02
+                        LB+=nnGPV*0.002;
+                    }
+                }
+            }
+            return LB;
         }
         return  0;
     }
@@ -378,7 +559,7 @@ public class IBusiService {
      * @return
      */
     public List getDownLineHigherRankPurchaser(String purchaserCode,String rankCode){
-        String sql = " SELECT t2.floors,t2.purchaser_code,t2.upper_codes,t1.TNPV " +
+        String sql = " SELECT t2.floors,t2.purchaser_code,t2.upper_codes,t1.TNPV,t1.GPV " +
                 " FROM t_achieve t1" +
                 " LEFT JOIN t_purchaser t2 ON t1.purchaser_code = t2.purchaser_code " +
                 " WHERE  t2.upper_codes LIKE '%"+purchaserCode+"%' AND t2.rank_code >= '"+rankCode+"'";
@@ -441,6 +622,65 @@ public class IBusiService {
          String truncate_TAchieve_sql = "TRUNCATE TABLE t_achieve";
          String truncate_TBoun_sql = "TRUNCATE TABLE t_bouns";
          jdbcTemplate.batchUpdate(new String[]{truncate_TAchieve_sql,truncate_TBoun_sql});
+    }
+
+    /**
+     * 查询有几条合格的N
+     * @param childList
+     * @return
+     */
+    private int getN(List childList){
+        int N = 0; //初始化合格的N
+        for (int i = 0,len = childList.size(); i <len; i++) {
+            String directDownLineCode = (String)childList.get(i);
+            String NSql = "SELECT COUNT(1) " +
+                    "FROM t_purchaser  t2 " +
+                    "  LEFT JOIN t_achieve t1 " +
+                    "    ON t1.purchaser_code = t2.purchaser_code " +
+                    "WHERE t2.upper_codes LIKE '%"+directDownLineCode+"%' " +
+                    "     OR t2.purchaser_code = '"+directDownLineCode+"' " +
+                    "    AND t2.rank_code >= '102003' " +
+                    "    AND t1.TNPV >= 2000";
+            int result =  jdbcTemplate.queryForInt(NSql);
+            if (result>0){
+                N++;
+            }
+        }
+        return N;
+    }
+
+    /**
+     * 分页查询网络结构图
+     * @param startIndex  当前页
+     * @param limit   每页记录数
+     * @return
+     */
+    public MySqlPagination queryPageNetWork(int startIndex,int limit,String purchaserCode) {
+        String sql="SELECT " +
+                "  t.floors AS TIER," +
+                "  CONCAT(t.purchaser_code,'/',t.purchaser_name) AS PURCHASER_ID_NAME," +
+                "  CONCAT(t.sponsor_code,'/',t.sponsor_name) AS SPONSOR_ID_NAME," +
+                "  t3.rank_name      AS RANK_NAME," +
+                "  t1.ATNPV," +
+                "  t1.APPV," +
+                "  t1.TNPV," +
+                "  t1.GPV," +
+                "  t1.PPV," +
+                "  t2.direct_bouns   AS DB," +
+                "  t2.indirect_bouns AS IB," +
+                "  t2.leader_bouns   AS LB " +
+                "FROM t_purchaser t " +
+                "  LEFT JOIN t_achieve t1 " +
+                "    ON t.purchaser_code = t1.purchaser_code " +
+                "  LEFT JOIN t_bouns t2 " +
+                "    ON t2.purchaser_code = t.purchaser_code " +
+                "  LEFT JOIN t_rank t3 " +
+                "    ON t.rank_code = t3.rank_code " +
+                "WHERE t.purchaser_code = '"+purchaserCode+"' " +
+                "     OR t.upper_codes LIKE '%"+purchaserCode+"%' " +
+                "ORDER BY t.floors ASC";
+        MySqlPagination page=new MySqlPagination(sql, startIndex, limit, jdbcTemplate);
+        return page;
     }
 
 }
