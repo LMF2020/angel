@@ -29,11 +29,13 @@ var homeJS = (function(){
 $(function(){
 	
 	$('#header ul>li>a').on('click',function(e){
+        //激活焦点
+        var $Li = $(this).parent();
+        $Li.addClass('active').siblings().removeClass('active');
         //加载页面
 		var title = $(this).text();
 		var url = $(this).attr('href');
 		homeJS.addTab(title, url);
-        //切换标签
 		e.preventDefault();
 	});
     //激活会员登记面板

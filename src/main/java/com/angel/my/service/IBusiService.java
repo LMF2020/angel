@@ -101,53 +101,24 @@ public class IBusiService {
     public String getRANK(String purchaserCode,double PPV,double APPV,double ATNPV){
 
         /*****************下面是基于购买PV情况的判定**********************/
+        //$$计算结构 -- TNPV==========================================================================================
         String rankCode = "102001";
-        //一星判定
-        if ((PPV<100 && PPV>=0)||(0<APPV && APPV<100) ||(ATNPV<100 && ATNPV>=0)) {
-            rankCode = "102001";
-            return rankCode;
-        }
-        //二星判定
-        if ((PPV<200 && PPV>=100)||(APPV<200 && APPV>=100)|| (ATNPV<350 && ATNPV>=100)) {
-            rankCode = "102002";
-            return rankCode;
-        }
+
         //三星判定
-        if ((PPV<1000 && PPV>=200)||(APPV<1000 && APPV>=200)|| (ATNPV<1000 && ATNPV>=350)) {
+        if (ATNPV<1000 && ATNPV>=200) {
             rankCode = "102003";
             return rankCode;
         }
-        //四星判定
-        if ((PPV<3800 && PPV>=1000)||(APPV<3800 && APPV>=1000)) {
-            rankCode = "102004";
+        //二星判定
+        if (ATNPV<200 && ATNPV>=100) {
+            rankCode = "102002";
             return rankCode;
         }
-        //五星判定
-        if ((PPV<16000 && PPV>=3800)||(APPV<16000 && APPV>=3800)) {
-            rankCode = "102005";
+        //一星判定
+        if (ATNPV<100 && ATNPV>=0) {
+            rankCode = "102001";
             return rankCode;
         }
-        //六星判定
-        if ((PPV<73000 && PPV>=16000)||(APPV<73000 && APPV>=16000)) {
-            rankCode = "102006";
-            return rankCode;
-        }
-        //七星判定
-        if ((PPV<280000 && PPV>=73000)||(APPV<280000 && APPV>=73000)) {
-            rankCode = "102007";
-            return rankCode;
-        }
-        //八星判定
-        if ((PPV<400000 && PPV>=280000)||(APPV<400000 && APPV>=280000)) {
-            rankCode = "102008";
-            return rankCode;
-        }
-        //九星判定
-        if ((PPV>=400000)||(APPV>=400000)) {
-            rankCode = "102009";
-            return rankCode;
-        }
-
 
         /************************对于无法满足以上购买情况的会员，继续可以通过判定其网络结构得出星级***************************/
         //求有几条直接网络下线
@@ -164,35 +135,49 @@ public class IBusiService {
                 Object rank_code = t.get("rank_code"); //本会员的等级
                 Map mm = getRankTableByPurchaserCode(purchaser_code.toString()); //他下线会员的等级映射表
                 Object count = mm.get(rank_code); //查找本会员等级在下线表中的个数，因为这个等级属于这条网络，所以必须算入在内
-                /*if(count!=null){ //下线有相同等级的话就加1
-                    mm.put(rank_code, new Long(((Long)count).intValue()+1)); //可以优化，无需转换
-                }else{ //下线没有相同等级的话,就放到下线映射表里供规则读取
-                    mm.put(rank_code,new Long(1));
-                }*/
-                if(count == null){ //下线没有相同等级的话,就放到下线映射表里供规则读取
-                    mm.put(rank_code,new Long(1));
-                }
                 t = null;
                 //最后将该下线的编号与等级表放入规则映射表 -- 以方便待会儿读取
                 directLine.put(purchaser_code,mm);
             }
 
-            //计算直接网络里各分支3~8星直销商的个数
+            //计算直接网络里3星及3星以上(4星及4星以上)
             int count3=0,count4=0,count5=0,count6=0,count7=0,count8=0;
-            for (Object value : directLine.values()) {  //遍历每个直销商
+            for (Object value : directLine.values()) {  //遍历每条网络，也就是分支，指的是那几条直接下线的网络
                 Map mm = (Map)value;
-                if (mm.get("102003")!=null)
+
+                if (mm.get("102003")!=null){
                     count3++;
-                if (mm.get("102004")!=null)
+                }
+                if (mm.get("102004")!=null){
                     count4++;
-                if (mm.get("102005")!=null)
+                    count3++;
+                }
+                if (mm.get("102005")!=null){
                     count5++;
-                if (mm.get("102006")!=null)
+                    count3++;
+                    count4++;
+                }
+                if (mm.get("102006")!=null){
                     count6++;
-                if (mm.get("102007")!=null)
+                    count3++;
+                    count4++;
+                    count5++;
+                }
+                if (mm.get("102007")!=null){
                     count7++;
-                if (mm.get("102008")!=null)
+                    count3++;
+                    count4++;
+                    count5++;
+                    count6++;
+                }
+                if (mm.get("102008")!=null){
                     count8++;
+                    count3++;
+                    count4++;
+                    count5++;
+                    count6++;
+                    count7++;
+                }
                 mm = null;
             }
 
@@ -223,6 +208,102 @@ public class IBusiService {
             }
 
         }
+
+        //$$计算结构 -- PPV==========================================================================================
+        //九星判定
+        if (PPV>=400000) {
+            rankCode = "102009";
+            return rankCode;
+        }
+        //八星判定
+        if (PPV<400000 && PPV>=280000) {
+            rankCode = "102008";
+            return rankCode;
+        }
+        //七星判定
+        if (PPV<280000 && PPV>=73000) {
+            rankCode = "102007";
+            return rankCode;
+        }
+        //六星判定
+        if (PPV<73000 && PPV>=16000) {
+            rankCode = "102006";
+            return rankCode;
+        }
+        //五星判定
+        if (PPV<16000 && PPV>=3800) {
+            rankCode = "102005";
+            return rankCode;
+        }
+        //四星判定
+        if (PPV<3800 && PPV>=1000) {
+            rankCode = "102004";
+            return rankCode;
+        }
+        //三星判定
+        if (PPV<1000 && PPV>=200) {
+            rankCode = "102003";
+            return rankCode;
+        }
+        //二星判定
+        if (PPV<200 && PPV>=100) {
+            rankCode = "102002";
+            return rankCode;
+        }
+        //一星判定
+        if (PPV<100 && PPV>=0) {
+            rankCode = "102001";
+            return rankCode;
+        }
+
+        //$$计算结构 -- APPV==========================================================================================
+
+        //九星判定
+        if (APPV>=400000) {
+            rankCode = "102009";
+            return rankCode;
+        }
+        //八星判定
+        if (APPV<400000 && APPV>=280000) {
+            rankCode = "102008";
+            return rankCode;
+        }
+        //七星判定
+        if (APPV<280000 && APPV>=73000) {
+            rankCode = "102007";
+            return rankCode;
+        }
+        //六星判定
+        if (APPV<73000 && APPV>=16000) {
+            rankCode = "102006";
+            return rankCode;
+        }
+        //五星判定
+        if (APPV<16000 && APPV>=3800) {
+            rankCode = "102005";
+            return rankCode;
+        }
+        //四星判定
+        if (APPV<3800 && APPV>=1000) {
+            rankCode = "102004";
+            return rankCode;
+        }
+        //三星判定
+        if (APPV<1000 && APPV>=200) {
+            rankCode = "102003";
+            return rankCode;
+        }
+        //二星判定
+        if (APPV<200 && APPV>=100) {
+            rankCode = "102002";
+            return rankCode;
+        }
+        //一星判定
+        if (0<APPV && APPV<100) {
+            rankCode = "102001";
+            return rankCode;
+        }
+
         //至少有三个网络中各有一名3*及3*以上级别直销商，且累计整网业绩（ATNPV）≥1000（即直销商3800＞ ATNPV≥1000），当月升为4*直销商
         return rankCode;
     }
@@ -236,20 +317,6 @@ public class IBusiService {
      * @return
      */
     public double getGPV(String purchaserCode,String rankCode,double TNPV){
-
-        //小组业绩第一种算法：有错误
-       /* String sql = " SELECT SUM(t1.TNPV) " +
-                     " FROM t_achieve t1" +
-                     " LEFT JOIN t_purchaser t2 ON t1.purchaser_code = t2.purchaser_code " +
-                     " WHERE  t2.upper_codes LIKE '%"+purchaserCode+"%' AND t2.rank_code >= '"+rankCode+"'";
-        String sqlnull = "SELECT IFNULL("+sql+",'0')  AS gpv";
-        Map map = jdbcTemplate.queryForMap(sqlnull);
-        double d = CommonUtil.getDoubleCeil(map.get("gpv").toString());
-
-        //本人TNPV - 下线的同职级或高职级的TNPV == 小组业绩
-        double d2 = TNPV - d;
-        return d2;*/
-        //小组业绩第二种算法：待验证
        //获取同职级或同职级以上的所有下线会员(不包含在同一网络)
         List srcList  = getDownLineHigherRankPurchaser(purchaserCode,rankCode);
         //得到剔除后的scrList,计算小组业绩：把TNPV相加
@@ -328,20 +395,21 @@ public class IBusiService {
      * @return
      */
     public double getLBV(String purchaserCode,String rankCode,double GPV){
+
+//        if (purchaserCode.equals("000001")){
+//            System.out.println("====");
+//        }
+
         double LB = 0;
-        if (rankCode == "102005" && GPV>=600){//5星会员
-            String sql = "SELECT " +
-                    "  t2.GPV " +
-                    "FROM t_purchaser t1 " +
-                    "  LEFT JOIN t_achieve t2 " +
-                    "    ON t1.purchaser_code = t2.purchaser_code " +
-                    "WHERE t1.sponsor_code = '"+purchaserCode+"' " +
-                    "    AND t1.rank_code >= '"+rankCode+"'";
-            List gpvList = jdbcTemplate.queryForList(sql);
-            for (int i = 0,len = gpvList.size(); i <len ; i++) {
-                LB +=(Double)gpvList.get(i)*0.01;
+        //五星会员
+        if (rankCode == "102005" && GPV>=600){
+
+            //找出同职级或以上职级中网络靠前的所有下线会员
+            List headChildList = getDownLineHigherRankPurchaser(purchaserCode,rankCode);
+            for (int i = 0,len=headChildList.size(); i <len ; i++) {
+                Map mm = (Map)headChildList.get(i);
+                LB +=(Double)mm.get("GPV")*0.01;
             }
-            gpvList = null;
             return LB;
         }
         //六星会员
@@ -373,7 +441,7 @@ public class IBusiService {
                for (int j = 0,size=resultList.size(); j <size ; j++) {
                    Map nn = (Map)resultList.get(j);
                    int nnFloor = (Integer)nn.get("floors");
-                   double nnGPV = (Double)nn.get("GPV");  //???
+                   double nnGPV = (Double)nn.get("GPV");
                    if (nnFloor == floor){ //第一代提取0.1
                         LB+=nnGPV*0.01;
                         continue;
@@ -537,14 +605,21 @@ public class IBusiService {
      * @return
      */
     public Map getRankTableByPurchaserCode(String purchaserCode){
+//
+//        String sql = " SELECT t.rank_code,COUNT(t.rank_code) AS count FROM t_purchaser t " +
+//                " WHERE t.upper_codes LIKE '%"+purchaserCode+"%' GROUP BY t.rank_code ORDER BY t.rank_code";
 
-        String sql = " SELECT t.rank_code,COUNT(t.rank_code) AS count FROM t_purchaser t " +
-                " WHERE t.upper_codes LIKE '%"+purchaserCode+"%' GROUP BY t.rank_code ORDER BY t.rank_code";
+        String sql =  " SELECT t.rank_code,COUNT(t.rank_code) AS COUNT " +
+                      " FROM t_purchaser t " +
+                      " WHERE t.upper_codes LIKE '%"+purchaserCode+"%' OR t.purchaser_code = '"+purchaserCode+"' " +
+                      " GROUP BY t.rank_code " +
+                      " ORDER BY t.rank_code ";
+
         List list = jdbcTemplate.queryForList(sql);
         Map map = new HashMap();
         for (int i = 0; i < list.size(); i++) {
             Map t =  (Map)list.get(i);
-            map.put(t.get("rank_code"), t.get("count"));
+            map.put(t.get("rank_code"), t.get("COUNT"));
             t = null;
         }
         return map;
@@ -574,15 +649,14 @@ public class IBusiService {
             for (int i = 0,size = compareList.size(); i < size; i++) {
                 //主比较对象
                 Map mm =  (Map)compareList.get(i);
-                String upper_codes = (String)mm.get("upper_codes");
                 int floors = (Integer)mm.get("floors");
-
+                String purchaser_code = (String)mm.get("purchaser_code");
                 //被比较对象
                 Iterator it= srcList.iterator();
                 while(it.hasNext()){
                     Map mj =  (Map)it.next();
                     int tier = (Integer)mj.get("floors");
-                    String purchaser_code = (String)mj.get("purchaser_code");
+                    String upper_codes = (String)mj.get("upper_codes");
                     if(tier != floors && upper_codes.contains(purchaser_code)){
                         it.remove();
                     }
@@ -631,7 +705,8 @@ public class IBusiService {
     private int getN(List childList){
         int N = 0; //初始化合格的N
         for (int i = 0,len = childList.size(); i <len; i++) {
-            String directDownLineCode = (String)childList.get(i);
+            Map mm = (Map)childList.get(i);
+            String directDownLineCode = (String)mm.get("purchaser_code");
             String NSql = "SELECT COUNT(1) " +
                     "FROM t_purchaser  t2 " +
                     "  LEFT JOIN t_achieve t1 " +
@@ -660,6 +735,7 @@ public class IBusiService {
                 "  CONCAT(t.purchaser_code,'/',t.purchaser_name) AS PURCHASER_ID_NAME," +
                 "  CONCAT(t.sponsor_code,'/',t.sponsor_name) AS SPONSOR_ID_NAME," +
                 "  t3.rank_name      AS RANK_NAME," +
+                "  t.shop_code      AS SHOP_CODE," +
                 "  t1.ATNPV,"   +
                 "  t1.APPV,"    +
                 "  t1.TNPV,"    +
