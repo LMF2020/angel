@@ -101,6 +101,12 @@ var centerJS = (function(){
             var num = $('#saleNumber').val();
             var price = $('#productPrice').val();
             $('#sumPrice').val(num*price);
+        },
+        //月销售额汇总
+        getSumMon:function(){
+            $.get("../orderController/getSumMon.json", function(result){
+                $.messager.alert("月销售额汇总", "汇总金额为："+result,"info");
+            });
         }
     }
 })();
@@ -155,6 +161,12 @@ $(function(){
     $('#querybtn').click(function(e){
         e.preventDefault();
         centerJS.formQuery();
+    });
+
+    //月销售额汇总
+    $('#sumbtn').click(function(e){
+        e.preventDefault();
+        centerJS.getSumMon();
     });
 
 });

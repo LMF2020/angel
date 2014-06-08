@@ -60,16 +60,10 @@ $(function(){
                     dataType:"json",
                     type:"GET",
                     success: function(result){
-                        if(!result.success){
-                            $.messager.show({    // show error message
-                                title: '提示',
-                                msg: result.message
-                            });
+                        if(!result.message){
+                            $.messager.alert('提示:','你好,计算完毕!','info');
                         }else{
-                            $.messager.show({    // show error message
-                                title: '提示',
-                                msg: "计算完毕!"
-                            });
+                            $.messager.alert('提示:', result.message,'error');
                             $('#dg').datagrid('reload');    // reload the grid data
                         }
                     }

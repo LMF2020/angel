@@ -65,7 +65,7 @@ $(function(){
 		      <div id="center_left"></div>
 			  <div id="center_middle">
 			       <div id="user">用户:
-			         <input id="txtUserName" type="text" name="textfield" value="000000"/>
+			         <input id="txtUserName" type="text" name="textfield" value="000001"/>
 			       </div>
 				   <div id="password">密码:
 				     <input id="txtPassWord" type="password" name="textfield2" value="0000" />

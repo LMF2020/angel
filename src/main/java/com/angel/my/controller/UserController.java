@@ -119,6 +119,10 @@ public class UserController extends BaseController {
         updateUser.setUpdateTime(new Date());
         //更新姓名
         updateUser.setPurchaserName(user.getPurchaserName());
+        //更新上级姓名
+        TPurchaserInfo sponsorEntity = userService.loadUser(user.getSponsorCode());
+        updateUser.setSponsorName(sponsorEntity.getPurchaserName());
+
         userService.updateUser(updateUser);
         return ResponseData.SUCCESS_NO_DATA;
     }

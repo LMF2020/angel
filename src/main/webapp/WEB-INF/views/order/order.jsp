@@ -50,7 +50,8 @@
                 <div class="form-group">
                     <div class="col-sm-offset-5 col-sm-4">
                         <button id="querybtn" class="btn btn-primary btn-small" style="margin-right: 20px;">查询</button>
-                        <button type="reset" class="btn btn-warning btn-small">清空</button>
+                        <button type="reset" class="btn btn-warning btn-small" style="margin-right: 20px;">清空</button>
+                        <button id="sumbtn"   class="btn btn-info btn-small">月销售额汇总</button>
                     </div>
                 </div>
             </form>

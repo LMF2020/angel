@@ -75,7 +75,6 @@ public class MySqlPagination implements Serializable,Iterable{
         setStartIndex();
         //计算结束行数
         setLastIndex();
-        System.out.println("lastIndex="+lastIndex);//////////////////
 
         //构造oracle数据库的分页语句
         /** StringBuffer paginationSQL = new StringBuffer(" SELECT * FROM ( ");
@@ -189,8 +188,8 @@ public class MySqlPagination implements Serializable,Iterable{
 
     //计算结束时候的索引
     public void setLastIndex() {
-        System.out.println("totalRecords="+totalRecords);///////////
-        System.out.println("numPerPage="+numPerPage);///////////
+        //System.out.println("totalRecords="+totalRecords);///////////
+        //System.out.println("numPerPage="+numPerPage);///////////
         if( totalRecords < numPerPage){
             this.lastIndex = totalRecords;
         }else if((totalRecords % numPerPage == 0) || (totalRecords % numPerPage != 0 && currPage < totalPages)){

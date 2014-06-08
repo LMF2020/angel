@@ -76,7 +76,7 @@
 				                    url:'../shopController/getShopList.json',
 				                    method:'get',
 				                    valueField:'shopCode',
-				                    textField:'shopName',
+				                    textField:'shopCode',
 				                    panelHeight:'auto',
 				                    required: true
 					     ">

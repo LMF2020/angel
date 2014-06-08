@@ -6,10 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 业务计算服务
@@ -30,13 +27,13 @@ public class IBusiService {
         //String lastMonDate =  DateUtil.getLastMonDate(28);
         //String thisMonDate = DateUtil.getToday();
         //String purchaserCode = "000047";
-        String sql = "SELECT SUM(t.PV) " +
+        String sql = "SELECT SUM(t.PV) AS  PPV " +
                             " FROM  t_order t " +
                             " WHERE t.purchaser_code = '"+purchaserCode+"' " +
                             " AND   t.sale_time > '"+lastMonDate+"' AND t.sale_time < '"+thisMonDate+"'";
-        String sqlnull = "SELECT IFNULL("+sql+",'0')  AS ppv";
-        Map map = jdbcTemplate.queryForMap(sqlnull);
-        return CommonUtil.getDoubleCeil(map.get("ppv").toString());
+        Map mm = jdbcTemplate.queryForMap(sql);
+        Double dd = (Double)mm.get("PPV");
+        return dd==null?0:(dd.doubleValue());
     }
 
     /**
@@ -46,10 +43,10 @@ public class IBusiService {
      * @return
      */
     public double getAPPV(String purchaserCode){
-        String sql = "SELECT SUM(t.PV)  FROM t_order t WHERE t.purchaser_code = '"+purchaserCode+"'";
-        String sqlnull = "SELECT IFNULL("+sql+",'0')  AS appv";
-        Map map = jdbcTemplate.queryForMap(sqlnull);
-        return CommonUtil.getDoubleCeil(map.get("appv").toString());
+        String sql = "SELECT SUM(t.PV) AS APPV FROM t_order t WHERE t.purchaser_code = '"+purchaserCode+"'";
+        Map mm = jdbcTemplate.queryForMap(sql);
+        Double dd = (Double)mm.get("APPV");
+        return dd==null?0:dd.doubleValue();
     }
 
     /**
@@ -61,13 +58,13 @@ public class IBusiService {
      */
     public double getTNPV(String purchaserCode ,double PPV,String lastMonDate , String today){
         //计算本人所有下线从上个月到本月结算时的整网业绩
-        String sql = " SELECT SUM(t1.PV) " +
+        String sql = " SELECT SUM(t1.PV) AS TNPV " +
                      " FROM t_order t1 LEFT JOIN t_purchaser t2 ON t1.purchaser_code = t2.purchaser_code " +
                      " WHERE t2.upper_codes LIKE '%"+purchaserCode+"%' " +
                      " AND t1.sale_time>'"+lastMonDate+"' AND t1.sale_time<'"+today+"'";
-        String sqlnull = "SELECT IFNULL("+sql+",'0')  AS tnpv";
-        Map map = jdbcTemplate.queryForMap(sqlnull);
-        double d = CommonUtil.getDoubleCeil(map.get("tnpv").toString());
+        Map mm = jdbcTemplate.queryForMap(sql);
+        Double dd = (Double)mm.get("TNPV");
+        double d = (dd==null?0:dd.doubleValue());
 
         //加上自己在本月的个人业绩 == 本人的整网业绩
         double total = d+PPV;
@@ -83,13 +80,12 @@ public class IBusiService {
      */
     public double getATNPV(String purchaserCode ,double APPV){
         //计算本人下线从上个月到本月结算时的累计整网业绩
-        String sql = " SELECT SUM(t1.PV) " +
+        String sql = " SELECT SUM(t1.PV) AS ATNPV " +
                 " FROM t_order t1 LEFT JOIN t_purchaser t2 ON t1.purchaser_code = t2.purchaser_code " +
                 " WHERE t2.upper_codes LIKE '%"+purchaserCode+"%' ";
-        String sqlnull = "SELECT IFNULL("+sql+",'0')  AS atnpv";
-        Map map = jdbcTemplate.queryForMap(sqlnull);
-        double d = CommonUtil.getDoubleCeil(map.get("atnpv").toString());
-
+        Map mm = jdbcTemplate.queryForMap(sql);
+        Double dd = (Double)mm.get("ATNPV");
+        double d = (dd==null?0:dd.doubleValue());
         //加上本人的个人累计业绩 == 本人的累计整网业绩
         double total = d+APPV;
         return total;
@@ -107,7 +103,7 @@ public class IBusiService {
         /*****************下面是基于购买PV情况的判定**********************/
         String rankCode = "102001";
         //一星判定
-        if ((PPV<100 && PPV>=0)|| (ATNPV<100 && ATNPV>=0)) {
+        if ((PPV<100 && PPV>=0)||(0<APPV && APPV<100) ||(ATNPV<100 && ATNPV>=0)) {
             rankCode = "102001";
             return rankCode;
         }
@@ -141,16 +137,17 @@ public class IBusiService {
             rankCode = "102007";
             return rankCode;
         }
+        //八星判定
+        if ((PPV<400000 && PPV>=280000)||(APPV<400000 && APPV>=280000)) {
+            rankCode = "102008";
+            return rankCode;
+        }
         //九星判定
         if ((PPV>=400000)||(APPV>=400000)) {
             rankCode = "102009";
             return rankCode;
         }
-        //八星判定
-        if ((PPV<580000 && PPV>=280000)||(APPV<580000 && APPV>=280000)) {
-            rankCode = "102008";
-            return rankCode;
-        }
+
 
         /************************对于无法满足以上购买情况的会员，继续可以通过判定其网络结构得出星级***************************/
         //求有几条直接网络下线
@@ -306,17 +303,18 @@ public class IBusiService {
                 String  downChildCode = (String)mm.get("purchaser_code");
                 //获得直接下线的等级
                 String  downChildRankCode = (String)mm.get("rank_code");
+                //获得直接下线的TNPV
                 double downChildTNPV = (Double)mm.get("TNPV");
                 //获得直接下线的下线网络职级比他上线高的会员
                 List currentDownList = getDownLineHigherRankPurchaser(downChildCode,rankCode);
                 double sum = 0;
-                for (int j = 0,len = currentDownList.size(); j <len; i++) {
+                for (int j = 0,len = currentDownList.size(); j <len; j++) {
                     double d = (Double)((Map)currentDownList.get(j)).get("TNPV");
                     sum += d;
                 }
                 //其中一条间接网络的TNPV=直接下线的TNPV-直接下线那条网络符合条件的节点的TNPV
                 double directTNPV = downChildTNPV - sum;
-                double rate = CommonUtil.directRateConstant.get(rankCode)-CommonUtil.directRateConstant.get(downChildCode);
+                double rate = CommonUtil.directRateConstant.get(rankCode)-CommonUtil.directRateConstant.get(downChildRankCode);
                 //其中一条直接网络的间接奖
                 double oneDownChildBouns = directTNPV * rate;
                 ibv += oneDownChildBouns;
@@ -577,18 +575,19 @@ public class IBusiService {
                 //主比较对象
                 Map mm =  (Map)compareList.get(i);
                 String upper_codes = (String)mm.get("upper_codes");
-                int floors = ((Long)mm.get("floors")).intValue();
+                int floors = (Integer)mm.get("floors");
+
                 //被比较对象
-                for (int j = 0,len = srcList.size(); j <len ; j++) {
-                    //主比较对象的upper_codes比较被比较对象的purchaser_code,且星级不能相同,则移除元素
-                    Map mj = (Map)srcList.get(j);
-                    int tier = ((Long)mj.get("floors")).intValue();
+                Iterator it= srcList.iterator();
+                while(it.hasNext()){
+                    Map mj =  (Map)it.next();
+                    int tier = (Integer)mj.get("floors");
                     String purchaser_code = (String)mj.get("purchaser_code");
                     if(tier != floors && upper_codes.contains(purchaser_code)){
-                        srcList.remove(j);
-                        j = j-1;
+                        it.remove();
                     }
                 }
+
             }
         }
         return srcList;
@@ -600,7 +599,7 @@ public class IBusiService {
      */
     public int getMaxFloor(){
         String sql = "SELECT MAX(t.floors) FROM t_purchaser t ";
-        int max = jdbcTemplate.queryForObject(sql,int.class);
+        int max = jdbcTemplate.queryForInt(sql);
         return max;
     }
 
@@ -611,7 +610,7 @@ public class IBusiService {
      */
     public List<String> getAllByFloor(int floor){
         String sql = "SELECT t.purchaser_code FROM t_purchaser t WHERE t.floors = '"+floor+"'";
-        List list = jdbcTemplate.queryForObject(sql,List.class);
+        List list = jdbcTemplate.queryForList(sql);
         return  list;
     }
 
@@ -661,20 +660,20 @@ public class IBusiService {
                 "  CONCAT(t.purchaser_code,'/',t.purchaser_name) AS PURCHASER_ID_NAME," +
                 "  CONCAT(t.sponsor_code,'/',t.sponsor_name) AS SPONSOR_ID_NAME," +
                 "  t3.rank_name      AS RANK_NAME," +
-                "  t1.ATNPV," +
-                "  t1.APPV," +
-                "  t1.TNPV," +
-                "  t1.GPV," +
-                "  t1.PPV," +
-                "  t2.direct_bouns   AS DB," +
-                "  t2.indirect_bouns AS IB," +
-                "  t2.leader_bouns   AS LB " +
+                "  t1.ATNPV,"   +
+                "  t1.APPV,"    +
+                "  t1.TNPV,"    +
+                "  t1.GPV,"     +
+                "  t1.PPV,"     +
+                "  t2.direct_bouns   AS DB,"    +
+                "  t2.indirect_bouns AS IB,"    +
+                "  t2.leader_bouns   AS LB "    +
                 "FROM t_purchaser t " +
                 "  LEFT JOIN t_achieve t1 " +
                 "    ON t.purchaser_code = t1.purchaser_code " +
                 "  LEFT JOIN t_bouns t2 " +
                 "    ON t2.purchaser_code = t.purchaser_code " +
-                "  LEFT JOIN t_rank t3 " +
+                "  LEFT JOIN t_rank t3 "  +
                 "    ON t.rank_code = t3.rank_code " +
                 "WHERE t.purchaser_code = '"+purchaserCode+"' " +
                 "     OR t.upper_codes LIKE '%"+purchaserCode+"%' " +

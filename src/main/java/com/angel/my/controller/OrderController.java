@@ -7,6 +7,7 @@ import com.angel.my.service.ITOrderListService;
 import com.angel.my.util.IdGenerator;
 import com.starit.common.dao.support.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,8 @@ public class OrderController extends BaseController {
 
     @Autowired
     private ITOrderListService ITOrderListService;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     /**
      * 订单JSP|定位
@@ -44,6 +47,8 @@ public class OrderController extends BaseController {
     public ResponseData addOrder(TOrderList order) throws Exception {
         //生成订单编号
         order.setOrderCode(IdGenerator.getId());
+        order.setBv(order.getSumPrice());
+        order.setPv(order.getSumPrice());
         //创建时间
         order.setSaleTime(new Date());
         ITOrderListService.addOrder(order);
@@ -61,9 +66,8 @@ public class OrderController extends BaseController {
         updateOrder.setProductCode(order.getProductCode());
         updateOrder.setProductName(order.getProductName());
         updateOrder.setProductPrice(order.getProductPrice());
-        updateOrder.setPv(order.getPv());
-        updateOrder.setBv(order.getBv());
-
+        updateOrder.setPv(order.getSumPrice());
+        updateOrder.setBv(order.getSumPrice());
 
         updateOrder.setPurchaserCode(order.getPurchaserCode());
         updateOrder.setPurchaserName(order.getPurchaserName());
@@ -92,6 +96,16 @@ public class OrderController extends BaseController {
             return new ResponseData(true,"删除失败!");
         }
         return new ResponseData(true);
+    }
+
+    /**
+     * 计算月销售额
+     * @return
+     */
+    @RequestMapping(value = "/getSumMon",method = RequestMethod.GET)
+    @ResponseBody
+    public double getSumMon(){
+        return ITOrderListService.getSumMon();
     }
 
     /**

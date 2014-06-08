@@ -85,7 +85,7 @@ public class TPurchaserInfo implements Serializable {
 	private String sponsorCode;
 	
 	//上级经销商名称
-    @Formula("(select f.purchaser_name from t_purchaser f where f.purchaser_code = sponsor_code)")
+    //@Formula("(select f.purchaser_name from t_purchaser f where f.purchaser_code = sponsor_code)")
 	@Column(name="sponsor_name")
 	private String sponsorName;
 

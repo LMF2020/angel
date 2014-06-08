@@ -1,7 +1,5 @@
 package com.angel.my.model;
 
-import org.hibernate.annotations.Formula;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -28,32 +26,32 @@ public class TOrderList implements Serializable {
     @Column(name="product_code")
     private String productCode;
     /*产品价格*/
-    @Formula("(select t.product_price from t_product t where t.product_code = product_code)")
+    //@Formula("(select t.product_price from t_product t where t.product_code = product_code)")
 	@Column(name="product_price")
-	private double productPrice;
+	private Double productPrice;
     /*产品名称*/
-    @Formula("(select t.product_name from t_product t where t.product_code = product_code)")
+    //@Formula("(select t.product_name from t_product t where t.product_code = product_code)")
     @Column(name="product_name")
     private String productName;
     /*BV*/
-    @Formula("(select t.product_bv from t_product t where t.product_code = product_code)")
+    //@Formula("(select t.product_bv from t_product t where t.product_code = product_code)")
     private Double bv;
     /*PV*/
-    @Formula("(select t.product_pv from t_product t where t.product_code = product_code)")
+    //@Formula("(select t.product_pv from t_product t where t.product_code = product_code)")
     private Double pv;
     /*会员编码*/
 	@Column(name="purchaser_code")
 	private String purchaserCode;
     /*会员名称*/
-    @Formula("(select t.purchaser_name from t_purchaser t where t.purchaser_code = purchaser_code)")
+    //@Formula("(select t.purchaser_name from t_purchaser t where t.purchaser_code = purchaser_code)")
 	@Column(name="purchaser_name")
 	private String purchaserName;
     /*商店编码*/
-    @Formula("(select t.shop_code from t_purchaser t where t.purchaser_code = purchaser_code)")
+    //@Formula("(select t.shop_code from t_purchaser t where t.purchaser_code = purchaser_code)")
     @Column(name="shop_code")
     private String shopCode;
     /*商店名称*/
-    @Formula("(select t.shop_name from t_shop t left join t_purchaser t2 on t.shop_code = t2.shop_code where t2.purchaser_code = purchaser_code)")
+    //@Formula("(select t.shop_name from t_shop t left join t_purchaser t2 on t.shop_code = t2.shop_code where t2.purchaser_code = purchaser_code)")
     @Column(name="shop_name")
     private String shopName;
     /*购买数量*/
@@ -102,11 +100,11 @@ public class TOrderList implements Serializable {
         this.productCode = productCode;
     }
 
-    public double getProductPrice() {
+    public Double getProductPrice() {
         return productPrice;
     }
 
-    public void setProductPrice(double productPrice) {
+    public void setProductPrice(Double productPrice) {
         this.productPrice = productPrice;
     }
 
