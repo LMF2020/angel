@@ -6,6 +6,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>Angel | Marketing</title>
 		<%@include file="../views/base.jsp"%>
+        <script src="${pageContext.request.contextPath}/resources/framework/goDev.js"></script>
 		<script src="${pageContext.request.contextPath}/resources/js/home.js"></script>
 	</head>
 	<body class="easyui-layout">
@@ -42,6 +43,25 @@
         <div data-options="region:'center',iconCls:'icon-ok'">
             <div id="tabsDiv" class="easyui-tabs" data-options="fit:true,border:false,plain:true"/>
         </div>
-		
+        <!-- 弹出层 : 主窗口 -->
+        <!--==============================================================-->
+        <!-- 弹出层 : 会员新增修改对话框   HTML-START-->
+        <div class="modal" id="userNetworkModal" aria-describedby="会员网络结构视窗" tabindex="-1" role="dialog"
+                aria-labelledby="userNetworkModalLabel" aria-hidden="true">
+            <div class="modal-dialog" style="width: 95%;height: 600px;">
+                <div class="modal-content">
+                    <div class="modal-header" style="padding: 15px 15px 5px;background-color: rgb(153, 143, 105);color: #fff;">
+                        <button type="button" class="close dlgClose" ><span class="glyphicon glyphicon-remove"></span></button>
+                        <h4 class="modal-title" id="userNetworkModalLabel" style="text-align: center;">当前会员网络</h4>
+                    </div>
+                    <div class="modal-body" >
+                        <div id="myDiagramDiv" style="background-color: white; border: solid 1px black; width: 100%; height: 500px;">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 弹出层 : 会员新增修改对话框 HTML-END-->
 	</body>
 </html>

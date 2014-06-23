@@ -23,37 +23,19 @@ $(function () {
         toolbar: [
             { //计算网络业绩
                 iconCls: 'icon-edit',
-                text: '<h5 class="text-danger" style="background-color:#00ff00;">计算网络业绩(上个月28号到本月28号)<h5>',
+                text: '<h5 class="text-danger" style="background-color:#EDF7ED;text-shadow: 5px 5px 70px #EB4A2B;">计算上个月28号到本月当日的网络业绩<h5>',
                 handler: function () {
                     $.messager.confirm("确认", "您确定开始核算本月会员的奖金吗？", function (r) {
                         if (r) {
-                            $.ajax({
-                                url: '../busiController/beginCalculate.json',
-                                dataType: "json",
-                                type: "GET",
-                                timeout:60*1000, //超时60秒
-                                beforeSend: function () {
-                                    showLoading();
+                            var url =  '../busiController/beginCalculate.json';
+                            CommonAjax.get(url,{},'POST',function(result){
+                                if (!result.message) {
+                                    $.messager.alert('提示:', '你好,计算完毕!', 'info');
+                                } else {
+                                    $.messager.alert('提示:', result.message, 'error');
+                                    $('#dg').datagrid('reload');
                                 }
-                            }).done(function (result) {
-                                    hideLoading();
-                                    if (!result.message) {
-                                        $.messager.alert('提示:', '你好,计算完毕!', 'info');
-                                    } else {
-                                        $.messager.alert('提示:', result.message, 'error');
-                                        $('#dg').datagrid('reload');
-                                    }
-                                })
-                                .fail(function () {
-                                    alert("任务执行失败")
-                                    return false;
-                                })
-                                .always(function (jqXHR, textStatus) {
-                                    if (textStatus == 'timeout') {
-                                        alert("请求超时");
-                                    }
-                                    hideLoading();
-                                });
+                            });
                             return true;
                         }
                     });

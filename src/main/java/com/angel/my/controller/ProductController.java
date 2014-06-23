@@ -83,6 +83,7 @@ public class ProductController extends BaseController {
                 productInfoService.destoryProduct(codes[i]);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseData(true,"删除失败!");
         }
         return new ResponseData(true);

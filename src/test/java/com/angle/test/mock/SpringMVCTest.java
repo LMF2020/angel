@@ -1,6 +1,6 @@
 package com.angle.test.mock;
 
-import com.angel.my.service.IBusiService;
+import com.alibaba.fastjson.JSON;
 import com.starit.common.dao.support.ExcelTools;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.FileOutputStream;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /****
@@ -22,9 +23,7 @@ import java.util.Map;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"file:src/main/webapp/WEB-INF/*-servlet.xml","classpath:context-core.xml"})
 public class SpringMVCTest {
-	
-	@Autowired
-    private IBusiService iBusiService;
+
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -126,4 +125,23 @@ public class SpringMVCTest {
         }
         tools.createExcel(headerMap,fileOut);
     }
+
+    @Test
+    public void test_jdbcSql(){
+        String sql = "SELECT " +
+                "  t.purchaser_code AS 'key', " +
+                "  t.sponsor_code   AS 'parent', " +
+                "  t1.rank_name     AS 'name' " +
+                " FROM t_purchaser t " +
+                "  LEFT JOIN t_rank t1 " +
+                "    ON t1.rank_code = t.rank_code " +
+                " WHERE t.purchaser_code = '000001' " +
+                "     OR t.upper_codes LIKE '%000001%' ";
+
+        List list =  jdbcTemplate.queryForList(sql);
+        System.out.println("=============================");
+        String json =  JSON.toJSONString(list);
+        System.out.println(json);
+    }
+
 }

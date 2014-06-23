@@ -15,10 +15,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Date;
@@ -48,7 +45,7 @@ public class BusiController extends BaseController {
     /**
      * 计算当月奖金与业绩
      */
-    @RequestMapping(value = "/beginCalculate", method = RequestMethod.GET)
+    @RequestMapping(value = "/beginCalculate", method = RequestMethod.POST)
     @ResponseBody
     public ResponseData startCount(){
         System.out.println("=================启动核算进程==================");;
@@ -157,6 +154,17 @@ public class BusiController extends BaseController {
         }
         MySqlPagination page = iBusiService.queryPageNetWork(startIndex,pageSize,purchaserCode);
         return page;
+    }
+
+    /**
+     * 查看当前用户的树状分支结构图
+     * @param purchaserCode
+     * @return
+     */
+    @RequestMapping(value = "/pageNetList/{purchaserCode}",method = RequestMethod.GET)
+    @ResponseBody
+    public List<Object> getTreeGraph(@PathVariable String purchaserCode){
+        return iBusiService.getTreeGraph(purchaserCode);
     }
 
 }

@@ -4,13 +4,6 @@ var centerJS = (function () {
         //编辑会员
         editUser: function () {
             var rows = $('#dg').datagrid('getSelections');
-            if (rows.length > 1) {
-                $.messager.show({    // show error message
-                    title: '提示',
-                    msg: "更新时只能选中一条记录!"
-                });
-                return;
-            }
             var row = rows[0];
             if (row) {
                 $('#dlg').dialog('open').dialog('setTitle', 'Edit');
@@ -19,6 +12,8 @@ var centerJS = (function () {
                 $('#fm input[name="sponsorCode"]').attr('readonly', true).css('color', 'red');
                 ;//上级会员编码只读
                 url = '../userController/updateUser.json';
+            }else{
+                $.messager.alert('系统提示','请先选择要修改的会员','warning');
             }
         },
         //添加会员
@@ -29,7 +24,7 @@ var centerJS = (function () {
             $('#fm input[name="sponsorCode"]').attr('readonly', false);
             url = '../userController/addUser.json';
         },
-        //删除会员
+/*        //删除会员
         destroyUser: function () {
             var rows = $('#dg').datagrid('getSelections');
             if (rows.length > 0) {
@@ -39,34 +34,24 @@ var centerJS = (function () {
                 }
                 $.messager.confirm('提示', '您确定要删除当前选中的会员吗?', function (r) {
                     if (r) {
-                        $.ajax({
-                            url: '../userController/destroyUser.json',
-                            dataType: "json",
-                            type: "POST",
-                            data: {
-                                codes: codes
-                            },
-                            traditional: true, //浅序列化数组
-                            success: function (result) {
-                                if (result.message) {
-                                    $.messager.show({    // show error message
-                                        title: '提示',
-                                        msg: result.message
-                                    });
-                                } else {
-                                    $.messager.show({    // show error message
-                                        title: '提示',
-                                        msg: "删除成功!"
-                                    });
-                                    $('#dg').datagrid('reload');    // reload the grid data
-                                }
+                        var url = '../userController/destroyUser.json';
+                        CommonAjax.get(url,{codes: codes},'POST',function(result){
+                            if (result.message) {
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: result.message
+                                });
+                            } else {
+                                $.messager.alert('系统提示','信息删除成功!','info');
+                                $('#dg').datagrid('reload');
                             }
                         });
-
                     }
                 });
+            }else{
+                $.messager.alert('系统提示','请先选择要删除的会员.','warning');
             }
-        },
+        },*/
         //保存会员(添加/编辑)
         saveUser: function () {
             $('#fm').form('submit', {
@@ -84,19 +69,31 @@ var centerJS = (function () {
                     } else {
                         $('#dlg').dialog('close');        // close the dialog
                         $('#dg').datagrid('reload');    // reload the grid data
-                        $.messager.show({
-                            title: '提示',
-                            msg: "保存成功!"
-                        });
+                        $.messager.alert('系统提示','信息保存成功!','info');
                     }
                 }
             });
         },
+
         //表单查询
         formQuery: function () {
             var formData = $('#north_form').serializeObject();
-            //console.dir(formData);
             $('#dg').datagrid('load', formData);
+        },
+
+        //查看会员网络结构图
+        showGraph : function(){
+            var rows = $('#dg').datagrid('getSelections');
+            var row = rows[0];
+            if (row) {
+                //弹出窗口
+                parent.window.$("#userNetworkModal").modal({backdrop:'static'});
+                parent.window.$("#userNetworkModalLabel").html("正在查看会员:"+row['purchaserCode']+" 的网络结构图");
+                //生成网络图
+                parent.window.homeJS.generateGraph(row['purchaserCode']);
+            }else{
+                $.messager.alert('系统提示','请先选择要查看的会员.','warning');
+            }
         }
 
     }
@@ -106,7 +103,7 @@ $(function () {
     //定义显示列表
     $('#dg').datagrid({
         url: "../userController/pageUserList.json",
-        title: "Distributor List",
+        title: "会员列表",
         toolbar: "#toolbar",
         pagination: "true",
         rownumbers: "true",
@@ -116,17 +113,16 @@ $(function () {
         sortOrder: 'asc',
         multiSort: true,
         pageSize: 20,
-        //singleSelect:"true",
+        singleSelect:"true",
         columns: [
             [
                 {field: 'ck', checkbox: true},
-                {field: 'purchaserCode', title: 'Distributor\'s ID', width: 50},
-                {field: 'purchaserName', title: 'Distributor\'s Name', width: 50},
-                {field: 'sponsorCode', title: 'Sponsor\'s ID', width: 50},
-                {field: 'sponsorName', title: 'Sponsor\'s Name', width: 50},
-                {field: 'shopCode', title: 'Shop\'s ID', width: 50, hidden: true},
-                {field: 'shopName', title: 'Shop\'s Name', width: 50},
-                {field: 'createTime', title: 'Join Date', width: 50, sortable: true, order: 'desc',
+                {field: 'purchaserCode', title: '会员编号', width: 50},
+                {field: 'purchaserName', title: '会员姓名', width: 50},
+                {field: 'sponsorCode', title: '上级会员编号', width: 50},
+                {field: 'sponsorName', title: '上级会员姓名', width: 50},
+                {field: 'shopCode', title: '店铺编号', width: 50},
+                {field: 'createTime', title: '加入时间', width: 50, sortable: true, order: 'desc',
                     formatter: function (value, row, index) {
                         var unixTimestamp = new Date(value);
                         return unixTimestamp.toLocaleString();
@@ -143,8 +139,15 @@ $(function () {
         }
     });
 
+    //双击列表某一行弹出网络拓补结构图
+ /*   $('#dg').datagrid({
+        onDblClickRow:function(rowIndex, rowData){
+           alert(rowData['purchaserCode']);
+        }
+    });
+*/
     //定义表单条件查询
-    $('#north_form input[type=button]').click(function () {
+    $('#beginQuery').click(function () {
         centerJS.formQuery();
     });
 

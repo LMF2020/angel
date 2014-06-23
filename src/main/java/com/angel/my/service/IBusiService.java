@@ -801,5 +801,25 @@ public class IBusiService {
         return page;
     }
 
+    /**
+     * 获取当前用户的树状分支结构
+     * @param purchaserCode
+     * @return
+     */
+    public List<Object> getTreeGraph(String purchaserCode){
+        String sql = "SELECT " +
+                "  t.purchaser_code AS 'key', " +
+                "  t.sponsor_code   AS 'parent', " +
+                "  t1.rank_name     AS 'name' " +
+                " FROM t_purchaser t " +
+                "  LEFT JOIN t_rank t1 " +
+                "    ON t1.rank_code = t.rank_code " +
+                " WHERE t.purchaser_code = '"+purchaserCode+"' " +
+                "     OR t.upper_codes LIKE '%"+purchaserCode+"%' ";
+
+        List list =  jdbcTemplate.queryForList(sql);
+        return  list;
+    }
+
 }
 

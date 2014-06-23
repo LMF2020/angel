@@ -39,30 +39,22 @@ var centerJS = (function () {
                 }
                 $.messager.confirm('提示', '您确定要删除当前选中的产品吗?', function (r) {
                     if (r) {
-                        $.ajax({
-                            url: '../orderController/destroyOrder.json',
-                            dataType: "json",
-                            type: "POST",
-                            data: {
-                                codes: codes
-                            },
-                            traditional: true, //浅序列化数组
-                            success: function (result) {
-                                if (result.message) {
-                                    $.messager.show({
-                                        title: '提示',
-                                        msg: result.message
-                                    });
-                                } else {
-                                    $.messager.show({
-                                        title: '提示',
-                                        msg: "删除成功!"
-                                    });
-                                    //刷新列表
-                                    $('#dg').datagrid('reload');
-                                }
+                        var url =  '../orderController/destroyOrder.json';
+                        CommonAjax.get(url,{codes: codes},'POST',function(result){
+                            if (result.message) {
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: result.message
+                                });
+                            } else {
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: "删除成功!"
+                                });
+                                //刷新列表
+                                $('#dg').datagrid('reload');
                             }
-                        });
+                        })
                     }
                 });
             }

@@ -8,17 +8,21 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/product.js"></script>
 </head>
 <body  class="easyui-layout">
-        <div data-options="region:'north'" style="height:70px">
-            <form id="north_form">
-                <table>
-                    <tr>
-                        <td class="form_td">编号:</td>
-                        <td><input name="productCode" type="text"></td>
-                        <td class="form_td">名称:</td>
-                        <td><input name="productName" type="text"></td>
-                        <td class="form_td"><input type="button" value="查询"></td>
-                    </tr>
-                </table>
+        <div data-options="region:'north'" style="height:80px;overflow: hidden;">
+            <form id="north_form" class="form-horizontal">
+               <div class="form-group">
+                   <label for="productCodeDiv" class="col-sm-1 control-label">会员编号:</label>
+                   <div class="col-sm-2">
+                       <input type="text" class="form-control" name="productCode" id="productCodeDiv" placeholder="输入会员编号">
+                   </div>
+                   <label for="productNameDiv" class="col-sm-1 control-label" style="margin-left: -20px;">会员名称:</label>
+                   <div class="col-sm-2">
+                       <input type="text" class="form-control" name="productName" id="productNameDiv" placeholder="输入会员名称">
+                   </div>
+                   <div class="col-sm-1">
+                       <button type="button" id="beginQuery" class="btn btn-primary">开始查询</button>
+                   </div>
+               </div>
             </form>
         </div>
         <div data-options="region:'center'">

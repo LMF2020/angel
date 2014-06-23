@@ -63,3 +63,66 @@ $.extend($.fn.validatebox.defaults.rules, {
         message:'只能输入数字或小数保留两位有效数字'
     }
 });
+
+/**
+ * 清楚dom元素下的所有元素
+ * @param obj   dom元素   (document.getElementById)
+ */
+function clearDom(obj){
+    $( "*", obj).add([obj]).each(function(){
+        $.event.remove(this);
+        $.removeData(this);
+    });
+    obj.innerHTML = "";
+}
+
+var CommonAjax = (function($){
+    var get,getLocal,_ajax;
+
+    /**
+     * ajax内部函数
+     * @param url   服务地址
+     * @param data  请求参数
+     * @param type  请求类型：GET，POST
+     * @param success   成功回调函数
+     */
+    _ajax = function (url,data,type,success) {
+
+        if(!type){ //类型为空的话，默认POST请求
+            type='POST';
+        }
+        $.ajax({
+            url: url,
+            type:type,
+            data:data,
+            traditional: true, //浅序列化数组
+            dataType:'json',
+            timeout:60*1000, //请求超时默认60秒
+            beforeSend: function () {
+                showLoading();
+            }
+        }).done(success)
+            .fail(function () {
+               alert('请求接口失败');
+                return false;
+            })
+            .always(function( jqXHR, textStatus ) {
+                if(textStatus=='timeout'){
+                    alert( "请求超时"  );
+                }
+                hideLoading();
+            });
+    };
+
+    /**
+     * 远程服务
+     * @returns {*}
+     */
+    get = function(url, data ,type ,success){
+        return _ajax(url,data,type,success);
+    }
+
+    return {
+        get: get
+    }
+})(jQuery);

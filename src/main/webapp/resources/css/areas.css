@@ -222,3 +222,7 @@
     -webkit-animation: rotatingLoader 600ms infinite linear;
     moz-animation: rotatingLoader 600ms infinite linear;
 }
+/*按钮外边框样式*/
+.l-btn-left {
+    border: 1px solid;
+}

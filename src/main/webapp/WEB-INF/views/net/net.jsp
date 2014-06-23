@@ -5,6 +5,11 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <%@include file="../../views/base.jsp"%>
     <link rel="stylesheet" type="text/css"  href="${pageContext.request.contextPath}/resources/css/order.css">
+    <style>
+        #network-center .l-btn-left {
+            border: 1px solid;
+        }
+    </style>
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/net.js"></script>
 </head>
 <body class="easyui-layout">
@@ -35,11 +40,8 @@
         </form>
     </div>
 </div>
-<div data-options="region:'center'">
+<div data-options="region:'center'" id="network-center">
     <table id="dg"></table>
-    <%--<div id="toolbar">--%>
-        <%--<button id="b_calc" class="btn btn-info btn-small">计算网络业绩</button>--%>
-    <%--</div>--%>
 </div>
 </body>
 </html>
