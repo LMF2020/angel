@@ -18,4 +18,11 @@ public class ITShopInfoService {
 	public List<TShopInfo> getShopList(HttpServletRequest request, HttpServletResponse response){
 		return ITshopInfoDao.getShopList(request, response);
 	}
+
+
+    //查询所有店铺
+    public List<String> findAllId(){
+        return ITshopInfoDao.findByHQL("SELECT T.shopCode FROM TShopInfo T ");
+    }
+
 }

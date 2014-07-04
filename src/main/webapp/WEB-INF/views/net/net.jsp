@@ -8,22 +8,37 @@
     <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/net.js"></script>
 </head>
 <body class="easyui-layout">
-<div data-options="region:'north'" style="height:80px;overflow: hidden;">
+<div data-options="region:'north'" style="height:120px;overflow: hidden;">
     <div class='container'>
-        <form id="north_form" class="form-inline" role="form" style="padding-top: 20px;">
+        <form id="north_form" class="form-horizontal" role="form" style="padding-top: 20px;">
             <div class="form-group">
-                <label class="sr-only" for="purchaserCode">会员编号</label>
-                <input type="text" required="required" pattern="\d{6}" class="form-control" id="purchaserCode" name="purchaserCode" placeholder="请输入会员查询编号">
+                <label for="purchaserCodeDiv" class="col-sm-2 control-label">导出网络结构表:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="purchaserCode" id="purchaserCodeDiv" placeholder="请输入待查询的会员编号,如：0000001">
+                </div>
+                <div class="col-sm-6">
+                    <button id="b_query" class="btn btn-danger btn-small">查询</button>
+                    <button id="b_export_network" class="btn btn-info btn-small">导出当前会员网络</button>
+                    <button id="b_export_all_network" class="btn btn-info btn-small">导出所有会员网络</button>
+                </div>
             </div>
-            <button id="querybtn" class="btn btn-primary btn-small" style="margin-right: 20px;">查询</button>
-            <button id="calcbtn" class="btn btn-success btn-small">开始计算</button>
+            <div class="form-group">
+                <label for="shopCodeDiv" class="col-sm-2 control-label">导出奖金发放表:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="shopCodeDiv" name="shopCode"  placeholder="请输入待导出的店铺编号,如：CG982000">
+                </div>
+                <div class="col-sm-6">
+                    <button id="b_export_bonus" class="btn btn-info btn-small">导出当前店铺奖金</button>
+                    <button id="b_export_all_bouns" class="btn btn-info btn-small">导出所有店铺奖金</button>
+                </div>
+            </div>
         </form>
     </div>
 </div>
 <div data-options="region:'center'">
     <table id="dg"></table>
     <%--<div id="toolbar">--%>
-        <%--测试测试--%>
+        <%--<button id="b_calc" class="btn btn-info btn-small">计算网络业绩</button>--%>
     <%--</div>--%>
 </div>
 </body>

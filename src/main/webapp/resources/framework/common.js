@@ -19,6 +19,22 @@ function myparser(s) {
 	}
 }
 
+function showLoading(){
+    var loading = '<div class="ares_loading">' +
+                       '<div class="loading black refresh">' +
+                            '<span class="top"></span>' +
+                            '<span class="right"></span>' +
+                            '<span class="bottom"></span>' +
+                            '<span class="left"></span>' +
+                       '</div>' +
+                       '<div class="text">正在加载...</div>' +
+                   '</div>';
+    $(document.body).append(loading);
+}
+
+function hideLoading(){
+    $('.ares_loading').remove();
+}
 /* form序列化出一个对象 */
 jQuery.prototype.serializeObject = function(){
     var obj=new Object();

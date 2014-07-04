@@ -1,6 +1,7 @@
 package com.angle.test.mock;
 
 import com.angel.my.service.IBusiService;
+import com.starit.common.dao.support.ExcelTools;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,13 +10,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.HashMap;
-import java.util.List;
+import java.io.FileOutputStream;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /****
- * 		      单元测试Service和Dao
-		 * @author 蒋兆欣
+ * 单元测试Service和Dao
+ * @author 蒋兆欣
  *
  */
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -27,40 +28,102 @@ public class SpringMVCTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    //打印网络图
+    private String sql_network_information = null;
+    //打印奖金发放表
+    private String sql_specialty_shop_bonus_list = null;
+
 	@Before
     public void setup() {
-		
+
+		sql_network_information="SELECT " +
+                "  t.floors AS TIER," +
+                "  CONCAT(t.purchaser_code,'/',t.purchaser_name) AS PURCHASER_ID_NAME," +
+                "  CONCAT(t.sponsor_code,'/',t.sponsor_name) AS SPONSOR_ID_NAME," +
+                "  t.shop_code      AS SHOP_CODE," +
+                "  t3.rank_name      AS RANK_NAME," +
+                "  t1.ATNPV,"   +
+                "  t1.APPV,"    +
+                "  t1.TNPV,"    +
+                "  t1.GPV,"     +
+                "  t1.PPV "     +
+                " FROM t_purchaser t " +
+                "  LEFT JOIN t_achieve t1 " +
+                "    ON t.purchaser_code = t1.purchaser_code " +
+                "  LEFT JOIN t_bouns t2 " +
+                "    ON t2.purchaser_code = t.purchaser_code " +
+                "  LEFT JOIN t_rank t3 "  +
+                "    ON t.rank_code = t3.rank_code " +
+                "WHERE t.purchaser_code = '000001' " +
+                "     OR t.upper_codes LIKE '%000001%' " +
+                "ORDER BY t.floors ASC";
+
+        sql_specialty_shop_bonus_list = "SELECT " +
+                "  t.purchaser_code AS PURCHASER_CODE, " +
+                "  t.purchaser_name AS PURCHASER_NAME, " +
+                "  SUM(t1.direct_bouns+t1.indirect_bouns+t1.leader_bouns) AS TOTAL_BOUNS, " +
+                "  2                AS COMPUTOR_FEE, " +
+                "  0.0              AS TAXATION, " +
+                "  SUM(t1.direct_bouns+t1.indirect_bouns+t1.leader_bouns-2)  AS REAL_WAGES, " +
+                "  \"\"               AS SIGNATURE " +
+                " FROM t_purchaser t " +
+                "  LEFT JOIN t_bouns t1 " +
+                "    ON t.purchaser_code = t1.purchaser_code " +
+                " WHERE t.shop_code = 'CG982000' " +    //商店编号
+                " GROUP BY t.purchaser_code " +
+                " ORDER BY t.purchaser_code asc";
 	}
 	
 	@Test
-	public void test() {
-        /**
-         * 根据上级会员获取下线会员等级及其个数的映射表【星级，个数】
-         * @param purchaserCode - 上级会员编号
-         * @return
-         */
-        /*Map m = getRankTableByPurchaserCode("000000");
-        int count = ((Long)m.get("102001")).intValue();
-        System.out.println(count);*/
+	public void test_sql_network_information() {
 
-    }
-    /**
-     * 根据上级会员获取下线会员等级及其个数的映射表【星级，个数】
-     * 比如下线会员 1*的3个,2*的6个,3*的1个等等以此类推一直到9*的3个..
-     * @param purchaserCode - 上级会员编号
-     * @return
-     */
-    public Map getRankTableByPurchaserCode(String purchaserCode){
-            Map map = new HashMap();
-            String sql = " SELECT t.rank_code,COUNT(t.rank_code) AS count FROM t_purchaser t " +
-                    " WHERE t.upper_codes LIKE '%"+purchaserCode+"%' GROUP BY t.rank_code ORDER BY t.rank_code";
-            List list = jdbcTemplate.queryForList(sql);
-            for (int i = 0; i < list.size(); i++) {
-                Map t =  (Map)list.get(i);
-                map.put(t.get("rank_code"),t.get("count"));
-                t = null;
-            }
-            return map;
+        //测试输出
+        String outpath = "D:\\poiout\\network_information.xlsx";
+        Map<String,String> headerMap = new LinkedHashMap<String, String>();
+        headerMap.put("TIER","TIER");
+        headerMap.put("PURCHASER_ID_NAME","The Distributor ID/NAME");
+        headerMap.put("SPONSOR_ID_NAME","Sponsor's ID/NAME");
+        headerMap.put("SHOP_CODE","Shop ID");
+        headerMap.put("RANK_NAME","Rank");
+        headerMap.put("ATNPV","Accumulate PV");
+        headerMap.put("APPV","Personal APV");
+        headerMap.put("TNPV","TNPV");
+        headerMap.put("GPV","GPV");
+        headerMap.put("PPV","Personal PV/BV");
+
+        //方法调用
+        ExcelTools tools =  new ExcelTools(sql_network_information,10,jdbcTemplate);
+        FileOutputStream fileOut = null;
+        try {
+            fileOut = new FileOutputStream(outpath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        tools.createExcel(headerMap,fileOut);
     }
 
+    @Test
+    public void test_specialty_shop_bonus_list() {
+        System.out.println(sql_specialty_shop_bonus_list);
+        //测试输出
+        String outpath = "D:\\poiout\\specialty_shop_bonus_list.xlsx";
+        Map<String,String> headerMap = new LinkedHashMap<String, String>();
+        headerMap.put("PURCHASER_CODE","Distributor ID");
+        headerMap.put("PURCHASER_NAME","Distributor NAME");
+        headerMap.put("TOTAL_BOUNS","Total Bonus");
+        headerMap.put("COMPUTOR_FEE","Computer Fee");
+        headerMap.put("TAXATION","Taxation");
+        headerMap.put("REAL_WAGES","Real Wages");
+        headerMap.put("SIGNATURE","Signature");
+
+        //方法调用
+        ExcelTools tools =  new ExcelTools(sql_specialty_shop_bonus_list,10,jdbcTemplate);
+        FileOutputStream fileOut = null;
+        try {
+            fileOut = new FileOutputStream(outpath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        tools.createExcel(headerMap,fileOut);
+    }
 }

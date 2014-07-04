@@ -44,6 +44,8 @@ libraries['jaxb-api'] = 'javax.xml.bind:jaxb-api:2.2.2'
 libraries['mysql5'] = 'mysql:mysql-connector-java:5.1.21'
 libraries['hibernate4'] = 'org.hibernate:hibernate-core:4.1.9.Final'
 libraries['xstream'] = 'com.thoughtworks.xstream:xstream:1.3.1'
+libraries['poi'] = 'org.apache.poi:poi:3.10-FINAL'
+libraries['poi-ooxm'] = 'org.apache.poi:poi-ooxml:3.10-FINAL'
 
 //common-dao(by_bsli)
 libraries += [
@@ -64,7 +66,7 @@ libraries += [
     'spring-tx':              library('org.springframework:spring-tx:%s',              'spring'),
     'spring-web':             library('org.springframework:spring-web:%s',             'spring'),
     'spring-webmvc':          library('org.springframework:spring-webmvc:%s',          'spring'),
-    'spring-oxm':          	  library('org.springframework:spring-oxm:%s',             'spring')
+    'spring-oxm':          	library('org.springframework:spring-oxm:%s',             'spring')
 ]
 
 dependencies {

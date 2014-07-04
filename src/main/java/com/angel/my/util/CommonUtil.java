@@ -1,6 +1,5 @@
 package com.angel.my.util;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,7 +9,7 @@ import java.util.Map;
 public class CommonUtil {
 
     /**
-     * 1星到9星的直接奖比列
+     * 一星到九星的直接奖比列配置
      */
     public static final Map<String,Double> directRateConstant = new HashMap<String,Double>(){
         {
@@ -26,29 +25,43 @@ public class CommonUtil {
         }
     };
 
+    //导出网络图表
+    public static final String sql_network_information=" SELECT " +
+            "  t.floors AS TIER," +
+            "  CONCAT(t.purchaser_code,'/',t.purchaser_name) AS PURCHASER_ID_NAME," +
+            "  CONCAT(t.sponsor_code,'/',t.sponsor_name) AS SPONSOR_ID_NAME," +
+            "  t.shop_code      AS SHOP_CODE," +
+            "  t3.rank_name      AS RANK_NAME," +
+            "  t1.ATNPV,"   +
+            "  t1.APPV,"    +
+            "  t1.TNPV,"    +
+            "  t1.GPV,"     +
+            "  t1.PPV "     +
+            "  FROM t_purchaser t " +
+            "  LEFT JOIN t_achieve t1 " +
+            "    ON t.purchaser_code = t1.purchaser_code " +
+            "  LEFT JOIN t_bouns t2 " +
+            "    ON t2.purchaser_code = t.purchaser_code " +
+            "  LEFT JOIN t_rank t3 "  +
+            "    ON t.rank_code = t3.rank_code " +
+            " WHERE t.purchaser_code = '?' " +
+            "     OR t.upper_codes LIKE '%?%' " +
+            " ORDER BY t.floors ASC";
 
-  /*
-    public static final double one_star_direct_rate = 0.05;
-    */
-
-    //5星到9星的领导奖比例
-
-    /**
-     * 保留4位小数
-     * @param d
-     * @return
-     */
-    public static double getDoubleCeil(double d){
-        BigDecimal bg = new BigDecimal(d);
-        double f1 = bg.setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
-        return f1;
-    }
-    public static double getDoubleCeil(String s){
-        BigDecimal bg = new BigDecimal(s);
-        double f1 = bg.setScale(4, BigDecimal.ROUND_HALF_UP).doubleValue();
-        return f1;
-    }
-
-
+    //导出奖金发放表
+    public static final String sql_specialty_shop_bonus_list = " SELECT " +
+            "  t.purchaser_code AS PURCHASER_CODE, " +
+            "  t.purchaser_name AS PURCHASER_NAME, " +
+            "  SUM(t1.direct_bouns+t1.indirect_bouns+t1.leader_bouns) AS TOTAL_BOUNS, " +
+            "  2                AS COMPUTOR_FEE, " +
+            "  0.0              AS TAXATION, " +
+            "  SUM(t1.direct_bouns+t1.indirect_bouns+t1.leader_bouns-2)  AS REAL_WAGES, " +
+            "  \"\"               AS SIGNATURE " +
+            " FROM t_purchaser t " +
+            "  LEFT JOIN t_bouns t1 " +
+            "    ON t.purchaser_code = t1.purchaser_code " +
+            " WHERE t.shop_code = '?' " +    //商店编号
+            " GROUP BY t.purchaser_code " +
+            " ORDER BY t.purchaser_code asc";
 
 }

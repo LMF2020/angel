@@ -12,7 +12,7 @@ public class AjaxUtil {
 		return requestedWith != null ? "XMLHttpRequest".equals(requestedWith) : false;
 	}
 	
-	public static String getRemoteAddr(HttpServletRequest request) {  
+	public static String getRemoteIp(HttpServletRequest request) {
 	    String remoteIp = request.getHeader("X-Real-IP"); //nginx反向代理  
 	    if (StringUtils.hasText(remoteIp)) {  
 	        return remoteIp;  

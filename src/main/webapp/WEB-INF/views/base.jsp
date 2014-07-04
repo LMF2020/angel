@@ -4,6 +4,7 @@
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/framework/bootstrap/css/bootstrap.min.css"/>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/framework/easyui/themes/bootstrap/easyui.css"/>
 <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/framework/easyui/themes/icon.css"/>
+<link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/resources/css/areas.css">
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/framework/jquery.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/framework/bootstrap/js/bootstrap.min.js"></script>

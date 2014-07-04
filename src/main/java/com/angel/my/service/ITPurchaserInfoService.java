@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Service
 public class ITPurchaserInfoService {
@@ -45,6 +46,11 @@ public class ITPurchaserInfoService {
     //删除指定的会员列表
     public void destoryUser(String code){
         ITPurchaserInfoDao.delete(code);
+    }
+
+    //查询所有经销商编码
+    public List<String> findAllId(){
+        return ITPurchaserInfoDao.findByHQL("SELECT T.purchaserCode FROM TPurchaserInfo T ");
     }
 
 }
