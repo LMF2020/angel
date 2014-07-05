@@ -13,7 +13,7 @@ var centerJS = (function(){
             }
             var row = rows[0];
             if (row){
-                $('#dlg').dialog('open').dialog('setTitle','编辑会员');
+                $('#dlg').dialog('open').dialog('setTitle','Edit');
                 $('#fm').form('load',row);
                 $('#fm input[name="purchaserCode"]').attr('readonly',true).css('color','red');//会员编码只读
                 $('#fm input[name="sponsorCode"]').attr('readonly',true).css('color','red');;//上级会员编码只读
@@ -22,7 +22,7 @@ var centerJS = (function(){
         },
         //添加会员
         newUser : function(){
-            $('#dlg').dialog('open').dialog('setTitle','添加会员');
+            $('#dlg').dialog('open').dialog('setTitle','Registor');
             $('#fm').form('clear');
             $('#fm input[name="purchaserCode"]').attr('readonly',false);
             $('#fm input[name="sponsorCode"]').attr('readonly',false);
@@ -105,7 +105,7 @@ $(function(){
     //定义显示列表
 	$('#dg').datagrid({
 		 url:"../userController/pageUserList.json",
-		 title:"登记列表",
+		 title:"Distributor List",
 	     toolbar:"#toolbar" ,
 	     pagination:"true",
 	     rownumbers:"true",
@@ -117,13 +117,13 @@ $(function(){
          pageSize: 20,
 	     //singleSelect:"true",
 	     columns:[[{field:'ck',checkbox:true},
-                    {field:'purchaserCode',title:'会员编号',width:50},
-	                {field:'purchaserName',title:'会员姓名',width:50},
-	                {field:'sponsorCode',title:'上级会员编号',width:50},
-	                {field:'sponsorName',title:'上级会员姓名',width:50},
-	                {field:'shopCode',title:'商店编码',width:50,hidden:true},
-                    {field:'shopName',title:'商店名称',width:50},
-                    {field:'createTime',title:'加入时间',width:50, sortable:true,order:'desc',
+                    {field:'purchaserCode',title:'Distributor\'s ID',width:50},
+	                {field:'purchaserName',title:'Distributor\'s Name',width:50},
+	                {field:'sponsorCode',title:'Sponsor\'s ID',width:50},
+	                {field:'sponsorName',title:'Sponsor\'s Name',width:50},
+	                {field:'shopCode',title:'Shop\'s ID',width:50,hidden:true},
+                    {field:'shopName',title:'Shop\'s Name',width:50},
+                    {field:'createTime',title:'Join Date',width:50, sortable:true,order:'desc',
                         formatter:function(value,row,index){
                             var unixTimestamp = new Date(value);
                             return unixTimestamp.toLocaleString();

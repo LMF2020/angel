@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
- * 业务计算服务
+ * 业务计算服务(超级复杂)
+ * @author Jiang
  */
 @Service
 public class IBusiService {
@@ -104,11 +105,6 @@ public class IBusiService {
         //$$计算结构 -- TNPV==========================================================================================
         String rankCode = "102001";
 
-        //三星判定
-        if (ATNPV<1000 && ATNPV>=200) {
-            rankCode = "102003";
-            return rankCode;
-        }
         //二星判定
         if (ATNPV<200 && ATNPV>=100) {
             rankCode = "102002";
@@ -140,73 +136,160 @@ public class IBusiService {
                 directLine.put(purchaser_code,mm);
             }
 
-            //计算直接网络里3星及3星以上(4星及4星以上)
+            //计算直接网络里3星及3星以上(4星及4星以上......)
             int count3=0,count4=0,count5=0,count6=0,count7=0,count8=0;
-            for (Object value : directLine.values()) {  //遍历每条网络，也就是分支，指的是那几条直接下线的网络
-                Map mm = (Map)value;
-
-                if (mm.get("102003")!=null){
-                    count3++;
+            //遍历下线网络各等级的分支数目
+            //每一个循环都看做一条分支
+            for (Object value : directLine.values()) {
+                Map m = (Map)value;
+                Iterator it = m.keySet().iterator();
+                while(it.hasNext()){  //如果发现有大于102003的情况就停止第一条分支的循环且count3计数器加1
+                    String  rankcode = (String)it.next();
+                    if (Integer.parseInt(rankcode)>=102003){
+                        count3++;
+                        break;
+                    }
                 }
-                if (mm.get("102004")!=null){
-                    count4++;
-                    count3++;
+            }
+            //几条4星以上
+            for (Object value : directLine.values()) {
+                Map m = (Map)value;
+                Iterator it = m.keySet().iterator();
+                while(it.hasNext()){  //如果发现有大于102003的情况就停止第一条分支的循环且count4计数器加1
+                    String  rankcode = (String)it.next();
+                    if (Integer.parseInt(rankcode)>=102004){
+                        count4++;
+                        break;
+                    }
                 }
-                if (mm.get("102005")!=null){
-                    count5++;
-                    count3++;
-                    count4++;
+            }
+            //几条5星以上
+            for (Object value : directLine.values()) {
+                Map m = (Map)value;
+                Iterator it = m.keySet().iterator();
+                while(it.hasNext()){  //如果发现有大于102005的情况就停止第一条分支的循环且count3计数器加1
+                    String  rankcode = (String)it.next();
+                    if (Integer.parseInt(rankcode)>=102005){
+                        count5++;
+                        break;
+                    }
                 }
-                if (mm.get("102006")!=null){
-                    count6++;
-                    count3++;
-                    count4++;
-                    count5++;
+            }
+            //几条6星以上
+            for (Object value : directLine.values()) {
+                Map m = (Map)value;
+                Iterator it = m.keySet().iterator();
+                while(it.hasNext()){  //如果发现有大于102006的情况就停止第一条分支的循环且count3计数器加1
+                    String  rankcode = (String)it.next();
+                    if (Integer.parseInt(rankcode)>=102006){
+                        count6++;
+                        break;
+                    }
                 }
-                if (mm.get("102007")!=null){
-                    count7++;
-                    count3++;
-                    count4++;
-                    count5++;
-                    count6++;
+            }
+            //几条七星以上
+            for (Object value : directLine.values()) {
+                Map m = (Map)value;
+                Iterator it = m.keySet().iterator();
+                while(it.hasNext()){  //如果发现有大于102007的情况就停止第一条分支的循环且count3计数器加1
+                    String  rankcode = (String)it.next();
+                    if (Integer.parseInt(rankcode)>=102007){
+                        count7++;
+                        break;
+                    }
                 }
-                if (mm.get("102008")!=null){
-                    count8++;
-                    count3++;
-                    count4++;
-                    count5++;
-                    count6++;
-                    count7++;
+            }
+            //几条8星
+            for (Object value : directLine.values()) {
+                Map m = (Map)value;
+                Iterator it = m.keySet().iterator();
+                while(it.hasNext()){  //如果发现有大于102008的情况就停止第一条分支的循环且count3计数器加1
+                    String  rankcode = (String)it.next();
+                    if (Integer.parseInt(rankcode)>=102008){
+                        count8++;
+                        break;
+                    }
                 }
-                mm = null;
             }
 
-            //根据规则(网络结构)判断符合条件
+            //根据网络结构)判断符合条件
             if((ATNPV>=400000 && count8 >=3) || (ATNPV>=780000 && count8 >=2)){
                 rankCode = "102009";
                 return rankCode;
             }
-            if((ATNPV>=280000 && 400000>ATNPV && count7 >=3) || (ATNPV>=580000 && 780000>ATNPV && count7 >=2)){
+            if((ATNPV>=280000 && count7 >=3) || (ATNPV>=580000 && count7 >=2)){
                 rankCode = "102008";
                 return rankCode;
             }
-            if((ATNPV>=73000 && 280000>ATNPV && count6 >=3) || (ATNPV>=145000 && 580000>ATNPV && count6 >=2)){
+            if((ATNPV>=73000 && count6 >=3) || (ATNPV>=145000  && count6 >=2)){
                 rankCode = "102007";
                 return rankCode;
             }
-            if((ATNPV>=16000 && 73000>ATNPV && count5 >=3) || (ATNPV>=35000 && 145000>ATNPV && count5 >=2)){
+            if((ATNPV>=16000 && count5 >=3) || (ATNPV>=35000 && count5 >=2)){
                 rankCode = "102006";
                 return rankCode;
             }
-            if((ATNPV>=3800 && 16000>ATNPV && count4 >=3) || (ATNPV>=7800 && 35000>ATNPV && count4 >=2)){
+            if((ATNPV>=3800 && count4 >=3) || (ATNPV>=7800 && count4 >=2)){
                 rankCode = "102005";
                 return rankCode;
             }
-            if((ATNPV>=1000 && 3800>ATNPV && count3 >=3) || (ATNPV>=2200 && 7800>ATNPV && count3 >=2)){
+            if((ATNPV>=1000  && count3 >=3) || (ATNPV>=2200 && count3 >=2)){
                 rankCode = "102004";
                 return rankCode;
             }
 
+        }
+        //$$计算结构 -- APPV==========================================================================================
+
+        //九星判定
+        if (APPV>=400000) {
+            rankCode = "102009";
+            return rankCode;
+        }
+        //八星判定
+        if (APPV<400000 && APPV>=280000) {
+            rankCode = "102008";
+            return rankCode;
+        }
+        //七星判定
+        if (APPV<280000 && APPV>=73000) {
+            rankCode = "102007";
+            return rankCode;
+        }
+        //六星判定
+        if (APPV<73000 && APPV>=16000) {
+            rankCode = "102006";
+            return rankCode;
+        }
+        //五星判定
+        if (APPV<16000 && APPV>=3800) {
+            rankCode = "102005";
+            return rankCode;
+        }
+        //四星判定
+        if (APPV<3800 && APPV>=1000) {
+            rankCode = "102004";
+            return rankCode;
+        }
+        //三星ATNPV判定
+        if (ATNPV>=200) {
+            rankCode = "102003";
+            return rankCode;
+        }
+        //三星判定
+        if (APPV<1000 && APPV>=200) {
+            rankCode = "102003";
+            return rankCode;
+        }
+        //二星判定
+        if (APPV<200 && APPV>=100) {
+            rankCode = "102002";
+            return rankCode;
+        }
+        //一星判定
+        if (0<APPV && APPV<100) {
+            rankCode = "102001";
+            return rankCode;
         }
 
         //$$计算结构 -- PPV==========================================================================================
@@ -256,54 +339,6 @@ public class IBusiService {
             return rankCode;
         }
 
-        //$$计算结构 -- APPV==========================================================================================
-
-        //九星判定
-        if (APPV>=400000) {
-            rankCode = "102009";
-            return rankCode;
-        }
-        //八星判定
-        if (APPV<400000 && APPV>=280000) {
-            rankCode = "102008";
-            return rankCode;
-        }
-        //七星判定
-        if (APPV<280000 && APPV>=73000) {
-            rankCode = "102007";
-            return rankCode;
-        }
-        //六星判定
-        if (APPV<73000 && APPV>=16000) {
-            rankCode = "102006";
-            return rankCode;
-        }
-        //五星判定
-        if (APPV<16000 && APPV>=3800) {
-            rankCode = "102005";
-            return rankCode;
-        }
-        //四星判定
-        if (APPV<3800 && APPV>=1000) {
-            rankCode = "102004";
-            return rankCode;
-        }
-        //三星判定
-        if (APPV<1000 && APPV>=200) {
-            rankCode = "102003";
-            return rankCode;
-        }
-        //二星判定
-        if (APPV<200 && APPV>=100) {
-            rankCode = "102002";
-            return rankCode;
-        }
-        //一星判定
-        if (0<APPV && APPV<100) {
-            rankCode = "102001";
-            return rankCode;
-        }
-
         //至少有三个网络中各有一名3*及3*以上级别直销商，且累计整网业绩（ATNPV）≥1000（即直销商3800＞ ATNPV≥1000），当月升为4*直销商
         return rankCode;
     }
@@ -317,6 +352,9 @@ public class IBusiService {
      * @return
      */
     public double getGPV(String purchaserCode,String rankCode,double TNPV){
+//        if(purchaserCode.equals("000001")){
+//            System.out.println("--====");
+//        }
        //获取同职级或同职级以上的所有下线会员(不包含在同一网络)
         List srcList  = getDownLineHigherRankPurchaser(purchaserCode,rankCode);
         //得到剔除后的scrList,计算小组业绩：把TNPV相加
@@ -722,6 +760,7 @@ public class IBusiService {
         }
         return N;
     }
+
 
     /**
      * 分页查询网络结构图
