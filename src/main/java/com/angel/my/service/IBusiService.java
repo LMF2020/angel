@@ -457,7 +457,7 @@ public class IBusiService {
             List childList = jdbcTemplate.queryForList(childrenSql);
             //查询当前会员有几条合格的N
             int N = getN(childList);
-            //最多可以提取几代领导奖
+            //最多可以提取几代领导奖   
             int maxN = (N+1)>3?3:(N+1);
             //遍历每一个直接下线网络,然后汇总//purchaserCode,floor,GPV
             //找出同职级或以上职级中网络靠前的所有下线会员
@@ -467,12 +467,13 @@ public class IBusiService {
                 String childCode = (String)mm.get("purchaser_code");
                 //当前有效会员的代数（以这个为计算条件）
                 Integer floor = (Integer)mm.get("floors");
+                int limit = floor+maxN;
                 String sql = "SELECT t2.GPV,t1.floors " +
                         "FROM t_purchaser t1 " +
                         "  LEFT JOIN t_achieve t2 " +
                         "    ON t1.purchaser_code = t2.purchaser_code " +
-                        "WHERE t1.upper_codes LIKE '%"+childCode+"%' OR t1.purchaser_code='"+childCode+"' " +
-                        "    AND t1.floors < "+floor+maxN+" " +
+                        "WHERE (t1.upper_codes LIKE '%"+childCode+"%' OR t1.purchaser_code='"+childCode+"') " +
+                        "    AND t1.floors < "+limit+" " +
                         "    AND t1.rank_code >= '"+rankCode+"'";
                //获取该同职级会员的N代内的下线
                List resultList =  jdbcTemplate.queryForList(sql);
@@ -509,12 +510,13 @@ public class IBusiService {
                 String childCode = (String)mm.get("purchaser_code");
                 //当前有效会员的代数（以这个为计算条件）
                 Integer floor = (Integer)mm.get("floors");
+                int limit = floor+maxN;
                 String sql = "SELECT t2.GPV,t1.floors " +
                         "FROM t_purchaser t1 " +
                         "  LEFT JOIN t_achieve t2 " +
                         "    ON t1.purchaser_code = t2.purchaser_code " +
-                        "WHERE t1.upper_codes LIKE '%"+childCode+"%' OR t1.purchaser_code='"+childCode+"' " +
-                        "    AND t1.floors < "+floor+maxN+" " +
+                        "WHERE (t1.upper_codes LIKE '%"+childCode+"%' OR t1.purchaser_code='"+childCode+"') " +
+                        "    AND t1.floors < "+limit+" " +
                         "    AND t1.rank_code >= '"+rankCode+"'";
                 //获取该同职级会员的N代内的下线
                 List resultList =  jdbcTemplate.queryForList(sql);
@@ -551,12 +553,13 @@ public class IBusiService {
                 String childCode = (String)mm.get("purchaser_code");
                 //当前有效会员的代数（以这个为计算条件）
                 Integer floor = (Integer)mm.get("floors");
+                int limit = floor+maxN;
                 String sql = "SELECT t2.GPV,t1.floors " +
                         "FROM t_purchaser t1 " +
                         "  LEFT JOIN t_achieve t2 " +
                         "    ON t1.purchaser_code = t2.purchaser_code " +
-                        "WHERE t1.upper_codes LIKE '%"+childCode+"%' OR t1.purchaser_code='"+childCode+"' " +
-                        "    AND t1.floors < "+floor+maxN+" " +
+                        "WHERE (t1.upper_codes LIKE '%"+childCode+"%' OR t1.purchaser_code='"+childCode+"') " +
+                        "    AND t1.floors < "+limit+" " +
                         "    AND t1.rank_code >= '"+rankCode+"'";
                 //获取该同职级会员的N代内的下线
                 List resultList =  jdbcTemplate.queryForList(sql);
@@ -601,19 +604,20 @@ public class IBusiService {
                 String childCode = (String)mm.get("purchaser_code");
                 //当前有效会员的代数（以这个为计算条件）
                 Integer floor = (Integer)mm.get("floors");
+                int limit = floor+maxN;
                 String sql = "SELECT t2.GPV,t1.floors " +
                         "FROM t_purchaser t1 " +
                         "  LEFT JOIN t_achieve t2 " +
                         "    ON t1.purchaser_code = t2.purchaser_code " +
-                        "WHERE t1.upper_codes LIKE '%"+childCode+"%' OR t1.purchaser_code='"+childCode+"' " +
-                        "    AND t1.floors < "+floor+maxN+" " +
+                        "WHERE (t1.upper_codes LIKE '%"+childCode+"%' OR t1.purchaser_code='"+childCode+"') " +
+                        "    AND t1.floors < "+limit+" " +
                         "    AND t1.rank_code >= '"+rankCode+"'";
                 //获取该同职级会员的N代内的下线
                 List resultList =  jdbcTemplate.queryForList(sql);
                 for (int j = 0,size=resultList.size(); j <size ; j++) {
                     Map nn = (Map)resultList.get(j);
                     int nnFloor = (Integer)nn.get("floors");
-                    double nnGPV = (Double)nn.get("GPV");  //???
+                    double nnGPV = (Double)nn.get("GPV");
                     if (nnFloor == floor){ //第一代提取0.1
                         LB+=nnGPV*0.02;
                         continue;
