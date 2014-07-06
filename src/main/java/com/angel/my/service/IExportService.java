@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipEntry;
@@ -47,6 +48,8 @@ public class IExportService {
         response.setContentType("application/vnd.ms-excel");
         String encodedFileName = null;
         OutputStream fOut = null;
+        Map<String,Object> tableInfo = new HashMap<String, Object>();
+        tableInfo.put("tableType","NETWORK");
         try {
             fOut = response.getOutputStream();
             // 进行转码，使其支持中文文件名
@@ -54,11 +57,17 @@ public class IExportService {
             response.setHeader("content-disposition", "attachment;filename=" + encodedFileName  + ".xlsx");
             String sql_network_information = CommonUtil.sql_network_information.replace("?",purchaserCode);
             ExcelTools tools =  new ExcelTools(sql_network_information,10,jdbcTemplate);
+            tableInfo.put("totalRecords",getTotalRecords(sql_network_information));
+            tableInfo.put("purchaserCode",purchaserCode);
+            tableInfo.put("yearMonth",DateUtil.getYearMonth());
+            tools.setTableInfo(tableInfo);
             tools.createExcel(headerMap,fOut);
+            tableInfo.clear();
 
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            tableInfo = null;
             try
             {
                 fOut.flush();
@@ -93,6 +102,8 @@ public class IExportService {
         if (!file.exists()) {
             file.mkdirs();
         }
+        Map<String,Object> tableInfo = new HashMap<String, Object>();
+        tableInfo.put("tableType","NETWORK");
         try {
             fOut = response.getOutputStream();
             zos = new ZipOutputStream(fOut);
@@ -103,8 +114,13 @@ public class IExportService {
                 fileOutputStream = new FileOutputStream(dir+ printDate + "-network-"+ purchaserCode + ".xlsx");
                 String sql_network_information = CommonUtil.sql_network_information.replace("?",purchaserCode);
                 tools =  new ExcelTools(sql_network_information,10,jdbcTemplate);
+                tableInfo.put("totalRecords",getTotalRecords(sql_network_information));
+                tableInfo.put("purchaserCode",purchaserCode);
+                tableInfo.put("yearMonth",DateUtil.getYearMonth());
+                tools.setTableInfo(tableInfo);
                 tools.createExcel(headerMap,fileOutputStream);
             }
+            tableInfo.clear();
             //文件写入完毕，此时打包处理
             zipFile(file, "/", zos);
             zos.flush();
@@ -113,6 +129,7 @@ public class IExportService {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            tableInfo = null;
             try
             {
                 fOut.flush();
@@ -144,15 +161,22 @@ public class IExportService {
         response.setHeader("content-disposition", "attachment;filename=" + printDate+"-"+shopCode  + ".xlsx");
 
         OutputStream fOut = null;
+        Map<String,Object> tableInfo = new HashMap<String, Object>();
+        tableInfo.put("tableType","SHOPBONUS");
         try {
             fOut = response.getOutputStream();
             String sql_shop_bonus = CommonUtil.sql_specialty_shop_bonus_list.replace("?",shopCode);
             ExcelTools tools =  new ExcelTools(sql_shop_bonus,10,jdbcTemplate);
+            tableInfo.put("totalRecords",getTotalRecords(sql_shop_bonus));
+            tableInfo.put("shopCode",shopCode);
+            tableInfo.put("yearMonth",DateUtil.getYearMonth());
+            tools.setTableInfo(tableInfo);
             tools.createExcel(headerMap,fOut);
-
+            tableInfo.clear();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            tableInfo = null;
             try
             {
                 fOut.flush();
@@ -188,6 +212,8 @@ public class IExportService {
         if (!file.exists()) {
             file.mkdirs();
         }
+        Map<String,Object> tableInfo = new HashMap<String, Object>();
+        tableInfo.put("tableType","SHOPBONUS");
         try {
             fOut = response.getOutputStream();
             zos = new ZipOutputStream(fOut);
@@ -196,10 +222,15 @@ public class IExportService {
             for (int i = 0,len=shopCodeList.size(); i <len; i++) {
                 String shopCode = shopCodeList.get(i);
                 fileOutputStream = new FileOutputStream(dir+ printDate + "-shop-"+ shopCode + ".xlsx");
-                String sql_network_information = CommonUtil.sql_specialty_shop_bonus_list.replace("?",shopCode);
-                tools =  new ExcelTools(sql_network_information,10,jdbcTemplate);
+                String sql_shop_bonus = CommonUtil.sql_specialty_shop_bonus_list.replace("?",shopCode);
+                tools =  new ExcelTools(sql_shop_bonus,10,jdbcTemplate);
+                tableInfo.put("totalRecords",getTotalRecords(sql_shop_bonus));
+                tableInfo.put("shopCode",shopCode);
+                tableInfo.put("yearMonth",DateUtil.getYearMonth());
+                tools.setTableInfo(tableInfo);
                 tools.createExcel(headerMap,fileOutputStream);
             }
+            tableInfo.clear();
             //文件写入完毕，此时打包处理
             zipFile(file, "/", zos);
             zos.flush();
@@ -208,6 +239,7 @@ public class IExportService {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
+            tableInfo = null;
             try
             {
                 fOut.flush();
@@ -249,5 +281,19 @@ public class IExportService {
             }
         }
 
+    }
+
+    /**
+     * 根据查询sql语句获取总记录数
+     * @param sql
+     * @return
+     */
+    private int getTotalRecords(String sql){
+        int totalPages = 0;
+        StringBuffer totalSQL = new StringBuffer(" SELECT count(*) FROM ( ");
+        totalSQL.append(sql);
+        totalSQL.append(" ) totalTable ");
+        int totalRecords = jdbcTemplate.queryForInt(totalSQL.toString());
+        return totalRecords;
     }
 }
