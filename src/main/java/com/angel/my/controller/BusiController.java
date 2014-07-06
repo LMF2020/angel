@@ -91,7 +91,7 @@ public class BusiController extends BaseController {
                     double DBV = iBusiService.getDBV(purchaserCode,rankCode,PPV);
                     System.out.println("==="+purchaserCode+" 的 DBV ："+DBV);
                     double IBV = iBusiService.getIBV(purchaserCode,rankCode);
-                    System.out.println("==="+purchaserCode+" 的 IBV ："+IBV);
+                    System.out.println("==="+purchaserCode+" 的 IBV ："+IBV+Math.round(IBV*10)/10000.0);
                     double LBV = iBusiService.getLBV(purchaserCode,rankCode,GPV);
                     System.out.println("==="+purchaserCode+" 的 LBV ："+LBV);
                     System.out.println("==="+purchaserCode+" 的 计算结束.");

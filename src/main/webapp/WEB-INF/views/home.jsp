@@ -33,7 +33,7 @@
                         <%--<li><a href="javascript:void(0);">店铺管理</a></li>--%>
                         <li><a href="../productController/product">产品货架</a></li>
                         <li><a href="../orderController/order">订单处理</a></li>
-                        <li><a href="../busiController/net">网络图</a></li>
+                        <li><a href="../busiController/net">网络计算</a></li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </nav>

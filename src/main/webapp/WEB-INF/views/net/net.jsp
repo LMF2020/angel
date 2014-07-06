@@ -16,15 +16,15 @@
                 <input type="text" required="required" pattern="\d{6}" class="form-control" id="purchaserCode" name="purchaserCode" placeholder="请输入会员查询编号">
             </div>
             <button id="querybtn" class="btn btn-primary btn-small" style="margin-right: 20px;">查询</button>
-            <button id="calcbtn" class="btn btn-success btn-small">开始计算当月网络</button>
+            <button id="calcbtn" class="btn btn-success btn-small">开始计算</button>
         </form>
     </div>
 </div>
 <div data-options="region:'center'">
     <table id="dg"></table>
-    <div id="toolbar">
-        测试测试
-    </div>
+    <%--<div id="toolbar">--%>
+        <%--测试测试--%>
+    <%--</div>--%>
 </div>
 </body>
 </html>
