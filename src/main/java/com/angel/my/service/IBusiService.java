@@ -38,6 +38,22 @@ public class IBusiService {
     }
 
     /**
+     * 计算PBV - 个人当月奖金
+     * 定义: 一个业绩核算月内，以本人编号购买的PV之和
+     * @param purchaserCode
+     * @return
+     */
+    public double getPBV(String purchaserCode,String lastMonDate , String thisMonDate){
+        String sql = "SELECT SUM(t.BV) AS  PBV " +
+                " FROM  t_order t " +
+                " WHERE t.purchaser_code = '"+purchaserCode+"' " +
+                " AND   t.sale_time > '"+lastMonDate+"' AND t.sale_time < '"+thisMonDate+"'";
+        Map mm = jdbcTemplate.queryForMap(sql);
+        Double dd = (Double)mm.get("PBV");
+        return dd==null?0:(dd.doubleValue());
+    }
+
+    /**
      * 计算APPV - 个人累计业绩
      * 定义:直销商自加入公司，所有以本人编号购买产品PV之和
      * @param purchaserCode
@@ -69,6 +85,28 @@ public class IBusiService {
 
         //加上自己在本月的个人业绩 == 本人的整网业绩
         double total = d+PPV;
+        return total;
+    }
+
+    /**
+     * 计算整网奖金(TNBV)
+     * 定义:一个业绩核算月内，本人及其所有下线直销商个人奖金（PBV）之和
+     * @param purchaserCode
+     * @param PBV   本人当月个人BV
+     * @return
+     */
+    public double getTNBV(String purchaserCode ,double PBV,String lastMonDate , String today){
+        //计算本人所有下线从上个月到本月结算时的整网业绩
+        String sql = " SELECT SUM(t1.BV) AS TNBV " +
+                " FROM t_order t1 LEFT JOIN t_purchaser t2 ON t1.purchaser_code = t2.purchaser_code " +
+                " WHERE t2.upper_codes LIKE '%"+purchaserCode+"%' " +
+                " AND t1.sale_time>'"+lastMonDate+"' AND t1.sale_time<'"+today+"'";
+        Map mm = jdbcTemplate.queryForMap(sql);
+        Double dd = (Double)mm.get("TNBV");
+        double d = (dd==null?0:dd.doubleValue());
+
+        //加上自己在本月的BV和== 本人的整网奖金
+        double total = d+PBV;
         return total;
     }
 
@@ -378,8 +416,8 @@ public class IBusiService {
      * @param rankCode - 会员星级
      * @return
      */
-    public double getDBV(String purchaserCode,String rankCode,double PPV){
-        double d = PPV * CommonUtil.directRateConstant.get(rankCode);
+    public double getDBV(String purchaserCode,String rankCode,double PBV){
+        double d = PBV * CommonUtil.directRateConstant.get(rankCode);
         return d;
     }
 
@@ -389,7 +427,7 @@ public class IBusiService {
      */
     public double getIBV(String purchaserCode,String rankCode){
         //剔除直接下线中职级比他高的会员
-        String sql = "SELECT t1.purchaser_code,t1.rank_code,t1.TNPV " +
+        String sql = "SELECT t1.purchaser_code,t1.rank_code,t1.TNBV " +
                 " FROM t_achieve t1 " +
                 "    LEFT JOIN t_purchaser t2 " +
                 "    ON t1.purchaser_code = t2.purchaser_code " +
@@ -409,19 +447,19 @@ public class IBusiService {
                 //获得直接下线的等级
                 String  downChildRankCode = (String)mm.get("rank_code");
                 //获得直接下线的TNPV
-                double downChildTNPV = (Double)mm.get("TNPV");
+                double downChildTNBV = (Double)mm.get("TNBV");
                 //获得直接下线的下线网络职级比他上线高的会员
                 List currentDownList = getDownLineHigherRankPurchaser(downChildCode,rankCode);
                 double sum = 0;
                 for (int j = 0,len = currentDownList.size(); j <len; j++) {
-                    double d = (Double)((Map)currentDownList.get(j)).get("TNPV");
+                    double d = (Double)((Map)currentDownList.get(j)).get("TNBV");
                     sum += d;
                 }
                 //其中一条间接网络的TNPV=直接下线的TNPV-直接下线那条网络符合条件的节点的TNPV
-                double directTNPV = downChildTNPV - sum;
+                double directTNBV = downChildTNBV - sum;
                 double rate = CommonUtil.directRateConstant.get(rankCode)-CommonUtil.directRateConstant.get(downChildRankCode);
                 //其中一条直接网络的间接奖
-                double oneDownChildBouns = directTNPV * rate;
+                double oneDownChildBouns = directTNBV * rate;
                 ibv += oneDownChildBouns;
             }
         }
@@ -674,7 +712,7 @@ public class IBusiService {
      * @return
      */
     public List getDownLineHigherRankPurchaser(String purchaserCode,String rankCode){
-        String sql = " SELECT t2.floors,t2.purchaser_code,t2.upper_codes,t1.TNPV,t1.GPV " +
+        String sql = " SELECT t2.floors,t2.purchaser_code,t2.upper_codes,t1.TNPV,t1.TNBV,t1.GPV " +
                 " FROM t_achieve t1" +
                 " LEFT JOIN t_purchaser t2 ON t1.purchaser_code = t2.purchaser_code " +
                 " WHERE  t2.upper_codes LIKE '%"+purchaserCode+"%' AND t2.rank_code >= '"+rankCode+"'";
@@ -783,7 +821,7 @@ public class IBusiService {
                 "  t1.APPV,"    +
                 "  t1.TNPV,"    +
                 "  t1.GPV,"     +
-                "  t1.PPV,"     +
+                "  CONCAT(t1.PPV,'/',t1.PBV)   AS PPV,"     +
                 "  t2.direct_bouns   AS DB,"    +
                 "  t2.indirect_bouns AS IB,"    +
                 "  t2.leader_bouns   AS LB "    +

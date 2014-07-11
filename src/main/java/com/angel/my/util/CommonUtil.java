@@ -36,7 +36,7 @@ public class CommonUtil {
             "  t1.APPV,"    +
             "  t1.TNPV,"    +
             "  t1.GPV,"     +
-            "  t1.PPV "     +
+            "  CONCAT(t1.PPV,'/',t1.PBV)   AS PPV " +
             "  FROM t_purchaser t " +
             "  LEFT JOIN t_achieve t1 " +
             "    ON t.purchaser_code = t1.purchaser_code " +

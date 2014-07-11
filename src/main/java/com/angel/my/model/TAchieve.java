@@ -30,14 +30,18 @@ public class TAchieve implements Serializable {
 	private Double atnpv;
     //整网业绩
     private Double tnpv;
+    //整网业绩奖金
+    private Double tnbv;
     //直接业绩
 	private Double dbv;
     //小组业绩
 	private Double gpv;
     //间接业绩
 	private Double ibv;
-    //小组业绩
+    //个人业绩
 	private Double ppv;
+    //个人奖金
+    private Double pbv;
     //星级
 	@Column(name="rank_code")
 	private String rankCode;
@@ -89,6 +93,14 @@ public class TAchieve implements Serializable {
         this.tnpv = tnpv;
     }
 
+    public Double getTnbv() {
+        return tnbv;
+    }
+
+    public void setTnbv(Double tnbv) {
+        this.tnbv = tnbv;
+    }
+
     public Double getDbv() {
         return dbv;
     }
@@ -116,6 +128,14 @@ public class TAchieve implements Serializable {
     }
     public void setPpv(Double ppv) {
         this.ppv = ppv;
+    }
+
+    public Double getPbv() {
+        return pbv;
+    }
+
+    public void setPbv(Double pbv) {
+        this.pbv = pbv;
     }
 
     public String getRankCode() {

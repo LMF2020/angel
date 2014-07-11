@@ -74,10 +74,14 @@ public class BusiController extends BaseController {
                     purchaserCodeMap = null;
                     double PPV = iBusiService.getPPV(purchaserCode,lastMonDate,thisMonDate);
                     System.out.println("==="+purchaserCode+" 的 PPV  ："+PPV);
+                    double PBV = iBusiService.getPBV(purchaserCode,lastMonDate,thisMonDate);
+                    System.out.println("==="+purchaserCode+" 的 PBV  ："+PBV);
                     double APPV = iBusiService.getAPPV(purchaserCode);
                     System.out.println("==="+purchaserCode+" 的 APPV ："+APPV);
                     double TNPV = iBusiService.getTNPV(purchaserCode,PPV,lastMonDate,thisMonDate);
                     System.out.println("==="+purchaserCode+" 的 TNPV ："+TNPV);
+                    double TNBV = iBusiService.getTNBV(purchaserCode,PBV,lastMonDate,thisMonDate);
+                    System.out.println("==="+purchaserCode+" 的 TNBV ："+TNBV);
                     double ATNPV = iBusiService.getATNPV(purchaserCode,APPV);
                     System.out.println("==="+purchaserCode+" 的 ATNPV ："+ATNPV);
                     String rankCode = iBusiService.getRANK(purchaserCode,PPV,APPV,ATNPV);
@@ -85,7 +89,7 @@ public class BusiController extends BaseController {
                     double GPV = iBusiService.getGPV(purchaserCode,rankCode,TNPV);
                     System.out.println("==="+purchaserCode+" 的 GPV ："+GPV);
                     //会员奖金
-                    double DBV = iBusiService.getDBV(purchaserCode,rankCode,PPV);
+                    double DBV = iBusiService.getDBV(purchaserCode,rankCode,PBV);
                     System.out.println("==="+purchaserCode+" 的 DBV ："+DBV);
                     double IBV = iBusiService.getIBV(purchaserCode,rankCode);
                     System.out.println("==="+purchaserCode+" 的 IBV ："+IBV+Math.round(IBV*10)/10000.0);
@@ -97,9 +101,11 @@ public class BusiController extends BaseController {
                     TAchieve achieve = new TAchieve();
                     achieve.setPurchaserCode(purchaserCode);
                     achieve.setPpv(PPV);
+                    achieve.setPbv(PBV);
                     achieve.setAppv(APPV);
                     achieve.setAtnpv(ATNPV);
                     achieve.setTnpv(TNPV);
+                    achieve.setTnbv(TNBV);
                     achieve.setRankCode(rankCode);
                     achieve.setGpv(GPV);
                     iAchieveService.addAchieve(achieve);
