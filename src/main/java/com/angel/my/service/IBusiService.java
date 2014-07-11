@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 
 /**
- * 业务计算服务(鸣谢Grady提供思路)
+ * 业务计算服务
  * @author Jiang
  */
 @Service

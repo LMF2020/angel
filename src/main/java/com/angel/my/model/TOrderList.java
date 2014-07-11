@@ -1,5 +1,7 @@
 package com.angel.my.model;
 
+import org.hibernate.annotations.Formula;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -39,6 +41,13 @@ public class TOrderList implements Serializable {
     /*PV*/
     //@Formula("(select t.product_pv from t_product t where t.product_code = product_code)")
     private Double pv;
+
+    //外加两个临时变量,查询的PV和BV的单价
+    @Formula("(select t.product_bv from t_product t where t.product_code = product_code)")
+    private double bv_unit;
+    @Formula("(select t.product_pv from t_product t where t.product_code = product_code)")
+    private double pv_unit;
+
     /*会员编码*/
 	@Column(name="purchaser_code")
 	private String purchaserCode;
@@ -186,5 +195,22 @@ public class TOrderList implements Serializable {
 
     public void setSumPrice(Double sumPrice) {
         this.sumPrice = sumPrice;
+    }
+
+
+    public double getBv_unit() {
+        return bv_unit;
+    }
+
+    public void setBv_unit(double bv_unit) {
+        this.bv_unit = bv_unit;
+    }
+
+    public double getPv_unit() {
+        return pv_unit;
+    }
+
+    public void setPv_unit(double pv_unit) {
+        this.pv_unit = pv_unit;
     }
 }

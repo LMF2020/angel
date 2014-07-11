@@ -1,7 +1,5 @@
 package com.angle.test.mock;
 
-import java.util.*;
-
 /**
  * Created with IntelliJ IDEA.
  * User: hadoop
@@ -11,43 +9,29 @@ import java.util.*;
  */
 public class Test {
     public static void main(String[] args) {
-        //System.out.println("11222");
-        //List l = new ArrayList();
-        //System.out.println(System.nanoTime());
-//        for (int i = 0; i < 10; i++) {
-//            //System.out.println(System.currentTimeMillis());
-//            System.out.println(UUID.randomUUID().toString());
-//        }
+       String sql_network_information="SELECT " +
+               "  t.floors AS TIER," +
+               "  CONCAT(t.purchaser_code,'/',t.purchaser_name) AS PURCHASER_ID_NAME," +
+               "  CONCAT(t.sponsor_code,'/',t.sponsor_name) AS SPONSOR_ID_NAME," +
+               "  t.shop_code      AS SHOP_CODE," +
+               "  t3.rank_name      AS RANK_NAME," +
+               "  t1.ATNPV,"   +
+               "  t1.APPV,"    +
+               "  t1.TNPV,"    +
+               "  t1.GPV,"     +
+               "  t1.PPV "     +
+               " FROM t_purchaser t " +
+               "  LEFT JOIN t_achieve t1 " +
+               "    ON t.purchaser_code = t1.purchaser_code " +
+               "  LEFT JOIN t_bouns t2 " +
+               "    ON t2.purchaser_code = t.purchaser_code " +
+               "  LEFT JOIN t_rank t3 "  +
+               "    ON t.rank_code = t3.rank_code " +
+               "WHERE t.purchaser_code = '000001' " +
+               "     OR t.upper_codes LIKE '%000001%' " +
+               "ORDER BY t.floors ASC";
 
-       /* for (int i = 0; i < 10; i++) {
-            System.out.println(IdGenerator.getId());
-        }*/
-
-        Map aa = new HashMap();
-        aa.put("purchaser_code",000001);
-        aa.put("rank_code",102001);
-        aa.put("TNPV",28);
-
-        Map ab = new HashMap();
-        ab.put("purchaser_code",000001);
-        ab.put("rank_code", 102001);
-        ab.put("TNPV", 28);
-
-        List srcList = new ArrayList();
-        srcList.add(aa);
-        srcList.add(ab);
-
-        List destList = new ArrayList();
-
-        for (int i = 0; i < srcList.size(); i++) {
-            destList.add(srcList.get(i));
-        }
-        //Collections.copy(destList,srcList);
-
-        //srcList.remove(0);
-        srcList.clear();
-        System.out.println(destList.size());
-
+        System.out.println(sql_network_information);
 
     }
 }

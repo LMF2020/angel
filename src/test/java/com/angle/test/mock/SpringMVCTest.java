@@ -2,8 +2,6 @@ package com.angle.test.mock;
 
 import com.alibaba.fastjson.JSON;
 import com.starit.common.dao.support.ExcelTools;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,7 +30,7 @@ public class SpringMVCTest {
     //打印奖金发放表
     private String sql_specialty_shop_bonus_list = null;
 
-	@Before
+	//@Before
     public void setup() {
 
 		sql_network_information="SELECT " +
@@ -72,8 +70,13 @@ public class SpringMVCTest {
                 " GROUP BY t.purchaser_code " +
                 " ORDER BY t.purchaser_code asc";
 	}
-	
-	@Test
+
+    @org.junit.Test
+    public  void testSuccess(){
+
+    }
+
+	//@Test
 	public void test_sql_network_information() {
 
         //测试输出
@@ -101,7 +104,7 @@ public class SpringMVCTest {
         tools.createExcel(headerMap,fileOut);
     }
 
-    @Test
+    //@Test
     public void test_specialty_shop_bonus_list() {
         System.out.println(sql_specialty_shop_bonus_list);
         //测试输出
@@ -126,7 +129,7 @@ public class SpringMVCTest {
         tools.createExcel(headerMap,fileOut);
     }
 
-    @Test
+   // @Test
     public void test_jdbcSql(){
         String sql = "SELECT " +
                 "  t.purchaser_code AS 'key', " +
@@ -142,6 +145,18 @@ public class SpringMVCTest {
         System.out.println("=============================");
         String json =  JSON.toJSONString(list);
         System.out.println(json);
+    }
+
+   // @Test
+    public void test_jdbc_getResult(){
+        String sql = "SELECT angel.queryChildrenInfo('000001') AS QUERY_SQL ";
+        Map mm =  jdbcTemplate.queryForMap(sql);
+        String query_sql = mm.get("QUERY_SQL").toString();
+        System.out.println("=======================\n"+query_sql);
+
+        List queryList = jdbcTemplate.queryForList(query_sql);
+        System.out.println("queryList.size()==="+queryList.size());
+
     }
 
 }

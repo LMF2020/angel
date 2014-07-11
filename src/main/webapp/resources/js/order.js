@@ -23,8 +23,18 @@ var centerJS = (function () {
             }
             var row = rows[0];
             if (row) {
+
                 $('#dlg').dialog('open').dialog('setTitle', '修改订单');
                 $('#fm').form('load', row);
+                //重新设置pv_total 与 bv_total
+                //设置PV和BV的隐藏域的值
+                var pv = row['pv_unit'];
+                var bv = row['bv_unit'];
+                var saleNumber = row['saleNumber'];
+                $('#pv').val(pv);
+                $('#bv').val(bv);
+                $('#pv_totalDiv').val(pv *saleNumber);
+                $('#bv_totalDiv').val(bv *saleNumber);
                 //$('#fm input[name="productCode"]').attr('readonly',true).css('color','red');
                 url = '../orderController/updateOrder.json';
             }
@@ -92,7 +102,11 @@ var centerJS = (function () {
         onChangeSum: function () {
             var num = $('#saleNumber').val();
             var price = $('#productPrice').val();
-            $('#sumPrice').val(num * price);
+            var pv = $('#pv').val();
+            var bv = $('#bv').val();
+            $('#sumPrice').val(num *price);
+            $('#pv_totalDiv').val(num *pv);
+            $('#bv_totalDiv').val(num *bv);
         },
         //月销售额汇总
         getSumMon: function () {
@@ -116,7 +130,7 @@ $(function () {
         fitColumns: "true",
         fit: "true",
         sortName: 'saleTime',
-        sortOrder: 'asc',
+        sortOrder: 'desc',
         multiSort: true,
         pageSize: 20,
         columns: [
@@ -134,6 +148,8 @@ $(function () {
                 {field: 'bv', title: 'BV', width: 50},
                 {field: 'saleNumber', title: '购买数量', width: 50},
                 {field: 'sumPrice', title: '购买总额', width: 50},
+                {field: 'bv_unit',title:'隐藏字段BV',hidden:true},
+                {field: 'pv_unit',title:'隐藏字段PV',hidden:true},
                 {field: 'saleTime', title: '购买时间', width: 100,
                     formatter: function (value, row, index) {
                         var unixTimestamp = new Date(value);

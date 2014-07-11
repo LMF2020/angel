@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -21,7 +20,7 @@ public class SimpleMockTest {
 		List<String> list = mock(List.class);
 		when(list.get(0)).thenReturn("testList");
 		String actual = list.get(0);
-		assertEquals("testList", actual);
+		//assertEquals("testList", actual);
         System.out.println("hello world!");
     }
 
