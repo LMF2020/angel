@@ -9,6 +9,7 @@ import com.angel.my.service.IBusiService;
 import com.angel.my.service.ITAchieveService;
 import com.angel.my.service.ITBounService;
 import com.angel.my.service.ITPurchaserInfoService;
+import com.angel.my.util.CommonUtil;
 import com.angel.my.util.DateUtil;
 import com.starit.common.dao.support.MySqlPagination;
 import org.apache.log4j.Logger;
@@ -92,7 +93,7 @@ public class BusiController extends BaseController {
                     double DBV = iBusiService.getDBV(purchaserCode,rankCode,PBV);
                     System.out.println("==="+purchaserCode+" 的 DBV ："+DBV);
                     double IBV = iBusiService.getIBV(purchaserCode,rankCode);
-                    System.out.println("==="+purchaserCode+" 的 IBV ："+IBV+Math.round(IBV*10)/10000.0);
+                    System.out.println("==="+purchaserCode+" 的 IBV ："+IBV);
                     double LBV = iBusiService.getLBV(purchaserCode,rankCode,GPV);
                     System.out.println("==="+purchaserCode+" 的 LBV ："+LBV);
                     System.out.println("==="+purchaserCode+" 的 计算结束.");
@@ -156,7 +157,7 @@ public class BusiController extends BaseController {
             @RequestParam("rows") int pageSize,
             String purchaserCode){
         if (!StringUtils.hasText(purchaserCode)){
-            purchaserCode = "000001"; //默认查询顶级会员网络
+            purchaserCode = CommonUtil.topUser; //默认查询顶级会员网络
         }
         MySqlPagination page = iBusiService.queryPageNetWork(startIndex,pageSize,purchaserCode);
         return page;

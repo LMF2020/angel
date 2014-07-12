@@ -19,7 +19,7 @@
             <div class="form-group">
                 <label for="purchaserCodeDiv" class="col-sm-2 control-label">查询会员业绩:</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" name="purchaserCode" id="purchaserCodeDiv" placeholder="请输入待查询的会员编号,如：0000001">
+                    <input type="text" class="form-control" name="purchaserCode" id="purchaserCodeDiv" placeholder="请输入待查询的会员编号,如：010000">
                 </div>
                 <div class="col-sm-6">
                     <button id="b_query" class="btn btn-danger btn-small">查询</button>

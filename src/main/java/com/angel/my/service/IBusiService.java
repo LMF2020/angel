@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -18,6 +19,7 @@ public class IBusiService {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
+    private DecimalFormat decimalFormat =  CommonUtil.getFormatInstance();
     /**
      * 计算PPV - 个人业绩
      * 定义: 一个业绩核算月内，以本人编号购买的PV之和
@@ -418,7 +420,8 @@ public class IBusiService {
      */
     public double getDBV(String purchaserCode,String rankCode,double PBV){
         double d = PBV * CommonUtil.directRateConstant.get(rankCode);
-        return d;
+        String s = decimalFormat.format(d);
+        return Double.valueOf(s);
     }
 
     /**
@@ -463,7 +466,12 @@ public class IBusiService {
                 ibv += oneDownChildBouns;
             }
         }
-        return ibv;
+
+        String s = decimalFormat.format(ibv);
+//        if (purchaserCode.equals("000003")){
+//            System.out.println();
+//        }
+        return Double.valueOf(s);
     }
 
     /**
@@ -486,7 +494,8 @@ public class IBusiService {
                 Map mm = (Map)headChildList.get(i);
                 LB +=(Double)mm.get("GPV")*0.01;
             }
-            return LB;
+            String s = decimalFormat.format(LB);
+            return Double.valueOf(s);
         }
         //六星会员
         if (rankCode == "102006" && GPV>=1000){
@@ -528,7 +537,8 @@ public class IBusiService {
 
                }
             }
-            return LB;
+            String s = decimalFormat.format(LB);
+            return Double.valueOf(s);
         }
 
         //七星会员
@@ -572,7 +582,8 @@ public class IBusiService {
 
                 }
             }
-            return LB;
+            String s = decimalFormat.format(LB);
+            return Double.valueOf(s);
         }
         //八星会员
         if (rankCode == "102008" && GPV>=3000){
@@ -623,7 +634,8 @@ public class IBusiService {
 
                 }
             }
-            return LB;
+            String s = decimalFormat.format(LB);
+            return Double.valueOf(s);
         }
         //九星会员
         if (rankCode == "102009" && GPV>=3000){
@@ -673,7 +685,8 @@ public class IBusiService {
                     }
                 }
             }
-            return LB;
+            String s = decimalFormat.format(LB);
+            return Double.valueOf(s);
         }
         return  0;
     }

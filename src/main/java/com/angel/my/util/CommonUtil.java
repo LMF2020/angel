@@ -1,5 +1,6 @@
 package com.angel.my.util;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +9,14 @@ import java.util.Map;
  */
 public class CommonUtil {
 
+    //小数点格式化工具
+    private static final DecimalFormat df = new DecimalFormat("#.00");
+
+    public static DecimalFormat getFormatInstance() {
+        return df;
+    }
+
+    public static String topUser = "010000";
     /**
      * 一星到九星的直接奖比列配置
      */

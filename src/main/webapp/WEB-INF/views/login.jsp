@@ -65,7 +65,7 @@ $(function(){
 		      <div id="center_left"></div>
 			  <div id="center_middle">
 			       <div id="user">用户:
-			         <input id="txtUserName" type="text" name="textfield" value="000001"/>
+			         <input id="txtUserName" type="text" name="textfield" value="010000"/>
 			       </div>
 				   <div id="password">密码:
 				     <input id="txtPassWord" type="password" name="textfield2" value="0000" />
@@ -79,7 +79,7 @@ $(function(){
 		      <div id="down_left">
 			      <div id="inf">
                        <span class="inf_text">Version</span>
-					   <span class="copyright">Angel(Cango) Manage System 2014/5 v1.0</span>
+					   <span class="copyright">Angel(Cango) Manage System 2014/7 v1.0</span>
 			      </div>
 			  </div>
 			  <div id="down_center"></div>		 

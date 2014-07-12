@@ -226,3 +226,7 @@
 .l-btn-left {
     border: 1px solid;
 }
+
+.messager-button .l-btn-left {
+    border: none;
+}
