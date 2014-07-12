@@ -22,3 +22,11 @@
 五,后台框架
 
     SpringMVC / Nutz
+    
+    
+    
+六,碎碎念
+
+    1.查看java问档 CTRL +Q / CTRL +Ｐ
+    2.自动导入类 Alt +回车
+    3.try...catch...finally CTRL+ ALT+ T
