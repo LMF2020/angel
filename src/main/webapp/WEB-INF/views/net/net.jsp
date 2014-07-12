@@ -17,7 +17,7 @@
     <div class='container'>
         <form id="north_form" class="form-horizontal" role="form" style="padding-top: 20px;">
             <div class="form-group">
-                <label for="purchaserCodeDiv" class="col-sm-2 control-label">导出网络结构表:</label>
+                <label for="purchaserCodeDiv" class="col-sm-2 control-label">查询会员业绩:</label>
                 <div class="col-sm-4">
                     <input type="text" class="form-control" name="purchaserCode" id="purchaserCodeDiv" placeholder="请输入待查询的会员编号,如：0000001">
                 </div>
@@ -28,7 +28,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label for="shopCodeDiv" class="col-sm-2 control-label">导出奖金发放表:</label>
+                <label for="shopCodeDiv" class="col-sm-2 control-label">查询店铺奖金:</label>
                 <div class="col-sm-4">
                     <input type="text" class="form-control" id="shopCodeDiv" name="shopCode"  placeholder="请输入待导出的店铺编号,如：CG982000">
                 </div>

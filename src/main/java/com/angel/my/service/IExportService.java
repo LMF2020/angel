@@ -56,6 +56,9 @@ public class IExportService {
             encodedFileName = java.net.URLEncoder.encode(printDate+"-network-"+purchaserCode, "UTF-8");
             response.setHeader("content-disposition", "attachment;filename=" + encodedFileName  + ".xlsx");
             String sql_network_information = CommonUtil.sql_network_information.replace("?",purchaserCode);
+            //执行存储过程，改变临时表的存储结构
+            jdbcTemplate.execute("CALL angel.showTreeNodes('"+purchaserCode+"');");
+            //执行导出函数
             ExcelTools tools =  new ExcelTools(sql_network_information,10,jdbcTemplate);
             tableInfo.put("totalRecords",getTotalRecords(sql_network_information));
             tableInfo.put("purchaserCode",purchaserCode);
@@ -113,6 +116,8 @@ public class IExportService {
                 String purchaserCode = purchaserCodeList.get(i);
                 fileOutputStream = new FileOutputStream(dir+ printDate + "-network-"+ purchaserCode + ".xlsx");
                 String sql_network_information = CommonUtil.sql_network_information.replace("?",purchaserCode);
+                //执行存储过程，改变临时表的存储结构
+                jdbcTemplate.execute("CALL angel.showTreeNodes('"+purchaserCode+"');");
                 tools =  new ExcelTools(sql_network_information,10,jdbcTemplate);
                 tableInfo.put("totalRecords",getTotalRecords(sql_network_information));
                 tableInfo.put("purchaserCode",purchaserCode);

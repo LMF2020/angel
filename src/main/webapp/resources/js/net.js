@@ -8,7 +8,13 @@ var netJS = (function () {
             var formData = {
                 purchaserCode:$("#purchaserCodeDiv").val()
             }
-            $('#dg').datagrid('load', formData);
+            CommonAjax.get("../userController/ifExist.json",formData,'POST', function (result) {
+                if(result.success){
+                    $('#dg').datagrid('load', formData);
+                }else{
+                    $.messager.alert("操作提示", "您输入的客户编号不存在！","info");
+                }
+            });
         }
     }
 })();
@@ -79,11 +85,23 @@ $(function () {
     $('#b_export_network').click(function(e){
         e.preventDefault();
         var purchaserCode = $("#purchaserCodeDiv").val();
+
+        var formData = {
+            purchaserCode:purchaserCode
+        }
+        //判断输入是否为空
         if(purchaserCode){
-            var url = "../exportController/exportExcelNetwork?purchaserCode="+purchaserCode;
-            window.open (url,"_blank") ;
+            //验证客户编号是否存在
+            CommonAjax.get("../userController/ifExist.json",formData,'POST', function (result) {
+                if(result.success){
+                    var url = "../exportController/exportExcelNetwork?purchaserCode="+purchaserCode;
+                    window.open (url,"_blank") ;
+                }else{
+                    $.messager.alert("操作提示", "您输入的客户编号不存在！","info");
+                }
+            });
         }else{
-            alert("请先输入要导出的会员编号");
+            alert("请先输入客户编号！");
         }
     });
     //导出所有会员网络

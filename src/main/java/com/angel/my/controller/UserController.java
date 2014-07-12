@@ -187,5 +187,24 @@ public class UserController extends BaseController {
 		
 		return page ;
 	}
-	
+
+    /**
+     * 判断会员是否存在
+     * @param purchaserCode
+     * @return
+     */
+    @RequestMapping("/ifExist")
+    @ResponseBody
+    public ResponseData ifExist(String purchaserCode){
+        if (purchaserCode == null)
+            return new ResponseData(true);
+        TPurchaserInfo e  = userService.loadUser(purchaserCode);
+        if (e == null) {
+            return new ResponseData(false);
+        }
+        e = null;
+        return new ResponseData(true);
+    }
+
+
 }
