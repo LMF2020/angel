@@ -129,6 +129,8 @@ $(function () {
                     }}
             ]
         ],
+        view: noRecordGridview,
+        emptyMsg: '没有记录',
         onLoadSuccess: function (data) {
             //列表加载成功的回调函数
         },

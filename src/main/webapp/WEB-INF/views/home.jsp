@@ -6,7 +6,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title>Angel | Marketing</title>
 		<%@include file="../views/base.jsp"%>
-        <script src="${pageContext.request.contextPath}/resources/framework/goDev.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/framework/go.js"></script>
 		<script src="${pageContext.request.contextPath}/resources/js/home.js"></script>
 	</head>
 	<body class="easyui-layout">
@@ -40,8 +40,8 @@
             </nav>
         </div>
 
-        <div data-options="region:'center',iconCls:'icon-ok'">
-            <div id="tabsDiv" class="easyui-tabs" data-options="fit:true,border:false,plain:true"/>
+        <div region="center">
+            <div id="tabsDiv" class="easyui-tabs" data-options="fit:true,border:false,plain:true" style="height: 100%"/>
         </div>
         <!-- 弹出层 : 主窗口 -->
         <!--==============================================================-->

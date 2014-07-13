@@ -133,6 +133,8 @@ $(function () {
         sortOrder: 'desc',
         multiSort: true,
         pageSize: 20,
+        view: noRecordGridview,
+        emptyMsg: '未查询到该订单',
         columns: [
             [
                 {field: 'ck', checkbox: true},

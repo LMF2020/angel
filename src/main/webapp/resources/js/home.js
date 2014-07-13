@@ -6,18 +6,42 @@ var homeJS = (function () {
             $('#cc').layout();
         },
 
-        addTab: function (title, url) {
+        addTab: function (title, href) {
             if ($('#tabsDiv').tabs('exists', title)) {
                 $('#tabsDiv').tabs('select', title);
             } else { //height:510px;
-                var content = '<iframe scrolling="auto" id="iframeDiv" frameborder="0"  src="'
-                    + url
-                    + '" style="width:100%;min-height:580px;"></iframe>';
-                $('#tabsDiv').tabs('add', {
-                    title: title,
-                    content: content,
-                    closable: true
+//                var content =
+//                    '<iframe id="iframeDiv" frameborder="0"  frameborder="0"  src="'
+//                    + url
+//                    + '" style="width:100%;height:100%"></iframe>';
+//                $('#tabsDiv').tabs('add', {
+//                    title: title,
+//                    content: content,
+//                    closable: true
+//                });
+
+             //iframe窗口管理
+                $('#tabsDiv').tabs('addIframeTab',{
+                    //tab参数为一对象，其属性同于原生add方法参数
+                    tab:{
+                        title:title,
+                        closable:true,
+                        tools:[{
+                            iconCls:'icon-mini-refresh',
+                            handler:function(e){
+                                var title = $(e.target).parent().parent().text();
+                                $('#tabsDiv').tabs('updateIframeTab',{'which':title});
+                            }
+                        }]
+                    },
+                    //iframe参数用于设置iframe信息，包含：
+                    //src[iframe地址],frameBorder[iframe边框,，默认值为0],delay[淡入淡出效果时间]
+                    //height[iframe高度，默认值为100%],width[iframe宽度，默认值为100%]
+                    iframe:{
+                        src:href
+                    }
                 });
+                $('#tabsDiv').tabs('addEventParam');
             }
         },
 

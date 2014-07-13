@@ -29,7 +29,7 @@ $(function () {
         toolbar: [
             { //计算网络业绩
                 iconCls: 'icon-edit',
-                text: '<h5 class="text-danger" style="background-color:#EDF7ED;text-shadow: 5px 5px 70px #EB4A2B;">计算上个月28号到本月当日的网络业绩<h5>',
+                text: '<h5 id="toolTitleDiv" class="text-danger" style="background-color:#EDF7ED;text-shadow: 5px 5px 70px #EB4A2B;">计算网络业绩(上月28日至当前计算时间)<h5>',
                 handler: function () {
                     $.messager.confirm("确认", "您确定开始核算本月会员的奖金吗？", function (r) {
                         if (r) {
@@ -70,11 +70,9 @@ $(function () {
                 {field: 'IB', title: 'IB', width: 50},
                 {field: 'LB', title: 'LB', width: 50}
             ]
-        ],
-        onBeforeLoad: function (param) {
+        ]
 
-        }
-    });
+});
 
     //查询当前会员网络
     $('#b_query').click(function (e) {
@@ -97,7 +95,7 @@ $(function () {
                     var url = "../exportController/exportExcelNetwork?purchaserCode="+purchaserCode;
                     window.open (url,"_blank") ;
                 }else{
-                    $.messager.alert("操作提示", "您输入的客户编号不存在！","info");
+                    $.messager.alert("操作提示", "查询的客户编号不存在！","info");
                 }
             });
         }else{

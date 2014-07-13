@@ -128,6 +128,8 @@ $(function () {
                     }}
             ]
         ],
+        view: noRecordGridview,
+        emptyMsg: '没有记录',
         onBeforeLoad: function (param) {
             //列表查询前将表单值作为参数传递到后台方法
             var formData = $('#north_form').serializeObject();

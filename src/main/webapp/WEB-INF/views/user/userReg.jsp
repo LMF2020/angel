@@ -3,12 +3,12 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <%@include file="../../views/base.jsp"%>
+        <%@include file="../../views/base.jsp"%>
         <link rel="stylesheet" type="text/css"  href="${pageContext.request.contextPath}/resources/css/userReg.css">
 		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/userReg.js"></script>
 	</head>
 	<body  class="easyui-layout">
-	    <div data-options="region:'north'" style="height:80px;overflow: hidden;">
+	    <div region="north" style="height:80px;overflow: hidden;">
             <form id="north_form" class="form-horizontal">
                   <div class="form-group">
                       <label for="purchaserCodeDiv" class="col-sm-1 control-label">会员编号:</label>
@@ -41,7 +41,7 @@
 
             </form>
 	    </div>
-	    <div data-options="region:'center'">
+	    <div region="center">
 		    <table id="dg"></table>
 		    <div id="toolbar">
 		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" onclick="centerJS.newUser()" plain="true">注册新会员</a>
