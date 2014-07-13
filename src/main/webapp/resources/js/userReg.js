@@ -109,7 +109,7 @@ $(function () {
         rownumbers: "true",
         fitColumns: "true",
         fit: "true",
-        sortName: 'purchaserCode',
+        sortName: 'floors',
         sortOrder: 'asc',
         multiSort: true,
         pageSize: 20,

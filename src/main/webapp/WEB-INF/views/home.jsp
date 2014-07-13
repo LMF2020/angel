@@ -50,11 +50,17 @@
                 aria-labelledby="userNetworkModalLabel" aria-hidden="true">
             <div class="modal-dialog" style="width: 95%;height: 600px;">
                 <div class="modal-content">
-                    <div class="modal-header" style="padding: 15px 15px 5px;background-color: rgb(153, 143, 105);color: #fff;">
-                        <button type="button" class="close dlgClose" ><span class="glyphicon glyphicon-remove"></span></button>
-                        <h4 class="modal-title" id="userNetworkModalLabel" style="text-align: center;">当前会员网络</h4>
+                    <div class="modal-header" style="padding: 15px 15px 5px;
+                    background: url('../resources/images/angel.png') no-repeat 35% #f5f5f5;
+                    background-size: contain; color: #000;">
+
+                        <button type="button" class="close dlgClose" style="opacity: 1;"><span class="glyphicon glyphicon-remove"></span></button>
+                        <h4 class="modal-title" style="text-align: center;">
+                            <i id="userNetworkModalLabel" style="font-style: normal;">当前会员网络</i>
+                        </h4>
+
                     </div>
-                    <div class="modal-body" >
+                    <div class="modal-body" style="padding: 2px;">
                         <div id="myDiagramDiv" style="background-color: white; border: solid 1px black; width: 100%; height: 500px;">
 
                         </div>

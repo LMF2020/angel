@@ -29,17 +29,17 @@ $(function () {
         toolbar: [
             { //计算网络业绩
                 iconCls: 'icon-edit',
-                text: '<h5 id="toolTitleDiv" class="text-danger" style="background-color:#EDF7ED;text-shadow: 5px 5px 70px #EB4A2B;">计算网络业绩(上月28日至当前计算时间)<h5>',
+                text: '<h5 id="toolTitleDiv" class="text-danger" style="background-color:#EDF7ED;text-shadow: 5px 5px 70px #EB4A2B;">计算网络业绩(历月28号至当月28号截止)<h5>',
                 handler: function () {
                     $.messager.confirm("确认", "您确定开始核算本月会员的奖金吗？", function (r) {
                         if (r) {
                             var url =  '../busiController/beginCalculate.json';
                             CommonAjax.get(url,{},'POST',function(result){
                                 if (!result.message) {
-                                    $.messager.alert('提示:', '你好,计算完毕!', 'info');
+                                    $.messager.alert('提示:', 'ok,计算成功!', 'info');
+                                    $('#dg').datagrid('reload');
                                 } else {
                                     $.messager.alert('提示:', result.message, 'error');
-                                    $('#dg').datagrid('reload');
                                 }
                             });
                             return true;
@@ -51,6 +51,7 @@ $(function () {
         pagination: "true",
         rownumbers: "true",
         fitColumns: "true",
+        singleSelect:"true",
         fit: "true",
         multiSort: true,
         pageSize: 20,
