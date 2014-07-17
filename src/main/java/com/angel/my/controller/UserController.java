@@ -182,10 +182,10 @@ public class UserController extends BaseController {
             sb.append(" and user.shopCode = '"+ user.getShopCode() +"'");
         }
         if(StringUtils.hasText(startTime)){			/*时间起始范围*/
-            sb.append("	and user.createTime >= '"+ startTime+"'");
+            sb.append("	and user.createTime >= '"+ startTime+" 00:00:00'");
         }
         if(StringUtils.hasText(endTime)){           /*时间结束范围*/
-            sb.append("	and user.createTime <= '"+ endTime+"'");
+            sb.append("	and user.createTime <= '"+ endTime+" 23:59:59'");
         }
 
         //排序

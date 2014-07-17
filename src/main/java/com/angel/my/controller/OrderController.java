@@ -159,10 +159,10 @@ public class OrderController extends BaseController {
             sb.append(" and ord.productCode like '%"+ orderEntity.getProductCode()+"%'");
         }
         if(!StringUtils.isEmpty(startTime)){ //起始时间范围
-            sb.append("	and ord.saleTime >= '"+ startTime+"'");
+            sb.append("	and ord.saleTime >= '"+ startTime+" 00:00:00'");
         }
         if(!StringUtils.isEmpty(endTime)){  //结束时间范围
-            sb.append("	and ord.saleTime <= '"+ endTime+"'");
+            sb.append("	and ord.saleTime <= '"+ endTime+" 23:59:59'");
         }
         if(!StringUtils.isEmpty(orderEntity.getPurchaserName())){	//会员姓名
             sb.append(" and ord.purchaserName like '%"+ orderEntity.getPurchaserName()+"%'");

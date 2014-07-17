@@ -24,6 +24,8 @@ public class SpringMVCTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private com.angel.my.dao.ITPurchaserInfoDao ITPurchaserInfoDao;
 
     //打印网络图
     private String sql_network_information = null;
@@ -155,6 +157,18 @@ public class SpringMVCTest {
         System.out.println("=======================\n"+query_sql);
 
         List queryList = jdbcTemplate.queryForList(query_sql);
+        System.out.println("queryList.size()==="+queryList.size());
+
+    }
+
+
+    //
+    //@org.junit.Test
+    public void testHqlResult(){
+      String hql = "from TPurchaserInfo user  where 1=1 and user.createTime >= '2014-06-08' " +
+              "and user.createTime <= '2014-06-08'  order by user.floors asc";
+
+        List queryList = ITPurchaserInfoDao.findByHQL(hql);
         System.out.println("queryList.size()==="+queryList.size());
 
     }
