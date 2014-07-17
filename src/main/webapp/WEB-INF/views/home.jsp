@@ -8,6 +8,7 @@
 		<%@include file="../views/base.jsp"%>
         <script src="${pageContext.request.contextPath}/resources/framework/go.js"></script>
 		<script src="${pageContext.request.contextPath}/resources/js/home.js"></script>
+        <script src="${pageContext.request.contextPath}/resources/framework/ImgManager.js"></script>
 	</head>
 	<body class="easyui-layout">
 		<%
@@ -16,10 +17,9 @@
 		
         <div data-options="region:'north'" style="height:60px;overflow-y: hidden;">
             <nav class="navbar navbar-inverse" role="navigation">
-                <!-- Brand and toggle get grouped for better mobile display -->
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-9">
-                        <span class="sr-only">Toggle navigation</span>
+                        <span class="sr-only">导航按钮切换</span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
@@ -30,10 +30,10 @@
                 <!-- Collect the nav links, forms, and other content for toggling -->
                 <div id="header" class="collapse navbar-collapse" id="bs-example-navbar-collapse-9">
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="../userController/userReg">会员登记</a></li>
+                        <li class="active"><a href="../userController/userReg">会员管理</a></li>
                         <%--<li><a href="javascript:void(0);">店铺管理</a></li>--%>
                         <li><a href="../productController/product">产品货架</a></li>
-                        <li><a href="../orderController/order">订单处理</a></li>
+                        <li><a href="../orderController/order">订单管理</a></li>
                         <li><a href="../busiController/net">网络计算</a></li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
@@ -50,9 +50,12 @@
                 aria-labelledby="userNetworkModalLabel" aria-hidden="true">
             <div class="modal-dialog" style="width: 95%;height: 600px;">
                 <div class="modal-content">
-                    <div class="modal-header" style="padding: 15px 15px 5px;
+                    <div class="modal-header" style="padding: 8px 15px 8px;
                     background: url('../resources/images/angel.png') no-repeat 35% #f5f5f5;
                     background-size: contain; color: #000;">
+                        <button type="button" class="btn btn-primary btn-sm pull-left" id="exportImgDiv">
+                            <span class="glyphicon glyphicon-export"></span> 导出
+                        </button>
 
                         <button type="button" class="close dlgClose" style="opacity: 1;"><span class="glyphicon glyphicon-remove"></span></button>
                         <h4 class="modal-title" style="text-align: center;">

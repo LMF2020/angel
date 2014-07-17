@@ -95,6 +95,7 @@ var homeJS = (function () {
 
 $(function () {
 
+    //点击导航菜单
     $('#header ul>li>a').on('click', function (e) {
         //激活焦点
         var $Li = $(this).parent();
@@ -105,7 +106,17 @@ $(function () {
         homeJS.addTab(title, url);
         e.preventDefault();
     });
-    //激活会员登记面板
+
+    //导出矢量图
+    $('#exportImgDiv').click(function(){
+        //获取当前会员的ID
+        var purchaserCode = $("#userNetworkModalLabel").attr("hiddenPurchaserCode");
+        //导出会员网络图PNG
+        var canvasDOM = $("#myDiagramDiv").children("canvas")[0];
+        ImgManager.dowload(canvasDOM,"png","User"+purchaserCode);
+    });
+
+    //激活首个面板(会员等级板块)
     $('#header ul>li:first>a').click();
     //关闭网络结构窗口
     $('#userNetworkModal .dlgClose').click(function(){

@@ -155,11 +155,13 @@ public class BusiController extends BaseController {
     public MySqlPagination pageOrderList(
             @RequestParam("page") int startIndex,
             @RequestParam("rows") int pageSize,
-            String purchaserCode){
+            String purchaserCode,
+            @RequestParam(required = false) String sort,
+            @RequestParam(required = false) String order){
         if (!StringUtils.hasText(purchaserCode)){
             purchaserCode = CommonUtil.topUser; //默认查询顶级会员网络
         }
-        MySqlPagination page = iBusiService.queryPageNetWork(startIndex,pageSize,purchaserCode);
+        MySqlPagination page = iBusiService.queryPageNetWork(startIndex,pageSize,purchaserCode,sort,order);
         return page;
     }
 

@@ -141,49 +141,47 @@ public class OrderController extends BaseController {
             @RequestParam(required = false)String  endTime,
             @RequestParam(required = false) String sort,
             @RequestParam(required = false) String order){
+
         //计算索引位置
         int offset = (startIndex-1)*pageSize;
 
         StringBuilder sb = new StringBuilder();
         sb.append(" 	from TOrderList ord  where 1=1	");
 
-        //模糊查询
-
-        if(!StringUtils.isEmpty(orderEntity.getOrderCode())){		/*订单编号*/
+        //查询条件
+        if(!StringUtils.isEmpty(orderEntity.getOrderCode())){   //订单编码
             sb.append(" and ord.orderCode like '%"+ orderEntity.getOrderCode()+"%'");
         }
-        if(!StringUtils.isEmpty(orderEntity.getPurchaserCode())){ /*会员编号*/
+        if(!StringUtils.isEmpty(orderEntity.getPurchaserCode())){ //会员编码
             sb.append(" and ord.purchaserCode like '%"+ orderEntity.getPurchaserCode()+"%'");
         }
-        if(!StringUtils.isEmpty(orderEntity.getProductCode())){   /*产品编号*/
+        if(!StringUtils.isEmpty(orderEntity.getProductCode())){  //产品编码
             sb.append(" and ord.productCode like '%"+ orderEntity.getProductCode()+"%'");
         }
-        if(!StringUtils.isEmpty(startTime)){			/*时间范围查询*/
-            sb.append("	and ord.saleTime > '"+ startTime+"'");
+        if(!StringUtils.isEmpty(startTime)){ //起始时间范围
+            sb.append("	and ord.saleTime >= '"+ startTime+"'");
         }
-        if(!StringUtils.isEmpty(endTime)){
-            sb.append("	and ord.saleTime < '"+ endTime+"'");
+        if(!StringUtils.isEmpty(endTime)){  //结束时间范围
+            sb.append("	and ord.saleTime <= '"+ endTime+"'");
         }
-
-        if(!StringUtils.isEmpty(orderEntity.getPurchaserName())){		/*会员姓名*/
+        if(!StringUtils.isEmpty(orderEntity.getPurchaserName())){	//会员姓名
             sb.append(" and ord.purchaserName like '%"+ orderEntity.getPurchaserName()+"%'");
         }
-        if(!StringUtils.isEmpty(orderEntity.getShopName())){		/*商店名称*/
+        if(!StringUtils.isEmpty(orderEntity.getShopName())){		//店铺名称
             sb.append(" and ord.shopName like '%"+ orderEntity.getShopName()+"%'");
         }
-        if(!StringUtils.isEmpty(orderEntity.getProductName())){		/*产品名称*/
+        if(!StringUtils.isEmpty(orderEntity.getProductName())){		//产品名称
             sb.append(" and ord.productName like '%"+ orderEntity.getProductName()+"%'");
         }
 
-        if(sort!=null && order!=null){		/*排序*/
-            sb.append("  order by 	"+sort+" "+order);
-        }else{
-            sb.append("  order by ord.saleTime desc");
+        //排序
+        if(sort!=null && order!=null){
+            sb.append("  order by 	ord."+sort+" "+order);
         }
 
+        //组装分页查询
         String rowSql = sb.toString();
         String countSql = "	select count(*) 	"+ rowSql;
-
         Pagination<Object> page = ITOrderListService.findPageByHQL(rowSql, countSql, offset, pageSize);
 
         return page;

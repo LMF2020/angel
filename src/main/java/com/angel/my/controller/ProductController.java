@@ -67,7 +67,7 @@ public class ProductController extends BaseController {
         updateProduct.setProductPrice(product.getProductPrice());
         updateProduct.setProductBv(product.getProductBv());
         updateProduct.setProductPv(product.getProductPv());
-        updateProduct.setCreateTime(product.getCreateTime());
+        updateProduct.setCreateTime(new Date());
         productInfoService.updateProduct(updateProduct);
         return ResponseData.SUCCESS_NO_DATA;
     }

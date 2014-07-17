@@ -1,5 +1,6 @@
 package com.angel.my.service;
 
+import com.angel.my.dao.ITOrderListDao;
 import com.angel.my.dao.ITPurchaserInfoDao;
 import com.angel.my.model.TPurchaserInfo;
 import com.starit.common.dao.support.Pagination;
@@ -27,6 +28,12 @@ public class ITPurchaserInfoService {
 	public Pagination<TPurchaserInfo> findAllForPage(PaginationRequest<TPurchaserInfo> pageRequest) {
 		return ITPurchaserInfoDao.findPage(pageRequest);
 	}
+
+    /*根据Hql分页查询*/
+    public Pagination<Object> findPageByHQL(String rowSql ,String countSql,int offset,int limit){
+        return ITPurchaserInfoDao.findPageByHQL(rowSql, countSql, offset, limit);
+    }
+
 
     //查询一个会员
     public TPurchaserInfo loadUser(String code){

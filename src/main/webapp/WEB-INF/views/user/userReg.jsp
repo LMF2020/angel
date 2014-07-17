@@ -8,10 +8,10 @@
 		<script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/userReg.js"></script>
 	</head>
 	<body  class="easyui-layout">
-	    <div region="north" style="height:80px;overflow: hidden;">
+	    <div region="north" style="height:120px;overflow: hidden;">
             <form id="north_form" class="form-horizontal">
                   <div class="form-group">
-                      <label for="purchaserCodeDiv" class="col-sm-1 control-label">会员编号:</label>
+                      <label for="purchaserCodeDiv" class="col-sm-2 control-label">会员编号:</label>
                       <div class="col-sm-2">
                           <input type="text" class="form-control" name="purchaserCode" id="purchaserCodeDiv" placeholder="输入会员编号">
                       </div>
@@ -20,7 +20,7 @@
                           <input type="text" class="form-control" name="shopCode" id="shopCodeDiv" placeholder="输入店铺编号">
                       </div>
                       <label for="rankCodeDiv" class="col-sm-1 control-label" style="margin-left: -20px;">选择星级:</label>
-                      <div class="col-sm-2">
+                      <div class="col-sm-1">
                              <select class="form-control" name="rankCode" id="rankCodeDiv">
                                  <option value="">不限</option>
                                  <option value="102001">1</option>
@@ -34,11 +34,23 @@
                                  <option value="102009">9</option>
                              </select>
                       </div>
-                      <div class="col-sm-1">
-                          <button type="button" id="beginQuery" class="btn btn-primary">开始查询</button>
-                      </div>
                   </div>
-
+                <div class="form-group">
+                    <label for="startTime" class="col-sm-2 control-label">会员加入时间从</label>
+                    <div class="col-md-2">
+                        <input class="form-control" type="date" id="startTime"  name="startTime" />
+                    </div>
+                    <label for="endTime" class="col-sm-1 control-label" style="width: 43px;">至</label>
+                    <div class="col-md-2">
+                        <input class="form-control" type="date" id="endTime"  name="endTime" />
+                    </div>
+                    <div class="col-sm-1">
+                        <button type="button" id="beginQuery" class="btn btn-primary">开始查询</button>
+                    </div>
+                    <div class="col-sm-1">
+                        <button type="reset" class="btn btn-warning btn-small" style="margin-right: 20px;">清空</button>
+                    </div>
+                </div>
             </form>
 	    </div>
 	    <div region="center">

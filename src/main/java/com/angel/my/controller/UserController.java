@@ -5,7 +5,6 @@ import com.angel.my.common.ResponseData;
 import com.angel.my.model.TPurchaserInfo;
 import com.angel.my.service.ITPurchaserInfoService;
 import com.starit.common.dao.support.Pagination;
-import com.starit.common.dao.support.PaginationRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -148,43 +147,57 @@ public class UserController extends BaseController {
 	 */
 	@RequestMapping("/pageUserList")
 	@ResponseBody
-	public Pagination<TPurchaserInfo> pageUserList(
+	public Pagination<Object> pageUserList(
             @RequestParam(required = false) String q, //模糊查询字段
 			@RequestParam("page") int startIndex,
 			@RequestParam("rows") int pageSize, TPurchaserInfo user,
+            @RequestParam(required = false)String startTime,
+            @RequestParam(required = false)String  endTime,
 			@RequestParam(required = false) String sort,
 			@RequestParam(required = false) String order){
 
         //计算索引位置
         int offset = (startIndex-1)*pageSize;
-        PaginationRequest <TPurchaserInfo > pageRequest = new PaginationRequest<TPurchaserInfo>(offset, pageSize);
-		if(StringUtils.hasText(sort) && StringUtils.hasText(order)) pageRequest.addOrder(sort, order);
-        // 姓名
-		if(StringUtils.hasText(user.getPurchaserName())){
-			pageRequest.addLikeCondition("purchaserName", user.getPurchaserName());
-		}
-		//编号（模糊查询）
-		if(StringUtils.hasText(user.getPurchaserCode())){
-			pageRequest.addLikeCondition("purchaserCode", user.getPurchaserCode());
-		}
-        //表单-编号,模糊查询
-        if(StringUtils.hasText(q)){
-            pageRequest.addLikeCondition("purchaserCode", q);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(" 	from TPurchaserInfo user  where 1=1	");
+
+        //条件
+        if(StringUtils.hasText(user.getPurchaserName())){
+            sb.append(" and user.purchaserName like '%"+ user.getPurchaserName()+"%'");
         }
-		//上级编号
-		if(StringUtils.hasText(user.getSponsorCode())){
-			pageRequest.addLikeCondition("sponsorCode", user.getSponsorCode());
-		}
-		//商店
-		if(StringUtils.hasText(user.getShopCode())){
-			pageRequest.addCondition("shopCode", user.getShopCode());
-		}
-        //等级
+        if(StringUtils.hasText(user.getPurchaserCode())){
+            sb.append(" and user.purchaserCode like '%"+ user.getPurchaserCode()+"%'");
+        }
+        if(StringUtils.hasText(q)){   //q表示支持模糊查询
+            sb.append(" and user.purchaserCode like '%"+ q +"%'");
+        }
+        if(StringUtils.hasText(user.getSponsorCode())){
+            sb.append(" and user.sponsorCode like '%"+ user.getSponsorCode() +"%'");
+        }
         if(StringUtils.hasText(user.getRankCode())){
-            pageRequest.addCondition("rankCode", user.getRankCode());
+            sb.append(" and user.rankCode = '"+ user.getRankCode() +"'");
         }
-		Pagination<TPurchaserInfo> page = userService.findAllForPage(pageRequest);
-		
+        if(StringUtils.hasText(user.getShopCode())){
+            sb.append(" and user.shopCode = '"+ user.getShopCode() +"'");
+        }
+        if(StringUtils.hasText(startTime)){			/*时间起始范围*/
+            sb.append("	and user.createTime >= '"+ startTime+"'");
+        }
+        if(StringUtils.hasText(endTime)){           /*时间结束范围*/
+            sb.append("	and user.createTime <= '"+ endTime+"'");
+        }
+
+        //排序
+        if(sort!=null && order!=null){
+            sb.append("  order by 	user."+sort+" "+order);
+        }
+
+        //组装后分页查询
+        String rowSql = sb.toString();
+        String countSql = "	select count(*) 	"+ rowSql;
+        Pagination<Object> page = userService.findPageByHQL(rowSql, countSql, offset, pageSize);
+
 		return page ;
 	}
 

@@ -823,7 +823,7 @@ public class IBusiService {
      * @param limit   每页记录数
      * @return
      */
-    public MySqlPagination queryPageNetWork(int startIndex,int limit,String purchaserCode) {
+    public MySqlPagination queryPageNetWork(int startIndex,int limit,String purchaserCode,String sort,String order) {
         //按层次搜索
        /* String sql="SELECT " +
                 "  t.floors AS TIER," +
@@ -853,7 +853,8 @@ public class IBusiService {
         //首先调用存储过程,创建临时表(树的结构以及深度)
         jdbcTemplate.execute("CALL angel.showTreeNodes('"+purchaserCode+"');");
         //然后按深度查询
-        String sql = 
+        StringBuilder sb = new StringBuilder();
+        sb.append(
                 "SELECT " +
                 "  IF(ISNULL(B.nLevel),0,B.nLevel) AS TIER, " +
                 "  CONCAT(t.purchaser_code,'/',t.purchaser_name) AS PURCHASER_ID_NAME, " +
@@ -879,8 +880,12 @@ public class IBusiService {
                 "    ON t.rank_code = t3.rank_code " +
                 " WHERE t.purchaser_code = '"+purchaserCode+"' " +
                 "     OR t.upper_codes LIKE '%"+purchaserCode+"%' " +
-                " ORDER BY B.sCort ";
-        MySqlPagination page=new MySqlPagination(sql, startIndex, limit, jdbcTemplate);
+                " ORDER BY B.sCort asc");
+
+        if(sort!=null && order!=null){
+           sb.append(" t1."+sort+" "+order);
+        }
+        MySqlPagination page=new MySqlPagination(sb.toString(), startIndex, limit, jdbcTemplate);
         return page;
     }
 

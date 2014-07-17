@@ -102,16 +102,16 @@ $(function () {
         rownumbers: "true",
         fitColumns: "true",
         fit: "true",
-        multiSort: true,
         pageSize: 20,
+        singleSelect:true,
         columns: [
             [
                 {field: 'ck', checkbox: true},
-                {field: 'productCode', title: '产品编号', width: 50},
-                {field: 'productName', title: '产品名称', width: 50},
-                {field: 'productPrice', title: '产品价格', width: 50},
-                {field: 'productPv', title: 'PV', width: 50},
-                {field: 'productBv', title: 'BV', width: 50},
+                {field: 'productCode', title: '产品编号', width: 50,sortable:true},
+                {field: 'productName', title: '产品名称', width: 50,sortable:true},
+                {field: 'productPrice', title: '产品价格', width: 50,sortable:true},
+                {field: 'productPv', title: 'PV', width: 50,sortable:true},
+                {field: 'productBv', title: 'BV', width: 50,sortable:true},
                 {field: 'status', title: '在售状态', width: 50,
                     formatter: function (value, row, index) {
                         if (value == 1) {

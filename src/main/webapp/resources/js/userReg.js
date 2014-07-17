@@ -24,34 +24,6 @@ var centerJS = (function () {
             $('#fm input[name="sponsorCode"]').attr('readonly', false);
             url = '../userController/addUser.json';
         },
-/*        //删除会员
-        destroyUser: function () {
-            var rows = $('#dg').datagrid('getSelections');
-            if (rows.length > 0) {
-                var codes = [];
-                for (var i in rows) {
-                    codes.push(rows[i].purchaserCode);
-                }
-                $.messager.confirm('提示', '您确定要删除当前选中的会员吗?', function (r) {
-                    if (r) {
-                        var url = '../userController/destroyUser.json';
-                        CommonAjax.get(url,{codes: codes},'POST',function(result){
-                            if (result.message) {
-                                $.messager.show({
-                                    title: '提示',
-                                    msg: result.message
-                                });
-                            } else {
-                                $.messager.alert('系统提示','信息删除成功!','info');
-                                $('#dg').datagrid('reload');
-                            }
-                        });
-                    }
-                });
-            }else{
-                $.messager.alert('系统提示','请先选择要删除的会员.','warning');
-            }
-        },*/
         //保存会员(添加/编辑)
         saveUser: function () {
             $('#fm').form('submit', {
@@ -89,6 +61,7 @@ var centerJS = (function () {
                 //弹出窗口
                 parent.window.$("#userNetworkModal").modal({backdrop:'static'});
                 parent.window.$("#userNetworkModalLabel").html("正在查看会员:"+row['purchaserCode']+" 的网络结构图");
+                parent.window.$("#userNetworkModalLabel").attr("hiddenPurchaserCode",row['purchaserCode']);
                 //生成网络图
                 parent.window.homeJS.generateGraph(row['purchaserCode']);
             }else{
@@ -103,7 +76,7 @@ $(function () {
     //定义显示列表
     $('#dg').datagrid({
         url: "../userController/pageUserList.json",
-        title: "会员列表",
+        title: "会员查询列表 &nbsp;&nbsp;&nbsp;<span class='text-danger'>提示：会员星级会在每次【网络计算】完成后实时更新在当前列表中<span/>",
         toolbar: "#toolbar",
         pagination: "true",
         rownumbers: "true",
@@ -111,17 +84,18 @@ $(function () {
         fit: "true",
         sortName: 'floors',
         sortOrder: 'asc',
-        multiSort: true,
+//        multiSort: true,
         pageSize: 20,
         singleSelect:"true",
         columns: [
             [
                 {field: 'ck', checkbox: true},
-                {field: 'purchaserCode', title: '会员编号', width: 50},
-                {field: 'purchaserName', title: '会员姓名', width: 50},
-                {field: 'sponsorCode', title: '上级会员编号', width: 50},
-                {field: 'sponsorName', title: '上级会员姓名', width: 50},
-                {field: 'shopCode', title: '店铺编号', width: 50},
+                {field: 'purchaserCode', title: '会员编号', width: 50,sortable:true},
+                {field: 'purchaserName', title: '会员姓名', width: 50,sortable:true},
+                {field: 'sponsorCode', title: '上级会员编号', width: 50,sortable:true},
+                {field: 'sponsorName', title: '上级会员姓名', width: 50,sortable:true},
+                {field: 'shopCode', title: '所属店铺编号', width: 50,sortable:true},
+                {field: 'rankName',title:'星级',width:30,sortable:true},
                 {field: 'createTime', title: '加入时间', width: 50, sortable: true, order: 'desc',
                     formatter: function (value, row, index) {
                         var unixTimestamp = new Date(value);

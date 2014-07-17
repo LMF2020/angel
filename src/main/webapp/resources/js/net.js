@@ -49,27 +49,27 @@ $(function () {
             }
         ],
         pagination: "true",
-        rownumbers: "true",
+     //   rownumbers: "true",
         fitColumns: "true",
         singleSelect:"true",
         fit: "true",
-        multiSort: true,
+    //    multiSort: true,
         pageSize: 20,
         columns: [
             [
-                {field: 'TIER', title: 'Tier', width: 50},
-                {field: 'PURCHASER_ID_NAME', title: 'Distributor ID/Name', width: 137, sortable: true, order: 'desc'},
-                {field: 'SPONSOR_ID_NAME', title: 'Sponsor ID/Name', width: 137},
-                {field: 'SHOP_CODE', title: 'Shop ID', width: 100},
-                {field: 'RANK_NAME', title: 'Rank', width: 70},
-                {field: 'ATNPV', title: 'Accmulative TNPV', width: 110},
-                {field: 'APPV', title: 'Accmulative PPV', width: 110},
-                {field: 'TNPV', title: 'TNPV', width: 100},
-                {field: 'GPV', title: 'GPV', width: 100},
-                {field: 'PPV', title: 'Personal PV/BV', width: 110},
-                {field: 'DB', title: 'DB', width: 50},
-                {field: 'IB', title: 'IB', width: 50},
-                {field: 'LB', title: 'LB', width: 50}
+                {field: 'TIER', title: 'Tier', width: 50,sortable:true,align:'center'},
+                {field: 'PURCHASER_ID_NAME', title: 'Distributor ID/Name', width: 137, sortable: true, sortable:true},
+                {field: 'SPONSOR_ID_NAME', title: 'Sponsor ID/Name', width: 137,sortable:true},
+                {field: 'SHOP_CODE', title: 'Shop ID', width: 100,sortable:true},
+                {field: 'RANK_NAME', title: 'Rank', width: 70,sortable:true},
+                {field: 'ATNPV', title: 'Accmulative TNPV', width: 110,sortable:true},
+                {field: 'APPV', title: 'Accmulative PPV', width: 110,sortable:true},
+                {field: 'TNPV', title: 'TNPV', width: 100,sortable:true},
+                {field: 'GPV', title: 'GPV', width: 100,sortable:true},
+                {field: 'PPV', title: 'Personal PV/BV', width: 110,sortable:true},
+                {field: 'DB', title: 'DB', width: 50,sortable:true},
+                {field: 'IB', title: 'IB', width: 50,sortable:true},
+                {field: 'LB', title: 'LB', width: 50,sortable:true}
             ]
         ]
 
