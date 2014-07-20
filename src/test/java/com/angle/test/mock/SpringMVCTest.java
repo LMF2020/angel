@@ -1,6 +1,7 @@
 package com.angle.test.mock;
 
 import com.alibaba.fastjson.JSON;
+import com.angel.my.util.DateUtil;
 import com.starit.common.dao.support.ExcelTools;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -171,6 +172,12 @@ public class SpringMVCTest {
         List queryList = ITPurchaserInfoDao.findByHQL(hql);
         System.out.println("queryList.size()==="+queryList.size());
 
+    }
+
+    @org.junit.Test
+    public void  testJDBC(){
+        String countDate = DateUtil.getCountDate();
+        jdbcTemplate.execute("CALL angel.copyTableHis('"+countDate+"');");
     }
 
 }

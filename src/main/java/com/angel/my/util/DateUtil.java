@@ -13,6 +13,7 @@ public class DateUtil {
     public static DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     public static DateFormat df2 = new SimpleDateFormat("yyyyMMdd");
     public static DateFormat df3 = new SimpleDateFormat("yyyyMM");
+    public static DateFormat df4 = new SimpleDateFormat("yyyy-MM-dd");
     /**
      * 获取上个月的某一天
      * @return
@@ -38,6 +39,11 @@ public class DateUtil {
     public static String getYearMonth(){
         Date d = new Date();
         return df3.format(d);
+    }
+
+    public static String getCountDate(){
+        Date d = new Date();
+        return df4.format(d);
     }
 
     public static void main(String[] args) {

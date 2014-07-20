@@ -1,8 +1,10 @@
 package com.angel.my.service;
 
 import com.angel.my.util.CommonUtil;
+import com.angel.my.util.DateUtil;
 import com.starit.common.dao.support.MySqlPagination;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -429,6 +431,10 @@ public class IBusiService {
      * @return
      */
     public double getIBV(String purchaserCode,String rankCode){
+
+        if (purchaserCode.equals("000041")){
+            System.out.println("==========");
+        }
         //剔除直接下线中职级比他高的会员
         String sql = "SELECT t1.purchaser_code,t1.rank_code,t1.TNBV " +
                 " FROM t_achieve t1 " +
@@ -775,7 +781,7 @@ public class IBusiService {
      * @param floor
      * @return
      */
-    public List<String> getAllByFloor(int floor){
+    public List<String> getLinesOnFloor(int floor){
         String sql = "SELECT t.purchaser_code FROM t_purchaser t WHERE t.floors = '"+floor+"'";
         List list = jdbcTemplate.queryForList(sql);
         return  list;
@@ -784,7 +790,8 @@ public class IBusiService {
     /**
      * 清除 - 业绩表和奖金表
      */
-    public void clearTableData(){
+    public void clear(){
+         //只保留当前月的计算结果，所以清空
          String truncate_TAchieve_sql = "TRUNCATE TABLE t_achieve";
          String truncate_TBoun_sql = "TRUNCATE TABLE t_bouns";
          jdbcTemplate.batchUpdate(new String[]{truncate_TAchieve_sql,truncate_TBoun_sql});
@@ -888,6 +895,20 @@ public class IBusiService {
         MySqlPagination page=new MySqlPagination(sb.toString(), startIndex, limit, jdbcTemplate);
         return page;
     }
+
+    /**
+     * 数据复制到历史库表（奖金表与业绩表）存储过程实现见(copyTableHis)
+     * @return
+     */
+    public void  createCopyToHisTable(){
+        String countDate = DateUtil.getCountDate();
+        try {
+            jdbcTemplate.execute("CALL angel.copyTableHis('"+countDate+"');");
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     /**
      * 获取当前用户的树状分支结构
