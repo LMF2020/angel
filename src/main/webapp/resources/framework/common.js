@@ -29,6 +29,11 @@ function showLoading(){
                        '</div>' +
                        '<div class="text">正在加载...</div>' +
                    '</div>';
+
+//    var loading = '<div dhxbox="1" class="ares_loading" style="z-index: 20000; position: fixed; left: 50%; top: 50%;">' +
+//                        '<img src="../resources/images/loading.gif">' +
+//                   '</div>';
+
     $(document.body).append(loading);
 }
 

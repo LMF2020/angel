@@ -23,12 +23,12 @@ public class DateUtil {
         calendar.add(Calendar.MONTH, -1);
         calendar.set(Calendar.DAY_OF_MONTH, day);
         Date strDateTo = calendar.getTime();
-        return  df.format(strDateTo);
+        return  df4.format(strDateTo)+" 00:00:00";
     }
 
     public  static String getToday(){
         Date d = new Date();
-        return  df.format(d);
+        return  df4.format(d)+" 23:59:59";
     }
 
     public  static String getPrintDate(){

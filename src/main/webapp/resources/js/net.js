@@ -29,17 +29,38 @@ $(function () {
         toolbar: [
             { //计算网络业绩
                 iconCls: 'icon-edit',
-                text: '<h5 id="toolTitleDiv" class="text-danger" style="background-color:#EDF7ED;text-shadow: 5px 5px 70px #EB4A2B;">计算网络业绩(历月28号至当月28号截止)<h5>',
+                text: '<h5 id="toolTitleDiv" class="text-danger" style="background-color:#EDF7ED;text-shadow: 5px 5px 70px #EB4A2B;">【核算当月业绩】<h5>',
                 handler: function () {
                     $.messager.confirm("确认", "您确定开始核算本月会员的奖金吗？", function (r) {
                         if (r) {
                             var url =  '../busiController/beginCalculate.json';
                             CommonAjax.get(url,{},'POST',function(result){
+
                                 if (!result.message) {
-                                    $.messager.alert('提示:', 'ok,计算成功!', 'info');
+                                    $.messager.alert('系统提示:', 'OK....计算成功。', 'info');
                                     $('#dg').datagrid('reload');
                                 } else {
-                                    $.messager.alert('提示:', result.message, 'error');
+                                    $.messager.alert('系统提示:', result.message, 'error');
+                                }
+                            });
+                            return true;
+                        }
+                    });
+                }
+            },{
+                iconCls:'icon-large-shapes',
+                text:'<h5 class="text-primary" style="background-color:#EDF7ED;">【备份当月业绩】<h5>',
+                handler :function(){
+                    $.messager.confirm("确认", "注意：本月上一次备份的计算结果将会被替换", function (r) {
+                        if (r) {
+                            var url =  '../busiController/backUp.json';
+                            CommonAjax.get(url,{},'POST',function(result){
+
+                                if (!result.message) {
+                                    $.messager.alert('系统提示:', 'OK....备份成功。', 'info');
+                                    $('#dg').datagrid('reload');
+                                } else {
+                                    $.messager.alert('系统提示:', result.message, 'error');
                                 }
                             });
                             return true;

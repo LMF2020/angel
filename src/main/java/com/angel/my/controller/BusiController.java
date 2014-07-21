@@ -55,7 +55,7 @@ public class BusiController extends BaseController {
         System.out.println("=================启动核算进程==================");
         //上个月28号 - 本月28号
         String beginDateTime =  DateUtil.getLastMonDate(28);
-        String endDateTime = DateUtil.getToday(); //今天是不是28号?
+        String endDateTime = DateUtil.getToday();  //计算日
         try {
             //核算开始
             int topfloor = iBusiService.getMaxFloor();
@@ -142,6 +142,22 @@ public class BusiController extends BaseController {
         return ResponseData.SUCCESS_NO_DATA;
     }
 
+    /**
+     * 备份
+     */
+    @RequestMapping(value = "/backUp", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseData backUp(){
+        System.out.println("===开始备份数据到历史表====");
+        try {
+            iBusiService.createCopyToHisTable();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseData(true,"系统出错，备份失败。");
+        }
+        System.out.println("===已备份数据到历史表===");
+        return ResponseData.SUCCESS_NO_DATA;
+    }
     /**
      * 网络图JSP|定位
      */

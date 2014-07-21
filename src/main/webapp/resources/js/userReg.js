@@ -115,6 +115,9 @@ $(function () {
         }
     });
 
+    //窗口变化改变resize
+    //$("#dg").datagrid("resize",{width:'100%'});
+
     //双击列表某一行弹出网络拓补结构图
  /*   $('#dg').datagrid({
         onDblClickRow:function(rowIndex, rowData){
