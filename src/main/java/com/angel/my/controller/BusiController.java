@@ -10,7 +10,6 @@ import com.angel.my.service.ITAchieveService;
 import com.angel.my.service.ITBounService;
 import com.angel.my.service.ITPurchaserInfoService;
 import com.angel.my.util.CommonUtil;
-import com.angel.my.util.DateUtil;
 import com.starit.common.dao.support.MySqlPagination;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,13 +48,15 @@ public class BusiController extends BaseController {
     @RequestMapping(value = "/beginCalculate", method = RequestMethod.POST)
     @ResponseBody
     public ResponseData startCount(
-                            @RequestParam(required = false)String  startDate,
-                            @RequestParam(required = false)String  endDate){
+                            @RequestParam(required = true)String  startDate,
+                            @RequestParam(required = true)String  endDate){
 
         System.out.println("=================启动核算进程==================");
-        //上个月28号 - 本月28号
-        String beginDateTime =  DateUtil.getLastMonDate(28);
-        String endDateTime = DateUtil.getToday();  //计算日
+        // 获取计算日期区间
+        String beginDateTime =  startDate;//计算起始日期
+        String endDateTime = endDate; //计算结束日期
+
+        System.out.println(startDate + "===" + endDate);
         try {
             //核算开始
             int topfloor = iBusiService.getMaxFloor();

@@ -6,7 +6,7 @@ var centerJS = (function () {
             var rows = $('#dg').datagrid('getSelections');
             var row = rows[0];
             if (row) {
-                $('#dlg').dialog('open').dialog('setTitle', 'Edit');
+                $('#dlg').dialog('open').dialog('setTitle', '编辑客户');
                 $('#fm').form('load', row);
                 $('#fm input[name="purchaserCode"]').attr('readonly', true).css('color', 'red');//会员编码只读
                 $('#fm input[name="sponsorCode"]').attr('readonly', true).css('color', 'red');
@@ -18,7 +18,7 @@ var centerJS = (function () {
         },
         //添加会员
         newUser: function () {
-            $('#dlg').dialog('open').dialog('setTitle', 'Registor');
+            $('#dlg').dialog('open').dialog('setTitle', '新增客户');
             $('#fm').form('clear');
             $('#fm input[name="purchaserCode"]').attr('readonly', false);
             $('#fm input[name="sponsorCode"]').attr('readonly', false);
