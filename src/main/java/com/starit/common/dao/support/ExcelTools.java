@@ -77,6 +77,8 @@ public class ExcelTools {
         }else if (tableType.equals("SHOPBONUS"))
         {
             writeHeaderPrefixWithShopBouns(sh);
+        }else if(tableType.equals("DIST_OF_RANK")){
+            writeHeaderPrefixWithRankTable(sh);
         }
         //写入表头
         writeHeader(sh,headerMap,fields,style);
@@ -144,6 +146,45 @@ public class ExcelTools {
         cell3.setCellValue("RECORDS: "+tableInfo.get("totalRecords"));
         cell3.setCellStyle(style);
         sh.addMergedRegion(new CellRangeAddress(1,1,7,9));
+        CellUtil.setAlignment(cell3, wb, CellStyle.ALIGN_CENTER);
+
+    }
+    /**
+     * 星级表的表头前缀
+     * @param sh
+     */
+    private  void writeHeaderPrefixWithRankTable(Sheet sh){
+
+        //定义样式
+        CellStyle style = wb.createCellStyle();
+        Font font = wb.createFont();
+        font.setBoldweight(Font.BOLDWEIGHT_BOLD);   //字体加粗
+        style.setFont(font);
+
+        //第一行创建标题
+        Row row0 = sh.createRow(0);
+        Cell cell0 = row0.createCell((short) 0);
+        cell0.setCellValue("INFORMATION OF MONTHLY DISTRIBUTORS");
+        cell0.setCellStyle(style);
+        sh.addMergedRegion(new CellRangeAddress(0,0,0,7));
+        //标题居中对齐
+        CellUtil.setAlignment(cell0, wb, CellStyle.ALIGN_CENTER);
+
+        //第二行创建基本信息
+        Row row1 = sh.createRow(1);
+        Cell cell1 = row1.createCell((short) 0);
+        cell1.setCellValue("RANK: "+tableInfo.get("rank"));
+        cell1.setCellStyle(style);
+        sh.addMergedRegion(new CellRangeAddress(1,1,0,0));
+        CellUtil.setAlignment(cell1, wb, CellStyle.ALIGN_CENTER);
+        Cell cell2 = row1.createCell((short) 1);
+        cell2.setCellValue("YEAR MONTH: "+tableInfo.get("yearMonth"));
+        cell2.setCellStyle(style);
+        sh.addMergedRegion(new CellRangeAddress(1,1,1,3));
+        Cell cell3 = row1.createCell((short) 4);
+        cell3.setCellValue("RECORDS: "+tableInfo.get("totalRecords"));
+        cell3.setCellStyle(style);
+        sh.addMergedRegion(new CellRangeAddress(1,1,4,7));
         CellUtil.setAlignment(cell3, wb, CellStyle.ALIGN_CENTER);
 
     }

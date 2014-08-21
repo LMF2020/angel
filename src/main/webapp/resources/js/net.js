@@ -56,7 +56,7 @@ $(function () {
         toolbar: [
             { //计算网络业绩
                 iconCls: 'icon-edit',
-                text: '<h5 id="toolTitleDiv" class="text-danger" style="background-color:#EDF7ED;text-shadow: 5px 5px 70px #EB4A2B;">【核算当月业绩】<h5>',
+                text: '<h5 id="toolTitleDiv" class="text-danger" style="background-color:#EDF7ED;">【核算当月业绩】<h5>',
                 handler: function () {
                     //初始化时间框控件
                     var startDate = getFirstDayOfMonth();

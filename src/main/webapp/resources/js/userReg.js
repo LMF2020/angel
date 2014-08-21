@@ -94,7 +94,7 @@ var centerJS = (function () {
             if (row) {
                 //弹出窗口
                 parent.window.$("#userNetworkModal").modal({backdrop:'static'});
-                parent.window.$("#userNetworkModalLabel").html("正在查看会员:"+row['purchaserCode']+" 的网络结构图");
+                parent.window.$("#userNetworkModalLabel").html(row['purchaserCode']+" 's topological graph");
                 parent.window.$("#userNetworkModalLabel").attr("hiddenPurchaserCode",row['purchaserCode']);
                 //生成网络图
                 parent.window.homeJS.generateGraph(row['purchaserCode']);

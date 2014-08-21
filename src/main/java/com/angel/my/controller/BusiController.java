@@ -194,7 +194,7 @@ public class BusiController extends BaseController {
      */
     @RequestMapping(value = "/pageNetList/{purchaserCode}",method = RequestMethod.GET)
     @ResponseBody
-    public List<Object> getTreeGraph(@PathVariable String purchaserCode){
+    public Object getTreeGraph(@PathVariable String purchaserCode){
         return iBusiService.getTreeGraph(purchaserCode);
     }
 

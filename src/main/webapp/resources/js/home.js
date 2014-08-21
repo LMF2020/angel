@@ -55,13 +55,30 @@ var homeJS = (function () {
                 myDiagram =
                     $$(go.Diagram, "myDiagramDiv",
                         { allowCopy: false });
+
                 //定义节点
+//                myDiagram.nodeTemplate =
+//                    $$(go.Node, "Horizontal",
+//                        { background: "#44CCFF" },
+//                        $$(go.TextBlock, "Default Text",
+//                            { margin: 12, stroke: "white", font: "bold 16px sans-serif" },
+//                            new go.Binding("text", "name"))
+//                    );
+
                 myDiagram.nodeTemplate =
-                    $$(go.Node, "Horizontal",
-                        { background: "#44CCFF" },
-                        $$(go.TextBlock, "Default Text",
-                            { margin: 12, stroke: "white", font: "bold 16px sans-serif" },
-                            new go.Binding("text", "name"))
+                    $$(go.Node, "Spot",
+                        { locationSpot: go.Spot.Center },
+                        new go.Binding("text", "name"),
+                        $$(go.Shape, "Ellipse",
+                            { fill: "lightgray",
+                              stroke: "black",
+                              desiredSize: new go.Size(30, 30)
+                            },
+                            new go.Binding("desiredSize", "size"),
+                            new go.Binding("fill", "fill")),
+                            $$(go.TextBlock,
+                                {font: "bold 16px sans-serif" },
+                                new go.Binding("text", "name"))
                     );
 
                 // 定义连线
@@ -69,7 +86,8 @@ var homeJS = (function () {
                     $$(go.Link,
                         { routing: go.Link.Orthogonal,
                             corner: 5,
-                            selectable: false },
+                            selectable: false
+                        },
                         $$(go.Shape));
                 // 定义布局
                 myDiagram.layout =
@@ -80,11 +98,44 @@ var homeJS = (function () {
                         });
                 myDiagram.model = new go.TreeModel([]);
             }
-
+            //布局
+            //myDiagram.layout.alignment = go.TreeLayout.AlignmentCenterChildren;
+            myDiagram.layout.alignment = go.TreeLayout.AlignmentCenterSubtrees;
             //发送数据请求
-            CommonAjax.get("../busiController/pageNetList/"+purchaserCode,{},"GET",function(nodeDataArray){
+            CommonAjax.get("../busiController/pageNetList/"+purchaserCode,{},"GET",function(json){
+                //清除说明
+                myDiagram.clear();
                 // 创建model
-                myDiagram.model.nodeDataArray = nodeDataArray;
+                var treeLst = json.treeLst;
+                var userMap = json.userMap;
+
+                console.log(userMap);
+
+                myDiagram.model.nodeDataArray = treeLst;
+                var x = $('#userNetworkModal').width()*0.7;
+                var y = 10;
+                //创建说明
+                myDiagram.add(
+                    $$(go.Part, "Auto",
+                        { position: new go.Point(x, y), selectable: true },
+                        $$(go.Panel, "Table",
+                            //默认样式
+                            { padding: 0,
+                                //defaultAlignment: go.Spot.Right,
+                                defaultRowSeparatorStroke: "gray",
+                                defaultColumnSeparatorStroke: "gray",
+                                defaultSeparatorPadding: new go.Margin(10, 25, 5, 20) },
+
+                            $$(go.TextBlock, "DISTRIBUTOR ID", { row: 0, column: 0, margin: 2 ,font: "bold 16px sans-serif"}),
+                            $$(go.TextBlock, purchaserCode, { row: 0 ,column: 1, margin: 2 ,font: "bold 16px sans-serif"}),
+                            $$(go.TextBlock, "PPV", { row: 1, column: 0, margin: 2 ,font: "bold 16px sans-serif"}),
+                            $$(go.TextBlock, userMap['PPV'].toString(), { row: 1, column: 1, margin: 2 ,font: "bold 16px sans-serif"}),
+                            $$(go.TextBlock, "APPV", { row: 2, column: 0, margin: 2 ,font: "bold 16px sans-serif"}),
+                            $$(go.TextBlock, userMap['APPV'].toString(), { row: 2, column: 1, margin: 2 ,font: "bold 16px sans-serif"}),
+                            $$(go.TextBlock, "ATNPV", { row: 3, column: 0, margin: 2 ,font: "bold 16px sans-serif"}),
+                            $$(go.TextBlock, userMap['ATNPV'].toString(), { row: 3, column: 1, margin: 2 ,font: "bold 16px sans-serif"})
+                        )
+                    ));
             });
 
         }
@@ -122,11 +173,6 @@ $(function () {
     $('#userNetworkModal .dlgClose').click(function(){
         //隐藏窗口
         $('#userNetworkModal').modal('hide');
-        //清空内存
-/*        var dom = document.getElementById("myDiagramDiv");
-          clearDom(dom);*/
-      //  myDiagram.model.clear();
-
     });
 
 });

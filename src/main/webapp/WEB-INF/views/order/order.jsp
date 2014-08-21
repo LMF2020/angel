@@ -152,6 +152,9 @@
                                     $('#productPrice').val(rowData['productPrice']);
                                     $('#pv').val(rowData['productPv']);
                                     $('#bv').val(rowData['productBv']);
+
+                                    $('#saleNumber').val('1');
+                                    $('#sumPrice').val(rowData['productPrice']);
                                 }
                             "
                         />
@@ -165,9 +168,9 @@
                 <div class="form-group">
                     <label for="productPrice" class="col-sm-2 control-label">产品单价</label>
                     <div class="col-md-2">
-                        <input class="form-control" type="text" id="productPrice"  name="productPrice" readonly="readonly"/>
+                        <input class="form-control" type="text" id="productPrice"  name="productPrice" <%--readonly="readonly"--%>/>
                     </div>
-                    <!--以下的两个total是展现给用户看的，不需要传送到后台-->
+                    <!--以下的两个total是展现给用户看的，不需要传送到后台
                     <label for="pv_totalDiv" class="col-sm-2 control-label">PV</label>
                     <div class="col-md-2">
                         <input class="form-control" type="text" id="pv_totalDiv"  name="pv_total" readonly="readonly"/>
@@ -175,16 +178,25 @@
                     <label for="bv_totalDiv" class="col-sm-2 control-label">BV</label>
                     <div class="col-md-2">
                         <input class="form-control" type="text" id="bv_totalDiv"  name="bv_total" readonly="readonly"/>
-                    </div>
-                    <!--以下两个隐藏域才是真正的单位PV/BV，需要发送到后台-->
+                    </div>-->
+                    <!--以下两个隐藏域才是真正的单位PV/BV，需要发送到后台
                     <input type="hidden" id="pv" name="pv">
                     <input type="hidden" id="bv" name="bv">
+                    -->
+                    <label for="pv" class="col-sm-2 control-label">PV</label>
+                    <div class="col-md-2">
+                        <input class="form-control" type="text" id="pv" name="pv">
+                    </div>
+                    <label for="bv" class="col-sm-2 control-label">BV</label>
+                    <div class="col-md-2">
+                        <input class="form-control" type="text" id="bv" name="bv">
+                    </div>
                 </div>
                 <!--销量/book/统计-->
                 <div class="form-group">
                     <label for="saleNumber" class="col-sm-2 control-label">购买数量</label>
                     <div class="col-md-2">
-                        <input class="form-control" type="text" id="saleNumber" value="0" name="saleNumber"/>
+                        <input class="form-control" type="text" id="saleNumber" value="1" name="saleNumber"/>
                     </div>
                     <label for="book" class="col-sm-2 control-label">Book</label>
                     <div class="col-md-2">

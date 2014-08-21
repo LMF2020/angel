@@ -33,8 +33,8 @@ var centerJS = (function () {
                 var saleNumber = row['saleNumber'];
                 $('#pv').val(pv);
                 $('#bv').val(bv);
-                $('#pv_totalDiv').val(pv *saleNumber);
-                $('#bv_totalDiv').val(bv *saleNumber);
+                //$('#pv_totalDiv').val(pv *saleNumber);
+                //$('#bv_totalDiv').val(bv *saleNumber);
                 //$('#fm input[name="productCode"]').attr('readonly',true).css('color','red');
                 url = '../orderController/updateOrder.json';
             }
@@ -102,11 +102,11 @@ var centerJS = (function () {
         onChangeSum: function () {
             var num = $('#saleNumber').val();
             var price = $('#productPrice').val();
-            var pv = $('#pv').val();
-            var bv = $('#bv').val();
+            ////var pv = $('#pv').val();
+            ////var bv = $('#bv').val();
             $('#sumPrice').val(num *price);
-            $('#pv_totalDiv').val(num *pv);
-            $('#bv_totalDiv').val(num *bv);
+            ////$('#pv_totalDiv').val(num *pv);
+            ////$('#bv_totalDiv').val(num *bv);
         },
         //月销售额汇总
         getSumMon: function () {
@@ -167,7 +167,7 @@ $(function () {
     });
 
     //合计
-    $("#saleNumber").keyup(function () {
+    $("#saleNumber,#productPrice").keyup(function () {
         centerJS.onChangeSum();
     });
 

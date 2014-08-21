@@ -43,9 +43,11 @@ public class TOrderList implements Serializable {
     private Double pv;
 
     //外加两个临时变量,查询的PV和BV的单价
-    @Formula("(select t.product_bv from t_product t where t.product_code = product_code)")
+    //@Formula("(select t.product_bv from t_product t where t.product_code = product_code)")
+    @Formula("bv/sale_number")
     private double bv_unit;
-    @Formula("(select t.product_pv from t_product t where t.product_code = product_code)")
+    //@Formula("(select t.product_pv from t_product t where t.product_code = product_code)")
+    @Formula("pv/sale_number")
     private double pv_unit;
 
     /*会员编码*/

@@ -288,6 +288,60 @@ public class IExportService {
 
     }
 
+
+    /**
+     * 导出指定星级的会员
+     *
+     * @param headerMap
+     * @param rankCode  星级编号
+     * @param request
+     * @param response
+     */
+    public void exportExcelRank(Map<String,String> headerMap,String rankCode ,
+                                     HttpServletRequest request, HttpServletResponse response){
+        String printDate = DateUtil.getPrintDate();
+        HttpSession session = request.getSession();
+        session.setAttribute("state", null);
+        String rankName = rankCode.substring(rankCode.length()-1);
+        // 生成提示信息
+        response.setContentType("application/vnd.ms-excel");
+        response.setHeader("content-disposition", "attachment;filename=" + printDate+"-star"+rankName  + ".xlsx");
+
+        OutputStream fOut = null;
+        Map<String,Object> tableInfo = new HashMap<String, Object>();
+        tableInfo.put("tableType","DIST_OF_RANK");  //表的类型
+        try {
+            fOut = response.getOutputStream();
+            String sql_rank_dist_list = null;
+            if(rankCode.equals("102003")){  //导出三星级的会员
+                String startTime = DateUtil.getFirstDayOfMonth();
+                String endTime = DateUtil.getLastDayOfMonth();
+                sql_rank_dist_list = CommonUtil.sql_rank_dist_list_3.replace("rankcode",rankCode).replace("starttime",startTime).replace("endtime",endTime);
+            }else{      //导出四星到九星级的会员
+                sql_rank_dist_list = CommonUtil.sql_rank_dist_list_other.replace("rankcode",rankCode);
+            }
+            ExcelTools tools =  new ExcelTools(sql_rank_dist_list,10,jdbcTemplate);
+            tableInfo.put("totalRecords",getTotalRecords(sql_rank_dist_list));
+            tableInfo.put("rank",rankName);
+            tableInfo.put("yearMonth",DateUtil.getYearMonth());
+            tools.setTableInfo(tableInfo);
+            tools.createExcel(headerMap,fOut);
+            tableInfo.clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            tableInfo = null;
+            try
+            {
+                fOut.flush();
+                fOut.close();
+            }
+            catch (IOException e)
+            {}
+            session.setAttribute("state", "open");
+        }
+    }
+
     /**
      * 根据查询sql语句获取总记录数
      * @param sql

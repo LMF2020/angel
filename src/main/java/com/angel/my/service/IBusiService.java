@@ -915,7 +915,7 @@ public class IBusiService {
      * @param purchaserCode
      * @return
      */
-    public List<Object> getTreeGraph(String purchaserCode){
+    public Object getTreeGraph(String purchaserCode){
         String sql = "SELECT " +
                 "  t.purchaser_code AS 'key', " +
                 "  t.sponsor_code   AS 'parent', " +
@@ -926,8 +926,13 @@ public class IBusiService {
                 " WHERE t.purchaser_code = '"+purchaserCode+"' " +
                 "     OR t.upper_codes LIKE '%"+purchaserCode+"%' ";
 
-        List list =  jdbcTemplate.queryForList(sql);
-        return  list;
+        List treeLst =  jdbcTemplate.queryForList(sql);
+        Map userMap = jdbcTemplate.queryForMap("SELECT t.APPV,t.PPV,t.ATNPV FROM t_achieve t WHERE t.purchaser_code = '"+purchaserCode+"'");
+        //查询PPV、APPV
+        Map object = new HashMap();
+        object.put("treeLst",treeLst);
+        object.put("userMap",userMap);
+        return  object;
     }
 
 }

@@ -24,7 +24,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="javascript:void(0);">Angel</a>
+                    <a class="navbar-brand" href="javascript:void(0);">angel</a>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
@@ -35,6 +35,7 @@
                         <li><a href="../productController/product">产品货架</a></li>
                         <li><a href="../orderController/order">订单管理</a></li>
                         <li><a href="../busiController/net">网络计算</a></li>
+                        <li><a href="../helperController/helper">工具箱</a></li>
                     </ul>
                 </div><!-- /.navbar-collapse -->
             </nav>
@@ -47,9 +48,9 @@
         <!--==============================================================-->
         <!-- 弹出层 : 会员新增修改对话框   HTML-START-->
         <div class="modal" id="userNetworkModal" aria-describedby="会员网络结构视窗" tabindex="-1" role="dialog"
-                aria-labelledby="userNetworkModalLabel" aria-hidden="true">
-            <div class="modal-dialog" style="width: 95%;height: 600px;">
-                <div class="modal-content">
+                aria-labelledby="userNetworkModalLabel" aria-hidden="true" style="overflow-y:hidden;">
+            <div class="modal-dialog" style="width: 100%;height: 100%;">
+                <div class="modal-content" style="height: 100%;">
                     <div class="modal-header" style="padding: 8px 15px 8px;
                     background: url('../resources/images/angel.png') no-repeat 35% #f5f5f5;
                     background-size: contain; color: #000;">
@@ -63,8 +64,8 @@
                         </h4>
 
                     </div>
-                    <div class="modal-body" style="padding: 2px;">
-                        <div id="myDiagramDiv" style="background-color: white; border: solid 1px black; width: 100%; height: 500px;">
+                    <div class="modal-body" style="padding: 2px;height:100%;">
+                        <div id="myDiagramDiv" style="background-color: white; border: solid 1px black; width: 100%; height: 100%;">
 
                         </div>
                     </div>
