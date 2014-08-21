@@ -64,7 +64,7 @@ var centerJS = (function () {
                                 //刷新列表
                                 $('#dg').datagrid('reload');
                             }
-                        })
+                        });
                     }
                 });
             }

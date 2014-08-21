@@ -119,9 +119,40 @@ public class UserController extends BaseController {
         //更新姓名
         updateUser.setPurchaserName(user.getPurchaserName());
         //更新上级姓名
-        TPurchaserInfo sponsorEntity = userService.loadUser(user.getSponsorCode());
-        updateUser.setSponsorName(sponsorEntity.getPurchaserName());
+        //TPurchaserInfo sponsorObj = userService.loadUser(user.getSponsorCode());
+        //更新店铺编码
+        updateUser.setShopCode(user.getShopCode());
+        //更新上级姓名
+        String myCode = updateUser.getPurchaserCode();
+        String newParentCode = user.getSponsorCode();
+        String oldParentCode = updateUser.getSponsorCode();
+        String oldUpperCodes = updateUser.getUpperCodes();
+        if(oldParentCode.equals(newParentCode)){
+            //如果上级编码没有变化,那么直接更新姓名
+            TPurchaserInfo parent = userService.loadUser(oldParentCode);
+            updateUser.setSponsorName(parent.getPurchaserName()); //更新父经销商的姓名
+            userService.updateUser(updateUser);
+            parent = null;
+        }else{
+            //如果上级编码更改了
+            //判断上级会员编码是否存在
+            TPurchaserInfo parent = userService.loadUser(newParentCode);
+            if (parent == null) {
+                return new ResponseData(true,"上级会员编码输入错误!");
+            }
+            // ①更新当前经销商upper_codes字段
+            String newUpperCodes = parent.getUpperCodes()+","+parent.getPurchaserCode();
+            updateUser.setUpperCodes(newUpperCodes);
+            //更新父经销商编码
+            updateUser.setSponsorCode(newParentCode);
+            //更新父经销商的姓名
+            updateUser.setSponsorName(parent.getPurchaserName());
+            // ②更新下级所有经销商upper_codes字段
+            userService.updateUserCascade(updateUser, oldUpperCodes, newUpperCodes);
+            parent = null;
+        }
 
+        userService.updateUser(updateUser);
         userService.updateUser(updateUser);
         return ResponseData.SUCCESS_NO_DATA;
     }
@@ -219,5 +250,30 @@ public class UserController extends BaseController {
         return new ResponseData(true);
     }
 
+    /**
+     * 批量删除经销商
+     */
+    @RequestMapping(value = "/destroyUsers", method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseData destroyUsers(String[] codes){
+        boolean hasChild = false;
+        try {
+            for (int i = 0; i < codes.length; i++) {
+                //判断所选的经销商下面还有没有子经销商节点
+                String code = codes[i];
+                if (userService.findNotExistChild(code)){ //表示没有下线
+                    userService.destoryUser(code);    //没有下线删除该节点
+                }else{
+                    hasChild = true; //表示有下线
+                }
+            }
+        } catch (Exception e) {
+            return new ResponseData(true,"删除失败!");
+        }
+        if (hasChild){
+            return new ResponseData(true,"发现有部分经销商下面还有下线分支，请先将下线分支全部删除后再删除该经销商，谢谢!");
+        }
+        return new ResponseData(true);
+    }
 
 }

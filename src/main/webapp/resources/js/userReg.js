@@ -8,12 +8,14 @@ var centerJS = (function () {
             if (row) {
                 $('#dlg').dialog('open').dialog('setTitle', '编辑客户');
                 $('#fm').form('load', row);
-                $('#fm input[name="purchaserCode"]').attr('readonly', true).css('color', 'red');//会员编码只读
-                $('#fm input[name="sponsorCode"]').attr('readonly', true).css('color', 'red');
-                ;//上级会员编码只读
+                //会员编码只读
+                $('#fm input[name="purchaserCode"]').attr('readonly', true).css('color', 'red');
+                //上级会员编码只读
+                //$('#fm input[name="sponsorCode"]').attr('readonly', true).css('color', 'red');
+
                 url = '../userController/updateUser.json';
             }else{
-                $.messager.alert('系统提示','请先选择要修改的会员','warning');
+                $.messager.alert('系统提示','请先选择会员','warning');
             }
         },
         //添加会员
@@ -23,6 +25,38 @@ var centerJS = (function () {
             $('#fm input[name="purchaserCode"]').attr('readonly', false);
             $('#fm input[name="sponsorCode"]').attr('readonly', false);
             url = '../userController/addUser.json';
+        },
+        //删除会员
+        destoryUser:function(){
+            var rows = $('#dg').datagrid('getSelections');
+            if (rows.length > 0) {
+                var codes = [];
+                for (var i in rows) {
+                    codes.push(rows[i].purchaserCode);
+                }
+                $.messager.confirm('提示', '您确定要删除所选择的会员吗?', function (r) {
+                    if (r) {
+                        var url =  '../userController/destroyUsers.json';
+                        CommonAjax.get(url,{codes: codes},'POST',function(result){
+                            if (result.message) {
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: result.message
+                                });
+                            } else {
+                                $.messager.show({
+                                    title: '提示',
+                                    msg: "删除成功!"
+                                });
+                                //刷新列表
+                                $('#dg').datagrid('reload');
+                            }
+                        })
+                    }
+                });
+            }else{
+                $.messager.alert('系统提示','请先选择会员','warning');
+            }
         },
         //保存会员(添加/编辑)
         saveUser: function () {
@@ -39,8 +73,8 @@ var centerJS = (function () {
                             msg: result.message
                         });
                     } else {
-                        $('#dlg').dialog('close');        // close the dialog
-                        $('#dg').datagrid('reload');    // reload the grid data
+                        $('#dlg').dialog('close');
+                        $('#dg').datagrid('reload');
                         $.messager.alert('系统提示','信息保存成功!','info');
                     }
                 }

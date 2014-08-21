@@ -6,4 +6,11 @@
 		</dir>
 	</classpath>
 
+	<web>
+		<link target="/">
+			<dir name="D:/tools/jee-idea-12.1.7/playidea/angel/src/main/webapp">
+			</dir>
+		</link>
+	</web>
+
 </application>

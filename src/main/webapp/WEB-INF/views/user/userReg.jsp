@@ -59,6 +59,7 @@
 		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-add" onclick="centerJS.newUser()" plain="true">注册新会员</a>
 		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-edit" onclick="centerJS.editUser()" plain="true">修改会员信息</a>
 		        <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove"  onclick="centerJS.showGraph()" plain="true">查看会员网络结构</a>
+                <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-remove"  onclick="centerJS.destoryUser()" plain="true">删除会员(可多选)</a>
             </div>
 		    
 		    <div id="dlg" class="easyui-dialog" style="width:400px;height:320px;padding:10px 20px"
