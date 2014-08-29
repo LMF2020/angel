@@ -48,13 +48,13 @@ public class ITOrderListService {
         return ITOrderListDao.findPageByHQL(rowSql, countSql, offset, limit);
     }
 
-    /*计算月销售额*/
+    /*计算月销售额（本月第一天~本月最后一天）*/
     public  double getSumMon(){
-        String lastMonDate =  DateUtil.getLastMonDate(28);
-        String thisMonDate = DateUtil.getToday();
+        String FirstDay =  DateUtil.getFirstDayOfMonth();
+        String LastDay = DateUtil.getLastDayOfMonth();
         String sql = " SELECT SUM(t.PV) AS SUM" +
                      " FROM  t_order t " +
-                     " WHERE t.sale_time > '"+lastMonDate+"' AND t.sale_time < '"+thisMonDate+"'";
+                     " WHERE t.sale_time > '"+ FirstDay +"' AND t.sale_time < '"+ LastDay +"'";
         //double d =  jdbcTemplate.queryForObject(sql,Double.class);
         Map mm = (Map)jdbcTemplate.queryForMap(sql);
         Double dd = (Double)mm.get("SUM");
