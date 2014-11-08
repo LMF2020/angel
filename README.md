@@ -1,6 +1,4 @@
-## 系统主页
-============
-http://rj-angel.github.io/angel/
+##[主页](http://rj-angel.github.io/angel/)
 
 ##更新日志
 ----------
@@ -12,7 +10,10 @@ http://rj-angel.github.io/angel/
 * 在录错的情况下，支持批量删除会员
 
 ####20140720
-* 添加存储过程angel.copyTableHis()备份历史表,重置计数器`ALTER TABLE t_achieve_his  AUTO_INCREMENT =1;`
+* 添加存储过程angel.copyTableHis()备份历史表,重置计数器
+```
+ALTER TABLE t_achieve_his  AUTO_INCREMENT =1;
+```
 * 界面增加选择时间范围对业绩奖金进行核算
 * 谷歌浏览器如发现图片不能下载，需要设置 - 重置浏览器
 
@@ -28,7 +29,7 @@ http://rj-angel.github.io/angel/
 2.热部署插件`jrebel` (class文件修改在idea中需要重新make/compile)
 3.Gradle插件JetGradle&Debug Run With JRebel
 4.启动服务访问 http://localhost:8081/login
-5.(配置过程详细)[http://blog.csdn.net/hf_xiaoyou/article/details/26093267]
+5.[配置过程详细](http://blog.csdn.net/hf_xiaoyou/article/details/26093267)
 
 ##数据库
 --------
@@ -38,8 +39,8 @@ http://rj-angel.github.io/angel/
 
 ##前端
 ------
-(EasyUI)[http://www.jeasyui.com/]
-(Twitter Bootstrap)[http://getbootstrap.com/css/]
+[EasyUI](http://www.jeasyui.com/)
+[Twitter Bootstrap](http://getbootstrap.com/css/)
 
 ##后端
 ------
