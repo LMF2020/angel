@@ -1,226 +1,46 @@
-/*loading加载样式*/
-.ares_loading {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 1031;
-    background: rgba(255, 255, 255, 0.6);
-}
-
-.ares_loading .loading {
-    -webkit-animation: rotatingLoader 600ms infinite linear;
-    moz-animation: rotatingLoader 600ms infinite linear;
-    top: 45%;
+/*ajax-loader*/
+#page_loading {
+    background: #111111;
+    opacity: 0.7;
+    height: 100px;
+    width: 220px;
+    padding: 13px 10px 10px 10px;
     position: absolute;
+    top: 38%;
+    left: 40%;
+    text-align: center;
+    color: #FF9900;
+    font-weight: 500;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    border-radius: 6px;
+    border: 1px solid #111111;
+    -webkit-box-shadow: 0 0 6px #111111;
+    -moz-box-shadow: 0 0 3px #111111;
+    z-index: 1200;
 }
-.ares_loading .text{
-    position: absolute;
-    top: 55%;
-    left: 50%;
-    margin-left: -1.7em;
-    font-size: 21px;
-}
-
-.loading {
-    position: relative;
-    left: 50%;
-    /* top: 50%; */
-    height: 1em;
-    width: 1em;
-    margin-left: -0.5em;
-    -webkit-transform-origin: .5em .5em;
-    -moz-transform-origin: .5em .5em;
-    -ms-transform-origin: .5em .5em;
-    -o-transform-origin: .5em .5em;
-    transform-origin: .5em .5em;
-    font-size: 48px;
-}
-
-.loading.disable {
-    -webkit-animation: none;
-    -moz-animation: none;
-    display: none;
-}
-
-.loading > span {
-    left: 50%;
-    margin-left: -0.05em;
-}
-
-.loading > span,
-.loading > span::before,
-.loading > span::after {
+#page_loading img {
     display: block;
-    position: absolute;
-    width: .1em;
-    height: .25em;
+    margin: 0 auto;
+}
+.overlay {
+    position: fixed;
+    overflow: auto;
+    text-align: center;
     top: 0;
-    -webkit-transform-origin: .05em .5em;
-    -moz-transform-origin: .05em .5em;
-    -ms-transform-origin: .05em .5em;
-    -o-transform-origin: .05em .5em;
-    transform-origin: .05em .5em;
-    -webkit-border-radius: .1em;
-    -moz-border-radius: .1em;
-    -ms-border-radius: .1em;
-    -o-border-radius: .1em;
-    border-radius: 0.1em;
-}
-
-.loading > span::before,
-.loading > span::after {
-    content: " ";
-}
-
-.loading > span.top {
-    -webkit-transform: rotate(0);
-    -moz-transform: rotate(0);
-    -ms-transform: rotate(0);
-    -o-transform: rotate(0);
-    transform: rotate(0);
-}
-
-.loading > span.right {
-    -webkit-transform: rotate(90deg);
-    -moz-transform: rotate(90deg);
-    -ms-transform: rotate(90deg);
-    -o-transform: rotate(90deg);
-    transform: rotate(90deg);
-}
-
-.loading > span.bottom {
-    -webkit-transform: rotate(180deg);
-    -moz-transform: rotate(180deg);
-    -ms-transform: rotate(180deg);
-    -o-transform: rotate(180deg);
-    transform: rotate(180deg);
-}
-
-.loading > span.left {
-    -webkit-transform: rotate(270deg);
-    -moz-transform: rotate(270deg);
-    -ms-transform: rotate(270deg);
-    -o-transform: rotate(270deg);
-    transform: rotate(270deg);
-}
-
-.loading > span::before {
-    -webkit-transform: rotate(30deg);
-    -moz-transform: rotate(30deg);
-    -ms-transform: rotate(30deg);
-    -o-transform: rotate(30deg);
-    transform: rotate(30deg);
-}
-
-.loading > span::after {
-    -webkit-transform: rotate(-30deg);
-    -moz-transform: rotate(-30deg);
-    -ms-transform: rotate(-30deg);
-    -o-transform: rotate(-30deg);
-    transform: rotate(-30deg);
-}
-
-.loading > span.top {
-    background-color: rgba(0, 0, 0, 0.99);
-}
-
-.loading > span.top::after {
-    background-color: rgba(0, 0, 0, 0.9);
-}
-
-.loading > span.left::before {
-    background-color: rgba(0, 0, 0, 0.8);
-}
-
-.loading > span.left {
-    background-color: rgba(0, 0, 0, 0.7);
-}
-
-.loading > span.left::after {
-    background-color: rgba(0, 0, 0, 0.6);
-}
-
-.loading > span.bottom::before {
-    background-color: rgba(0, 0, 0, 0.5);
-}
-
-.loading > span.bottom {
-    background-color: rgba(0, 0, 0, 0.4);
-}
-
-.loading > span.bottom::after {
-    background-color: rgba(0, 0, 0, 0.35);
-}
-
-.loading > span.right::before {
-    background-color: rgba(0, 0, 0, 0.3);
-}
-
-.loading > span.right {
-    background-color: rgba(0, 0, 0, 0.25);
-}
-
-.loading > span.right::after {
-    background-color: rgba(0, 0, 0, 0.2);
-}
-
-.loading > span.top::before {
-    background-color: rgba(0, 0, 0, 0.15);
-}
-
-.loading.white > span.top {
-    background-color: rgba(255, 255, 255, 0.99);
-}
-
-.loading.white > span.top::after {
-    background-color: rgba(255, 255, 255, 0.9);
-}
-
-.loading.white > span.left::before {
-    background-color: rgba(255, 255, 255, 0.8);
-}
-
-.loading.white > span.left {
-    background-color: rgba(255, 255, 255, 0.7);
-}
-
-.loading.white > span.left::after {
-    background-color: rgba(255, 255, 255, 0.6);
-}
-
-.loading.white > span.bottom::before {
-    background-color: rgba(255, 255, 255, 0.5);
-}
-
-.loading.white > span.bottom {
-    background-color: rgba(255, 255, 255, 0.4);
-}
-
-.loading.white > span.bottom::after {
-    background-color: rgba(255, 255, 255, 0.35);
-}
-
-.loading.white > span.right::before {
-    background-color: rgba(255, 255, 255, 0.3);
-}
-
-.loading.white > span.right {
-    background-color: rgba(255, 255, 255, 0.25);
-}
-
-.loading.white > span.right::after {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.loading.white > span.top::before {
-    background-color: rgba(255, 255, 255, 0.15);
-}
-
-.loading {
-    -webkit-animation: rotatingLoader 600ms infinite linear;
-    moz-animation: rotatingLoader 600ms infinite linear;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: block;
+    z-index: 900;
+    background-color: rgba(255, 255, 255, 0.97);
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    filter:alpha(opacity=50);/*IE*/
+    opacity:0.5;/*FF*/
+    z-index:1000;
 }
 /*按钮外边框样式*/
 .l-btn-left {

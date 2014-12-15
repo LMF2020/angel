@@ -2,9 +2,13 @@ package com.angel.my.service;
 
 import com.angel.my.dao.ITPurchaserInfoDao;
 import com.angel.my.model.TPurchaserInfo;
+import com.angel.my.util.DateUtil;
+import com.starit.common.dao.support.MySqlPagination;
 import com.starit.common.dao.support.Pagination;
 import com.starit.common.dao.support.PaginationRequest;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,6 +21,8 @@ public class ITPurchaserInfoService {
 	
 	@Autowired
 	private ITPurchaserInfoDao ITPurchaserInfoDao;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 	
 	//获取登陆会员信息session
 	public boolean getLoginModel(HttpServletRequest request, HttpServletResponse response, HttpSession session, TPurchaserInfo user, String usercode , String password){
@@ -92,4 +98,41 @@ public class ITPurchaserInfoService {
         }
         return true;
     }
+
+    /**
+     * 按（编号、结算月）查询会员历史业绩
+     */
+    public MySqlPagination pageQueryUserGradeByMon(int startIndex,int limit,String purchaserCode,String achieveDate) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT " +
+                "  t2.achieve_date," +
+                "  t2.purchaser_code," +
+                "  t1.purchaser_name," +
+                "  t1.create_time," +
+                "  t3.rank_name," +
+                "  t1.shop_code," +
+                "  t1.sponsor_code," +
+                "  t2.PPV," +
+                "  t2.DBV," +
+                "  t2.IBV," +
+                "  t2.ATNPV," +
+                "  t2.TNPV," +
+                "  t2.GPV," +
+                "  t2.APPV" +
+                " FROM t_purchaser t1" +
+                "  LEFT JOIN t_achieve_his t2" +
+                "    ON t1.purchaser_code = t2.purchaser_code" +
+                "  LEFT JOIN t_rank t3" +
+                "    ON t3.rank_code = t2.rank_code" +
+                " WHERE t1.purchaser_code = '"+purchaserCode+"' ");
+
+        if(StringUtils.isNotEmpty(achieveDate)){
+            String first = DateUtil.get1stDayOfDate(achieveDate);
+            String last = DateUtil.getLastDayOfDate(achieveDate);
+            sb.append(" AND t2.achieve_date BETWEEN '"+first+" 00:00:00'AND '"+last+" 23:59:59'");
+        }
+        MySqlPagination page=new MySqlPagination(sb.toString(), startIndex, limit, jdbcTemplate);
+        return page;
+    }
+
 }

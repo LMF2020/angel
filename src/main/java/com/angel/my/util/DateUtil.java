@@ -56,8 +56,33 @@ public class DateUtil {
         return df4.format(d);
     }
 
+    //获取某月第一天
+    public static String get1stDayOfDate(String date){
+        Calendar c = Calendar.getInstance();
+        String first = null;
+        try{
+            c.setTime(df4.parse(date));
+            c.add(Calendar.MONTH, 0);
+            c.set(Calendar.DAY_OF_MONTH,1);//设置为1号,当前日期既为本月第一天
+            first = df4.format(c.getTime());
+        }catch(Exception e){}
+        return first;
+    }
+    //获取某月最后一天
+    public static String getLastDayOfDate(String date){
+        Calendar c = Calendar.getInstance();
+        String last = null;
+        try{
+            c.setTime(df4.parse(date));
+            c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+            last = df4.format(c.getTime());
+        }catch(Exception e){}
+        return last;
+    }
     public static void main(String[] args) {
-        System.out.println(getFirstDayOfMonth());
-        System.out.println(getLastDayOfMonth());
+        //System.out.println(getFirstDayOfMonth());
+        //System.out.println(getLastDayOfMonth());
+        System.out.println(get1stDayOfDate("2014-11-12"));
+        System.out.println(getLastDayOfDate("2014-11-13"));
     }
 }

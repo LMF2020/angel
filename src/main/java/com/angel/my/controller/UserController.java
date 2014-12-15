@@ -271,7 +271,7 @@ public class UserController extends BaseController {
             return new ResponseData(true,"删除失败!");
         }
         if (hasChild){
-            return new ResponseData(true,"发现有部分经销商下面还有下线分支，请先将下线分支全部删除后再删除该经销商，谢谢!");
+            return new ResponseData(true,"发现有部分经销商下面还有下线分支，请先将下线分支全部删除后再删除该经销商!");
         }
         return new ResponseData(true);
     }

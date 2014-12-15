@@ -4,6 +4,7 @@ import com.angel.my.common.BaseController;
 import com.angel.my.service.IExportService;
 import com.angel.my.service.ITPurchaserInfoService;
 import com.angel.my.util.DateUtil;
+import com.starit.common.dao.support.MySqlPagination;
 import com.starit.common.dao.support.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,8 @@ public class HelperController extends BaseController {
 	private ITPurchaserInfoService userService;
     @Autowired
     private IExportService iExportService;
+    @Autowired
+    private ITPurchaserInfoService purchaserInfoService;
 
     /**
 	 * 工具箱首页面
@@ -40,9 +43,13 @@ public class HelperController extends BaseController {
 	public String home() throws IOException {
         return "/helper/helper";
 	}
+    @RequestMapping("/history")
+    public String history() throws IOException {
+        return "/history/history";
+    }
 
 	/**
-	 * 查询各个级别的会员
+	 * 查询每个星级的会员
 	 */
 	@RequestMapping("/pageUserList")
 	@ResponseBody
@@ -90,7 +97,7 @@ public class HelperController extends BaseController {
 	}
 
     /**
-     * 导出各个级别的会员
+     * 导出每个星级的会员
      * 说明：三星级只是当月加入的会员
      *      四星级以上则不限制加入日期
      */
@@ -111,4 +118,19 @@ public class HelperController extends BaseController {
         headerMap.put("CREATE_TIME","JOIN TIME");
         iExportService.exportExcelRank(headerMap,rankCode,request,response);
     }
+
+    /**
+     *  按（编号、结算月）查询会员历史业绩
+     */
+    @RequestMapping("/pageQueryUserGradeByMon")
+    @ResponseBody
+    public MySqlPagination pageQueryUserGradeByMon(
+            @RequestParam("page") int startIndex,
+            @RequestParam("rows") int limit,
+            String purchaserCode,
+            @RequestParam(required = false)String achieveDate){
+        MySqlPagination page = purchaserInfoService.pageQueryUserGradeByMon(startIndex,limit,purchaserCode,achieveDate);
+        return page ;
+    }
+
 }

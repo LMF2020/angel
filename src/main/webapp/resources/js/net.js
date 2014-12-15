@@ -35,11 +35,14 @@ var netJS = (function () {
             }
             CommonAjax.get(url,params,'POST',function(result){
                 if (!result.message) {
-                    $.messager.alert('系统提示:', 'OK....计算成功。', 'info');
+                    $.messager.alert('系统提示:', '恭喜！核算完成！', 'info');
                     $('#dg').datagrid('reload');
                 } else {
                     $.messager.alert('系统提示:', result.message, 'error');
                 }
+            },{
+                timeout:20,
+                loadText:'系统正在核算中,请稍后...'
             });
             return true;
         }
