@@ -48,22 +48,25 @@ public class HelperController extends BaseController {
         return "/history/history";
     }
 
-	/**
+    /**
 	 * 查询每个星级的会员
-	 */
+     * 说明：三星级只是当月加入的会员
+     *      四星级以上通过isCheck=1判断是否需要限制加入日期
+	*/
 	@RequestMapping("/pageUserList")
 	@ResponseBody
 	public Pagination<Object> pageUserList(
 			@RequestParam("page") int startIndex,
 			@RequestParam("rows") int pageSize,
             @RequestParam("rankCode") String rankCode,
+            @RequestParam(required = false,value ="isCheck") String isCheck,
 			@RequestParam(required = false) String sort,
 			@RequestParam(required = false) String order){
 
-        //查询当月加入的会员
+        //查询当月加入的会员,并且判断是否只查询当月新增的会员
         String startTime = null;
         String endTime = null;
-        if(rankCode.equals("102003")){
+        if(rankCode.equals("102003") || isCheck.equals("1")){
             startTime = DateUtil.getFirstDayOfMonth();
             endTime = DateUtil.getLastDayOfMonth();
         }
@@ -104,6 +107,7 @@ public class HelperController extends BaseController {
     @RequestMapping(value = "/exportRankUserList",method = RequestMethod.GET)
     public void exportRankUserList(
             @RequestParam("rankCode") String rankCode,
+            @RequestParam(required = false,value ="isCheck") String isCheck,
             HttpServletRequest request,
             HttpServletResponse response){
         //Excel头部信息(标题)
@@ -116,7 +120,7 @@ public class HelperController extends BaseController {
         headerMap.put("APPV","APPV");
         headerMap.put("ATNPV","ATNPV");
         headerMap.put("CREATE_TIME","JOIN TIME");
-        iExportService.exportExcelRank(headerMap,rankCode,request,response);
+        iExportService.exportExcelRank(headerMap,rankCode,isCheck,request,response);
     }
 
     /**

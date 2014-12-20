@@ -18,28 +18,39 @@ $(function () {
             //显示星级按钮选中
             $('#north_form').find('input[name="starRadio"]').click(function(e){
                 var rankCode = $(this).val();
-                app.triggerRadioSelected(rankCode);
+                app.triggerSelected(rankCode);
             });
             //点击导出按钮
             $('#export').click(function(e){
                 e.preventDefault();
-                var radios = $('#north_form').find('input[name="starRadio"]:checked');
-                if(radios.length>0){
-                    app.triggerExportClick(radios[0].value);
-                }
+                var rankCode = $('#north_form').find('input[name="starRadio"]:checked').val();
+                app.triggerExportClick(rankCode);
+            });
+            //选中新增选项
+            $('#check').click(function(e){
+                var rankCode = $('#north_form').find('input[name="starRadio"]:checked').val();
+                app.triggerSelected(rankCode);
             });
         },
-        //单击查询
-        triggerRadioSelected: function(rankCode){
+        //单击查询:需要判断是否有需要只过滤新增的会员
+        triggerSelected: function(rankCode){
+            var isCheck = '0'; //否
+            if($('#check').is(':checked')){
+                isCheck = '1'; //是
+            }
             //单选
             $('#dg').datagrid('load',{
-                rankCode:   rankCode
+                rankCode:   rankCode,
+                isCheck : isCheck
             });
         },
         //点击导出
         triggerExportClick: function(rankCode){
-            //导出
-            var url = "../helperController/exportRankUserList?rankCode="+rankCode;
+            var isCheck = '0'; //否
+            if($('#check').is(':checked')){
+                isCheck = '1'; //是
+            }
+            var url = "../helperController/exportRankUserList?rankCode="+rankCode+"&isCheck="+isCheck;
             window.open (url,"_blank");
         },
         showGrid: function(){
@@ -47,7 +58,7 @@ $(function () {
             $('#dg').datagrid({
                 url: "../helperController/pageUserList.json",
                 queryParams: {
-                    rankCode: '102003'
+                    rankCode: '102003' //初始化选择3星级会员
                 },
                 title: "查询列表",
                 pagination: "true",

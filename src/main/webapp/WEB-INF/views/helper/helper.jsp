@@ -39,12 +39,17 @@
                     显示<span class="text-danger">九星级</span>会员
                 </label>
             </div>
-            <button type="submit" id="export" class="btn btn-info btn-sm"  style="margin-right: 10px;">
+            <button type="submit" id="export" class="btn btn-info btn-sm"  style="margin-right: 10px;padding: 13px;">
                 <span class="glyphicon glyphicon-export"></span> 导出文件
             </button>
             <strong class="alert alert-info" id="dateAreadiv">
-                友情提示：当前核算月为<span class="text-danger">{year}</span>年<span class="text-danger">{month}</span>月
+                结算月 <span class="text-danger">{year}</span>-<span class="text-danger">{month}</span>
             </strong>
+            <div style="display: inline-block;margin-left: 22px;">
+                <label class="checkbox-inline">
+                    <input type="checkbox" value="1" id="check"> 显示新增
+                </label>
+            </div>
     </form>
 </div>
 <div region="center">

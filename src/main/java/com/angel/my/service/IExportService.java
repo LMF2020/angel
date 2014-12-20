@@ -294,10 +294,11 @@ public class IExportService {
      *
      * @param headerMap
      * @param rankCode  星级编号
+     * @param isCheck   是否只导出当月
      * @param request
      * @param response
      */
-    public void exportExcelRank(Map<String,String> headerMap,String rankCode ,
+    public void exportExcelRank(Map<String,String> headerMap,String rankCode ,String isCheck,
                                      HttpServletRequest request, HttpServletResponse response){
         String printDate = DateUtil.getPrintDate();
         HttpSession session = request.getSession();
@@ -313,7 +314,7 @@ public class IExportService {
         try {
             fOut = response.getOutputStream();
             String sql_rank_dist_list = null;
-            if(rankCode.equals("102003")){  //导出三星级的会员
+            if(rankCode.equals("102003") || isCheck.equals("1")){  //导出三星级的会员
                 String startTime = DateUtil.getFirstDayOfMonth();
                 String endTime = DateUtil.getLastDayOfMonth();
                 sql_rank_dist_list = CommonUtil.sql_rank_dist_list_3.replace("rankcode",rankCode).replace("starttime",startTime).replace("endtime",endTime);
