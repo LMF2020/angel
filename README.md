@@ -32,7 +32,7 @@ Configuration
 * IntelljIdea V12
 * 热部署插件`jrebel` (class文件修改在idea中需要重新make/compile)
 * Gradle插件JetGradle&Debug Run With JRebel
-* [配置过程详细](http://blog.csdn.net/hf_xiaoyou/article/details/26093267)
+* [配置过程详细](http://jiangzx.github.io/2014/10/03/idea-for-gradle-service/)
 
 Database
 --------
@@ -43,7 +43,7 @@ Database
 Frontside
 ---------
 * [EasyUI](http://www.jeasyui.com/)
-* [Twitter Bootstrap](http://getbootstrap.com/css/)
+* [Twitter Bootstrap](http://v3.bootcss.com/css/)
 
 Backend
 -------
