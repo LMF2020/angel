@@ -71,11 +71,14 @@ $(function () {
                 singleSelect:"true",
                 columns: [
                     [
-                        {field: 'purchaserCode', title: '会员编号', width: 50,sortable:true},
-                        {field: 'purchaserName', title: '会员姓名', width: 50,sortable:true},
-                        {field: 'shopCode', title: '专卖店', width: 50,sortable:true},
-                        {field: 'rankName',title:'星级',width:30,sortable:true},
-                        {field: 'createTime', title: '加入时间', width: 50, sortable: true, order: 'desc',
+                        {field: 'purchaser_code', title: '会员编号', width: 50,sortable:true},
+                        {field: 'purchaser_name', title: '会员姓名', width: 50,sortable:true},
+                        {field: 'shop_code', title: '专卖店', width: 50,sortable:true},
+                        {field: 'rank_name',title:'星级',width:30,sortable:true},
+                        {field: 'PVBV',title:'PV/BV',width:30,sortable:true},
+                        {field: 'APPV',title:'APPV',width:30,sortable:true},
+                        {field: 'ATNPV',title:'ATNPV',width:30,sortable:true},
+                        {field: 'create_time', title: '加入时间', width: 50, sortable: true, order: 'desc',
                             formatter: function (value, row, index) {
                                 return new Date(value).toLocaleString();
                             }}

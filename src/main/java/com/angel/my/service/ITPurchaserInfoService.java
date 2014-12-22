@@ -100,6 +100,40 @@ public class ITPurchaserInfoService {
     }
 
     /**
+     * 查询每个星级的会员
+     *      通过isCheck=1判断是否需要只显示当月星级新增的会员
+     */
+    public MySqlPagination pageFilterListByRank(int startIndex,int limit,String rankCode,String isCheck,String lastMonth){
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT" +
+                "  t1.purchaser_code," +
+                "  t3.purchaser_name," +
+                "  t1.rank_code," +
+                "  t3.shop_code," +
+                "  t4.rank_name," +
+                "  t3.create_time," +
+                "  CONCAT(t1.PPV,'/',t1.PBV) AS PVBV," +
+                "  t1.APPV," +
+                "  t1.ATNPV" +
+                " FROM t_achieve t1" +
+                "  LEFT JOIN t_purchaser t3" +
+                "    ON t3.purchaser_code = t1.purchaser_code" +
+                "  LEFT JOIN t_rank t4" +
+                "    ON t1.rank_code = t4.rank_code" +
+                " WHERE t1.rank_code = '"+rankCode+"'");
+        //过滤掉上个月星级相同的会员
+        if(isCheck!=null && isCheck.equals("1")){
+            sb.append(" AND NOT EXISTS(SELECT" +
+                        " 1" +
+                        " FROM t_achieve_his t2" +
+                        " WHERE t1.purchaser_code = t2.purchaser_code" +
+                        " AND SUBSTRING(t2.achieve_date,1,7) = '"+lastMonth+"'" +
+                        " AND t1.rank_code = t2.rank_code)");
+        }
+        MySqlPagination page=new MySqlPagination(sb.toString(), startIndex, limit, jdbcTemplate);
+        return page;
+    }
+    /**
      * 按（编号、结算月）查询会员历史业绩
      */
     public MySqlPagination pageQueryUserGradeByMon(int startIndex,int limit,String purchaserCode,String achieveDate) {

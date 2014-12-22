@@ -298,7 +298,7 @@ public class IExportService {
      * @param request
      * @param response
      */
-    public void exportExcelRank(Map<String,String> headerMap,String rankCode ,String isCheck,
+    public void exportFilterExcelByRank(Map<String,String> headerMap,String rankCode ,String isCheck,
                                      HttpServletRequest request, HttpServletResponse response){
         String printDate = DateUtil.getPrintDate();
         HttpSession session = request.getSession();
@@ -306,23 +306,42 @@ public class IExportService {
         String rankName = rankCode.substring(rankCode.length()-1);
         // 生成提示信息
         response.setContentType("application/vnd.ms-excel");
-        response.setHeader("content-disposition", "attachment;filename=" + printDate+"-star"+rankName  + ".xlsx");
+        String flag = isCheck.equals("1")?"-add":"-all";
+        response.setHeader("content-disposition", "attachment;filename=" + printDate+"-star"+rankName+ flag +".xlsx");
 
         OutputStream fOut = null;
         Map<String,Object> tableInfo = new HashMap<String, Object>();
         tableInfo.put("tableType","DIST_OF_RANK");  //表的类型
         try {
             fOut = response.getOutputStream();
-            String sql_rank_dist_list = null;
-            if(rankCode.equals("102003") || isCheck.equals("1")){  //导出三星级的会员
-                String startTime = DateUtil.getFirstDayOfMonth();
-                String endTime = DateUtil.getLastDayOfMonth();
-                sql_rank_dist_list = CommonUtil.sql_rank_dist_list_3.replace("rankcode",rankCode).replace("starttime",startTime).replace("endtime",endTime);
-            }else{      //导出四星到九星级的会员
-                sql_rank_dist_list = CommonUtil.sql_rank_dist_list_other.replace("rankcode",rankCode);
+            StringBuilder sb = new StringBuilder();
+            sb.append("SELECT" +
+                    "  t1.purchaser_code," +
+                    "  t3.purchaser_name," +
+                    "  t1.rank_code," +
+                    "  t3.shop_code," +
+                    "  t4.rank_name," +
+                    "  t3.create_time," +
+                    "  CONCAT(t1.PPV,'/',t1.PBV) AS PVBV," +
+                    "  t1.APPV," +
+                    "  t1.ATNPV" +
+                    " FROM t_achieve t1" +
+                    "  LEFT JOIN t_purchaser t3" +
+                    "    ON t3.purchaser_code = t1.purchaser_code" +
+                    "  LEFT JOIN t_rank t4" +
+                    "    ON t1.rank_code = t4.rank_code" +
+                    " WHERE t1.rank_code = '"+rankCode+"'");
+            if(isCheck!=null && isCheck.equals("1")){
+                String lastMonth = DateUtil.getLastMonDate(1).substring(0,7);
+                sb.append(" AND NOT EXISTS(SELECT" +
+                        " 1" +
+                        " FROM t_achieve_his t2" +
+                        " WHERE t1.purchaser_code = t2.purchaser_code" +
+                        " AND SUBSTRING(t2.achieve_date,1,7) = '"+lastMonth+"'" +
+                        " AND t1.rank_code = t2.rank_code)");
             }
-            ExcelTools tools =  new ExcelTools(sql_rank_dist_list,10,jdbcTemplate);
-            tableInfo.put("totalRecords",getTotalRecords(sql_rank_dist_list));
+            ExcelTools tools =  new ExcelTools(sb.toString(),10,jdbcTemplate);
+            tableInfo.put("totalRecords",getTotalRecords(sb.toString()));
             tableInfo.put("rank",rankName);
             tableInfo.put("yearMonth",DateUtil.getYearMonth());
             tools.setTableInfo(tableInfo);

@@ -23,6 +23,7 @@ public class DateUtil {
         Date strDateTo = calendar.getTime();
         return  df4.format(strDateTo)+" 00:00:00";
     }
+
     //获取本月第一天 yyyy-MM-dd 00:00:00
     public static String getFirstDayOfMonth(){
         Calendar calendar = Calendar.getInstance();
@@ -82,7 +83,8 @@ public class DateUtil {
     public static void main(String[] args) {
         //System.out.println(getFirstDayOfMonth());
         //System.out.println(getLastDayOfMonth());
-        System.out.println(get1stDayOfDate("2014-11-12"));
-        System.out.println(getLastDayOfDate("2014-11-13"));
+        //System.out.println(get1stDayOfDate("2014-11-12"));
+        //System.out.println(getLastDayOfDate("2014-11-13"));
+        System.out.println(getLastMonDate(1).substring(0,7));
     }
 }

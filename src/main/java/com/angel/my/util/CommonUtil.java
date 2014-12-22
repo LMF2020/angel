@@ -77,44 +77,8 @@ public class CommonUtil {
             " GROUP BY t.purchaser_code " +
             " ORDER BY t.purchaser_code asc";
 
-    //导出三星级以上的会员
-    public static final String sql_rank_dist_list_other =  "SELECT"+
-            "  t.purchaser_code as PURCHASER_CODE,"+
-            "  t1.rank_name as RANK_NAME,"+
-            "  t.purchaser_name as PURCHASER_NAME,"+
-            "  t.create_time  as CREATE_TIME,"+
-            "  t.shop_code as SHOP_CODE,"+
-            "  CONCAT(t2.PPV,'/',t2.PBV) as PPBV,"+
-            "  t2.APPV,"+
-            "  t2.ATNPV"+
-            " FROM t_purchaser t"+
-            "  LEFT JOIN t_rank t1"+
-            "    ON t1.rank_code = t.rank_code"+
-            "  LEFT JOIN t_achieve t2"+
-            "    ON t2.purchaser_code = t.purchaser_code"+
-            " WHERE t.rank_code = 'rankcode'";
-
-    //导出当月加入的三星级会员
-    public static final String sql_rank_dist_list_3 =  "SELECT"+
-            "  t.purchaser_code as PURCHASER_CODE,"+
-            "  t1.rank_name as RANK_NAME,"+
-            "  t.purchaser_name as PURCHASER_NAME,"+
-            "  t.create_time  as CREATE_TIME,"+
-            "  t.shop_code as SHOP_CODE,"+
-            "  CONCAT(t2.PPV,'/',t2.PBV) as PPBV,"+
-            "  t2.APPV,"+
-            "  t2.ATNPV"+
-            " FROM t_purchaser t"+
-            "  LEFT JOIN t_rank t1"+
-            "    ON t1.rank_code = t.rank_code"+
-            "  LEFT JOIN t_achieve t2"+
-            "    ON t2.purchaser_code = t.purchaser_code"+
-            " WHERE t.rank_code = 'rankcode'"+
-            "    AND t.create_time > 'starttime'"+
-            "    AND t.create_time < 'endtime'";
-
     public static void main(String[] args) {
-        System.out.println(CommonUtil.sql_network_information);
+        //System.out.println(CommonUtil.sql_network_information);
     }
 
 }

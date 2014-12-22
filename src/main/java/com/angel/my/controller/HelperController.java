@@ -5,10 +5,8 @@ import com.angel.my.service.IExportService;
 import com.angel.my.service.ITPurchaserInfoService;
 import com.angel.my.util.DateUtil;
 import com.starit.common.dao.support.MySqlPagination;
-import com.starit.common.dao.support.Pagination;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,7 +53,7 @@ public class HelperController extends BaseController {
 	*/
 	@RequestMapping("/pageUserList")
 	@ResponseBody
-	public Pagination<Object> pageUserList(
+	public MySqlPagination pageUserList(
 			@RequestParam("page") int startIndex,
 			@RequestParam("rows") int pageSize,
             @RequestParam("rankCode") String rankCode,
@@ -63,39 +61,8 @@ public class HelperController extends BaseController {
 			@RequestParam(required = false) String sort,
 			@RequestParam(required = false) String order){
 
-        //查询当月加入的会员,并且判断是否只查询当月新增的会员
-        String startTime = null;
-        String endTime = null;
-        if(rankCode.equals("102003") || isCheck.equals("1")){
-            startTime = DateUtil.getFirstDayOfMonth();
-            endTime = DateUtil.getLastDayOfMonth();
-        }
-        //计算分页索引位置
-        int offset = (startIndex-1)*pageSize;
-
-        StringBuilder sb = new StringBuilder();
-        sb.append(" 	from TPurchaserInfo user  where 1=1	");
-
-        //查询条件
-        if(StringUtils.hasText(startTime)){			/*会员加入时间起始范围*/
-            sb.append("	and user.createTime >= '"+ startTime+" 00:00:00'");
-        }
-        if(StringUtils.hasText(endTime)){           /*会员加入时间结束范围*/
-            sb.append("	and user.createTime <= '"+ endTime+" 23:59:59'");
-        }
-        //查询 N 星级的会员
-        sb.append(" and user.rankCode ='"+rankCode+"'");
-
-        //查询排序
-        if(sort!=null && order!=null){
-            sb.append("  order by 	user."+sort+" "+order);
-        }
-
-        //分页查询
-        String rowSql = sb.toString();
-        String countSql = "	select count(*) 	"+ rowSql;
-        Pagination<Object> page = userService.findPageByHQL(rowSql, countSql, offset, pageSize);
-
+        String lastMonth = DateUtil.getLastMonDate(1).substring(0,7);
+        MySqlPagination page = userService.pageFilterListByRank(startIndex,pageSize,rankCode,isCheck,lastMonth);
 		return page ;
 	}
 
@@ -112,15 +79,15 @@ public class HelperController extends BaseController {
             HttpServletResponse response){
         //Excel头部信息(标题)
         Map<String,String> headerMap = new LinkedHashMap<String, String>();
-        headerMap.put("PURCHASER_CODE","DISTRIBUTOR ID");
-        headerMap.put("PURCHASER_NAME","DISTRIBUTOR NAME");
-        headerMap.put("SHOP_CODE","SHOP CODE");
-        headerMap.put("RANK_NAME","RANK");
-        headerMap.put("PPBV","PERSONAL PV/BV");
+        headerMap.put("purchaser_code","DISTRIBUTOR ID");
+        headerMap.put("purchaser_name","DISTRIBUTOR NAME");
+        headerMap.put("shop_code","SHOP CODE");
+        headerMap.put("rank_name","RANK");
+        headerMap.put("PVBV","PERSONAL PV/BV");
         headerMap.put("APPV","APPV");
         headerMap.put("ATNPV","ATNPV");
-        headerMap.put("CREATE_TIME","JOIN TIME");
-        iExportService.exportExcelRank(headerMap,rankCode,isCheck,request,response);
+        headerMap.put("create_time","JOIN TIME");
+        iExportService.exportFilterExcelByRank(headerMap,rankCode,isCheck,request,response);
     }
 
     /**
